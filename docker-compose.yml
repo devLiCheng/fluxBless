@@ -32,8 +32,8 @@ services:
       NODE_ENV: production
       JWT_SECRET: fluxbless-jwt-secret-change-in-production
       JWT_EXPIRES_IN: 7d
-      FRONTEND_URL: "http://localhost"
-      ADMIN_URL: "http://localhost/admin"
+      FRONTEND_URL: "${FRONTEND_URL:-http://localhost}"
+      ADMIN_URL: "${ADMIN_URL:-http://localhost/admin}"
       STRIPE_SECRET_KEY: sk_test_placeholder
       STRIPE_WEBHOOK_SECRET: whsec_placeholder
     depends_on:
@@ -49,7 +49,7 @@ services:
     container_name: fluxbless_frontend
     restart: always
     environment:
-      NEXT_PUBLIC_API_URL: "http://localhost/api"
+      NEXT_PUBLIC_API_URL: "${NEXT_PUBLIC_API_URL:-http://localhost/api}"
     depends_on:
       - backend
     expose:
