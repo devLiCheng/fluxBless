@@ -18,7 +18,7 @@ echo "========================================="
 # 1. Pull latest code (if inside a git repository)
 if [ -d .git ]; then
   echo "📥 Pulling latest codebase updates..."
-  git pull origin main || echo "⚠️ Warning: git pull failed, deploying current local files."
+  git pull origin master || echo "⚠️ Warning: git pull failed, deploying current local files."
 else
   echo "ℹ️ Note: Not a git repository, deploying current local directory state."
 fi
