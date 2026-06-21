@@ -29,6 +29,17 @@ export default function Orders() {
     total: 0,
   });
 
+  const getStatusText = (status: string) => {
+    const mapping: Record<string, string> = {
+      pending: '待处理',
+      paid: '已付款',
+      shipped: '已发货',
+      completed: '已完成',
+      cancelled: '已取消',
+    };
+    return mapping[status] || status;
+  };
+
   const fetchOrders = async (page = 1, status = statusFilter) => {
     setLoading(true);
     try {
@@ -36,7 +47,6 @@ export default function Orders() {
       if (status) url += `&status=${status}`;
 
       const res = await api.get(url);
-      // Backend returns either array directly or { items, total }
       const items = Array.isArray(res.data) ? res.data : res.data.items || [];
       const total = Array.isArray(res.data) ? res.data.length : res.data.total || 0;
 
@@ -48,7 +58,7 @@ export default function Orders() {
       }));
     } catch (err: any) {
       console.error(err);
-      Message.error('Failed to load orders');
+      Message.error('加载订单失败');
     } finally {
       setLoading(false);
     }
@@ -82,65 +92,65 @@ export default function Orders() {
     if (!selectedOrder) return;
     try {
       await api.put(`/orders/${selectedOrder.id}/status`, { status: newStatus });
-      Message.success('Order status updated successfully');
+      Message.success('更新订单状态成功');
       setStatusVisible(false);
       fetchOrders(pagination.current);
     } catch (err: any) {
       console.error(err);
-      Message.error(err.response?.data?.message || 'Failed to update order status');
+      Message.error(err.response?.data?.message || '更新订单状态失败');
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
-        return <Badge status='error' text='PENDING' />;
+        return <Badge status='error' text='待处理' />;
       case 'paid':
-        return <Badge status='warning' text='PAID' />;
+        return <Badge status='warning' text='已付款' />;
       case 'shipped':
-        return <Badge status='processing' text='SHIPPED' />;
+        return <Badge status='processing' text='已发货' />;
       case 'completed':
-        return <Badge status='success' text='COMPLETED' />;
+        return <Badge status='success' text='已完成' />;
       case 'cancelled':
-        return <Badge status='default' text='CANCELLED' />;
+        return <Badge status='default' text='已取消' />;
       default:
-        return <Badge status='default' text={status.toUpperCase()} />;
+        return <Badge status='default' text={status} />;
     }
   };
 
   const columns = [
     {
-      title: 'Order ID',
+      title: '订单ID',
       dataIndex: 'id',
       width: 100,
-      render: (val: number) => <span style={{ color: '#D4AF37' }}>#{val}</span>,
+      render: (val: number) => <span>#{val}</span>,
     },
     {
-      title: 'Customer Email',
+      title: '顾客邮箱',
       dataIndex: 'contactEmail',
     },
     {
-      title: 'Total Amount',
+      title: '总金额',
       dataIndex: 'totalAmount',
-      render: (val: any) => <span style={{ color: '#fff', fontWeight: 'bold' }}>${parseFloat(val).toFixed(2)}</span>,
+      render: (val: any) => <span style={{ fontWeight: 'bold' }}>${parseFloat(val).toFixed(2)}</span>,
     },
     {
-      title: 'Payment Method',
+      title: '支付方式',
       dataIndex: 'paymentMethod',
-      render: (val: string) => val.toUpperCase(),
+      render: (val: string) => val === 'stripe' ? 'Stripe 支付' : val,
     },
     {
-      title: 'Order Status',
+      title: '订单状态',
       dataIndex: 'status',
       render: (val: string) => getStatusBadge(val),
     },
     {
-      title: 'Order Date',
+      title: '下单时间',
       dataIndex: 'createdAt',
       render: (val: string) => new Date(val).toLocaleString(),
     },
     {
-      title: 'Actions',
+      title: '操作',
       width: 220,
       render: (_: any, record: any) => (
         <Space>
@@ -149,18 +159,16 @@ export default function Orders() {
             size='small'
             icon={<IconEye />}
             onClick={() => showDetailModal(record)}
-            style={{ color: '#D4AF37' }}
           >
-            Details
+            详情
           </Button>
           <Button
             type='text'
             size='small'
             icon={<IconEdit />}
             onClick={() => showStatusModal(record)}
-            style={{ color: '#c5a059' }}
           >
-            Update Status
+            更新状态
           </Button>
         </Space>
       ),
@@ -170,40 +178,39 @@ export default function Orders() {
   return (
     <div>
       <div style={{ marginBottom: 24 }}>
-        <h2 style={{ margin: 0, color: '#D4AF37', fontFamily: 'serif', fontSize: 28, letterSpacing: 1.5 }}>
-          Customer Orders
+        <h2 style={{ margin: 0, fontSize: 24 }}>
+          订单管理
         </h2>
-        <p style={{ margin: '4px 0 0 0', color: '#c5a059' }}>
-          Monitor transaction states and manage shipping logistics.
+        <p style={{ margin: '4px 0 0 0', color: 'var(--color-text-3)' }}>
+          监控交易状态并管理发货物流信息。
         </p>
       </div>
 
       {/* Filter Bar */}
       <div
         style={{
-          background: '#1a1a1a',
           padding: 16,
           borderRadius: 8,
           marginBottom: 16,
-          border: '1px solid rgba(212, 175, 55, 0.1)',
+          border: '1px solid var(--color-border)',
           display: 'flex',
           gap: 16,
           alignItems: 'center',
         }}
       >
-        <span style={{ color: '#c5a059' }}>Filter by Status:</span>
+        <span>订单状态筛选：</span>
         <Select
-          placeholder='All Statuses'
+          placeholder='全部状态'
           value={statusFilter}
           onChange={handleStatusFilterChange}
-          style={{ width: 200, background: '#222', border: '1px solid #333', color: '#fff' }}
+          style={{ width: 200 }}
           allowClear
         >
-          <Select.Option value='pending'>Pending</Select.Option>
-          <Select.Option value='paid'>Paid</Select.Option>
-          <Select.Option value='shipped'>Shipped</Select.Option>
-          <Select.Option value='completed'>Completed</Select.Option>
-          <Select.Option value='cancelled'>Cancelled</Select.Option>
+          <Select.Option value='pending'>待处理</Select.Option>
+          <Select.Option value='paid'>已付款</Select.Option>
+          <Select.Option value='shipped'>已发货</Select.Option>
+          <Select.Option value='completed'>已完成</Select.Option>
+          <Select.Option value='cancelled'>已取消</Select.Option>
         </Select>
       </div>
 
@@ -219,40 +226,35 @@ export default function Orders() {
           showTotal: true,
         }}
         onChange={handleTableChange}
-        style={{
-          background: '#1a1a1a',
-          border: '1px solid rgba(212, 175, 55, 0.15)',
-          borderRadius: 8,
-        }}
       />
 
       {/* Detail Modal */}
       <Modal
-        title='Order Details'
+        title='订单详情'
         visible={detailVisible}
         onOk={() => setDetailVisible(false)}
         onCancel={() => setDetailVisible(false)}
-        okText='Done'
+        okText='确定'
         cancelButtonProps={{ style: { display: 'none' } }}
-        style={{ width: 650, background: '#1a1a1a', border: '1px solid rgba(212, 175, 55, 0.2)' }}
+        style={{ width: 650 }}
       >
         {selectedOrder && (
-          <div style={{ color: '#fff' }}>
+          <div>
             <Descriptions
               column={2}
-              title={<span style={{ color: '#D4AF37', fontFamily: 'serif' }}>General Info</span>}
+              title="基本信息"
               data={[
-                { label: 'Order ID', value: `#${selectedOrder.id}` },
-                { label: 'Status', value: selectedOrder.status.toUpperCase() },
-                { label: 'Contact Phone', value: selectedOrder.contactPhone },
-                { label: 'Contact Email', value: selectedOrder.contactEmail },
-                { label: 'Shipping Address', value: selectedOrder.shippingAddress, span: 2 },
+                { label: '订单ID', value: `#${selectedOrder.id}` },
+                { label: '状态', value: getStatusText(selectedOrder.status) },
+                { label: '联系电话', value: selectedOrder.contactPhone },
+                { label: '联系邮箱', value: selectedOrder.contactEmail },
+                { label: '收货地址', value: selectedOrder.shippingAddress, span: 2 },
               ]}
               style={{ marginBottom: 20 }}
             />
 
-            <h3 style={{ color: '#D4AF37', fontFamily: 'serif', marginBottom: 12, borderBottom: '1px solid #333', paddingBottom: 8 }}>
-              Ordered Items
+            <h3 style={{ marginBottom: 12, borderBottom: '1px solid var(--color-border)', paddingBottom: 8 }}>
+              订单商品列表
             </h3>
             <List
               dataSource={selectedOrder.items || []}
@@ -263,18 +265,18 @@ export default function Orders() {
                     display: 'flex',
                     justifyContent: 'space-between',
                     padding: '12px 0',
-                    borderBottom: '1px solid #222',
+                    borderBottom: '1px solid var(--color-border)',
                   }}
                 >
                   <div>
-                    <strong style={{ color: '#fff' }}>
-                      {item.product?.nameZh || `Product ID: ${item.productId}`}
+                    <strong>
+                      {item.product?.nameZh || `商品 ID: ${item.productId}`}
                     </strong>
-                    <div style={{ color: '#888', fontSize: 12 }}>
-                      Quantity: {item.quantity} | Unit Price: ${parseFloat(item.price).toFixed(2)}
+                    <div style={{ color: 'var(--color-text-3)', fontSize: 12 }}>
+                      数量: {item.quantity} | 单价: ${parseFloat(item.price).toFixed(2)}
                     </div>
                   </div>
-                  <div style={{ color: '#D4AF37', fontWeight: 'bold' }}>
+                  <div style={{ fontWeight: 'bold' }}>
                     ${(parseFloat(item.price) * item.quantity).toFixed(2)}
                   </div>
                 </List.Item>
@@ -286,26 +288,25 @@ export default function Orders() {
 
       {/* Update Status Modal */}
       <Modal
-        title='Update Order Status'
+        title='更新订单状态'
         visible={statusVisible}
         onOk={handleStatusUpdate}
         onCancel={() => setStatusVisible(false)}
-        style={{ background: '#1a1a1a', border: '1px solid rgba(212, 175, 55, 0.2)' }}
       >
         <div style={{ padding: '10px 0' }}>
-          <p style={{ color: '#c5a059', marginBottom: 12 }}>
-            Select new operational state for Order #{selectedOrder?.id}:
+          <p style={{ marginBottom: 12 }}>
+            请选择订单 #{selectedOrder?.id} 的新状态：
           </p>
           <Select
             value={newStatus}
             onChange={setNewStatus}
-            style={{ width: '100%', background: '#222', border: '1px solid #333', color: '#fff' }}
+            style={{ width: '100%' }}
           >
-            <Select.Option value='pending'>Pending</Select.Option>
-            <Select.Option value='paid'>Paid</Select.Option>
-            <Select.Option value='shipped'>Shipped</Select.Option>
-            <Select.Option value='completed'>Completed</Select.Option>
-            <Select.Option value='cancelled'>Cancelled</Select.Option>
+            <Select.Option value='pending'>待处理</Select.Option>
+            <Select.Option value='paid'>已付款</Select.Option>
+            <Select.Option value='shipped'>已发货</Select.Option>
+            <Select.Option value='completed'>已完成</Select.Option>
+            <Select.Option value='cancelled'>已取消</Select.Option>
           </Select>
         </div>
       </Modal>

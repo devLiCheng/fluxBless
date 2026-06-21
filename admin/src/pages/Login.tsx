@@ -24,16 +24,16 @@ export default function Login() {
       const { user, access_token } = res.data;
 
       if (user.role !== 'admin') {
-        throw new Error('Access denied. Admin role required.');
+        throw new Error('拒绝访问，需要管理员权限');
       }
 
       localStorage.setItem('fluxbless_admin_token', access_token);
       localStorage.setItem('fluxbless_admin_user', JSON.stringify(user));
-      Message.success('Welcome back to FluxBless Console');
+      Message.success('欢迎回来，FluxBless 管理后台');
       navigate('/admin/dashboard');
     } catch (err: any) {
       console.error(err);
-      Message.error(err.response?.data?.message || err.message || 'Login failed');
+      Message.error(err.response?.data?.message || err.message || '登录失败');
     } finally {
       setLoading(false);
     }
@@ -46,48 +46,37 @@ export default function Login() {
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: '100vh',
-        background: '#121212',
       }}
     >
-      <Card
-        style={{
-          width: 400,
-          boxShadow: '0 4px 15px rgba(0,0,0,0.5)',
-          border: '1px solid rgba(212, 175, 55, 0.2)',
-          background: '#1a1a1a',
-          borderRadius: 8,
-        }}
-      >
+      <Card style={{ width: 400, borderRadius: 8 }}>
         <div style={{ textAlign: 'center', marginBottom: 30 }}>
-          <Typography.Title heading={3} style={{ color: '#D4AF37', margin: '0 0 8px 0' }}>
+          <Typography.Title heading={3} style={{ margin: '0 0 8px 0' }}>
             FluxBless
           </Typography.Title>
-          <Typography.Text type='secondary' style={{ color: '#C5A059' }}>
-            Management Portal
+          <Typography.Text type='secondary'>
+            管理系统
           </Typography.Text>
         </div>
 
         <Form layout='vertical' onSubmit={onLoginFormSubmit}>
           <Form.Item
-            label={<span style={{ color: '#e5e5e5' }}>Email</span>}
+            label="邮箱"
             field='email'
-            rules={[{ required: true, message: 'Please enter your email' }]}
+            rules={[{ required: true, message: '请输入邮箱' }]}
           >
             <Input
-              prefix={<IconUser style={{ color: '#AA7C11' }} />}
+              prefix={<IconUser />}
               placeholder='admin@fluxbless.com'
-              style={{ background: '#2a2a2a', border: '1px solid #333', color: '#fff' }}
             />
           </Form.Item>
           <Form.Item
-            label={<span style={{ color: '#e5e5e5' }}>Password</span>}
+            label="密码"
             field='password'
-            rules={[{ required: true, message: 'Please enter your password' }]}
+            rules={[{ required: true, message: '请输入密码' }]}
           >
             <Input.Password
-              prefix={<IconLock style={{ color: '#AA7C11' }} />}
-              placeholder='Enter password'
-              style={{ background: '#2a2a2a', border: '1px solid #333', color: '#fff' }}
+              prefix={<IconLock />}
+              placeholder='请输入密码'
             />
           </Form.Item>
           <Form.Item style={{ marginTop: 24 }}>
@@ -96,14 +85,8 @@ export default function Login() {
               htmlType='submit'
               loading={loading}
               long
-              style={{
-                background: 'linear-gradient(135deg, #AA7C11 0%, #D4AF37 50%, #F3E5AB 100%)',
-                border: 'none',
-                color: '#000',
-                fontWeight: 'bold',
-              }}
             >
-              Sign In
+              登录
             </Button>
           </Form.Item>
         </Form>

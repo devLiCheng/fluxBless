@@ -55,7 +55,7 @@ export default function Dashboard() {
 
       } catch (err: any) {
         console.error(err);
-        Message.error('Failed to load dashboard data');
+        Message.error('加载仪表盘数据失败');
       } finally {
         setLoading(false);
       }
@@ -66,91 +66,81 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-        <Spin size={40} tip='Loading energy grid...' style={{ color: '#D4AF37' }} />
+        <Spin size={40} tip='正在加载数据...' />
       </div>
     );
   }
 
+  const getStatusText = (status: string) => {
+    const mapping: Record<string, string> = {
+      pending: '待处理',
+      paid: '已付款',
+      shipped: '已发货',
+      completed: '已完成',
+      cancelled: '已取消',
+    };
+    return mapping[status] || status;
+  };
+
+  const getStatusColor = (status: string) => {
+    const mapping: Record<string, string> = {
+      pending: 'red',
+      paid: 'orange',
+      shipped: 'blue',
+      completed: 'green',
+      cancelled: 'gray',
+    };
+    return mapping[status] || 'gray';
+  };
+
   return (
     <div style={{ padding: '4px 0' }}>
       <div style={{ marginBottom: 24 }}>
-        <h2 style={{ margin: 0, color: '#D4AF37', fontFamily: 'serif', fontSize: 28, letterSpacing: 1.5 }}>
-          Store Energy Aura
+        <h2 style={{ margin: 0, fontSize: 24 }}>
+          店铺经营概览
         </h2>
-        <p style={{ margin: '4px 0 0 0', color: '#c5a059' }}>
-          Real-time snapshot of the FluxBless spiritual storefront.
+        <p style={{ margin: '4px 0 0 0', color: 'var(--color-text-3)' }}>
+          FluxBless 店铺实时数据概览。
         </p>
       </div>
 
       {/* KPI Grid */}
       <Grid.Row gutter={24} style={{ marginBottom: 24 }}>
         <Grid.Col span={6}>
-          <Card
-            bordered={false}
-            style={{
-              background: '#1a1a1a',
-              border: '1px solid rgba(212, 175, 55, 0.15)',
-              borderRadius: 8,
-            }}
-          >
+          <Card bordered={true}>
             <Statistic
-              title={<span style={{ color: '#c5a059', fontWeight: 600 }}>Total Revenue</span>}
+              title="总销售额"
               value={stats.sales}
               precision={2}
               prefix='$'
-              extra={<span style={{ color: '#D4AF37' }}>Paid & Shipped Orders</span>}
-              style={{ color: '#D4AF37', fontSize: 24, fontWeight: 'bold' }}
+              extra="已付款和已发货订单"
             />
           </Card>
         </Grid.Col>
         <Grid.Col span={6}>
-          <Card
-            bordered={false}
-            style={{
-              background: '#1a1a1a',
-              border: '1px solid rgba(212, 175, 55, 0.15)',
-              borderRadius: 8,
-            }}
-          >
+          <Card bordered={true}>
             <Statistic
-              title={<span style={{ color: '#c5a059', fontWeight: 600 }}>Total Orders</span>}
+              title="总订单数"
               value={stats.ordersCount}
-              prefix={<IconBook style={{ color: '#AA7C11' }} />}
-              style={{ color: '#fff', fontSize: 24, fontWeight: 'bold' }}
+              prefix={<IconBook />}
             />
           </Card>
         </Grid.Col>
         <Grid.Col span={6}>
-          <Card
-            bordered={false}
-            style={{
-              background: '#1a1a1a',
-              border: '1px solid rgba(212, 175, 55, 0.15)',
-              borderRadius: 8,
-            }}
-          >
+          <Card bordered={true}>
             <Statistic
-              title={<span style={{ color: '#c5a059', fontWeight: 600 }}>Pending Orders</span>}
+              title="待处理订单"
               value={stats.pendingOrders}
-              prefix={<IconThunderbolt style={{ color: '#ff4d4f' }} />}
-              style={{ color: stats.pendingOrders > 0 ? '#ff4d4f' : '#52c41a', fontSize: 24, fontWeight: 'bold' }}
+              prefix={<IconThunderbolt />}
             />
           </Card>
         </Grid.Col>
         <Grid.Col span={6}>
-          <Card
-            bordered={false}
-            style={{
-              background: '#1a1a1a',
-              border: '1px solid rgba(212, 175, 55, 0.15)',
-              borderRadius: 8,
-            }}
-          >
+          <Card bordered={true}>
             <Statistic
-              title={<span style={{ color: '#c5a059', fontWeight: 600 }}>Active Listings</span>}
+              title="在售商品数"
               value={stats.productsCount}
-              prefix={<IconGift style={{ color: '#AA7C11' }} />}
-              style={{ color: '#fff', fontSize: 24, fontWeight: 'bold' }}
+              prefix={<IconGift />}
             />
           </Card>
         </Grid.Col>
@@ -161,61 +151,51 @@ export default function Dashboard() {
         {/* Left Side: Recent Orders & Alerts */}
         <Grid.Col span={16}>
           <Card
-            title={<span style={{ color: '#D4AF37', fontFamily: 'serif' }}>Recent Transactions</span>}
-            bordered={false}
-            style={{
-              background: '#1a1a1a',
-              border: '1px solid rgba(212, 175, 55, 0.15)',
-              borderRadius: 8,
-              marginBottom: 24,
-            }}
+            title="最近交易"
+            bordered={true}
+            style={{ marginBottom: 24 }}
           >
             <Table
               rowKey='id'
               loading={loading}
               columns={[
                 {
-                  title: 'Order ID',
+                  title: '订单ID',
                   dataIndex: 'id',
-                  render: (val) => <span style={{ color: '#D4AF37' }}>#{val}</span>,
+                  render: (val) => <span>#{val}</span>,
                 },
                 {
-                  title: 'Customer',
+                  title: '顾客',
                   dataIndex: 'contactEmail',
                   render: (val, record: any) => (
                     <div>
-                      <div style={{ color: '#fff' }}>{record.user?.name || 'Guest'}</div>
-                      <div style={{ fontSize: 11, color: '#888' }}>{val}</div>
+                      <div>{record.user?.name || '游客'}</div>
+                      <div style={{ fontSize: 11, color: 'var(--color-text-3)' }}>{val}</div>
                     </div>
                   ),
                 },
                 {
-                  title: 'Amount',
+                  title: '订单金额',
                   dataIndex: 'totalAmount',
-                  render: (val) => <span style={{ color: '#fff', fontWeight: 'bold' }}>${parseFloat(val).toFixed(2)}</span>,
+                  render: (val) => <span style={{ fontWeight: 'bold' }}>${parseFloat(val).toFixed(2)}</span>,
                 },
                 {
-                  title: 'Status',
+                  title: '订单状态',
                   dataIndex: 'status',
                   render: (val) => {
-                    let color = '#fff';
-                    let bg = '#333';
-                    if (val === 'pending') { color = '#ff4d4f'; bg = 'rgba(255,77,79,0.1)'; }
-                    else if (val === 'paid') { color = '#faad14'; bg = 'rgba(250,173,20,0.1)'; }
-                    else if (val === 'shipped') { color = '#1890ff'; bg = 'rgba(24,144,255,0.1)'; }
-                    else if (val === 'completed') { color = '#52c41a'; bg = 'rgba(82,196,26,0.1)'; }
+                    const color = getStatusColor(val);
                     return (
                       <span
                         style={{
-                          color,
-                          background: bg,
+                          color: `var(--color-${color}-6)`,
+                          background: `var(--color-${color}-1)`,
                           padding: '2px 8px',
                           borderRadius: 4,
                           fontSize: 12,
                           fontWeight: 'bold',
                         }}
                       >
-                        {val.toUpperCase()}
+                        {getStatusText(val)}
                       </span>
                     );
                   },
@@ -223,48 +203,39 @@ export default function Dashboard() {
               ]}
               data={recentOrders}
               pagination={false}
-              style={{ background: 'transparent' }}
             />
           </Card>
 
           {lowStockProducts.length > 0 && (
-            <Alert
-              type='warning'
-              showIcon
-              icon={<IconSound />}
-              title={<span style={{ fontWeight: 'bold' }}>Inventory Energy Low Warning</span>}
-              content={
-                <div style={{ marginTop: 8 }}>
-                  The following items have low stock. Plan replenishment to maintain spiritual presence:
-                  <ul style={{ margin: '4px 0 0 0', paddingLeft: 20 }}>
-                    {lowStockProducts.map((p: any) => (
-                      <li key={p.id} style={{ color: '#ffad14', margin: '2px 0' }}>
-                        {p.nameZh} / {p.nameEn} ({p.stock} units remaining)
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              }
-              style={{
-                background: 'rgba(250, 173, 20, 0.08)',
-                border: '1px solid rgba(250, 173, 20, 0.3)',
-                borderRadius: 8,
-              }}
-            />
+            <Card bordered={true} style={{ border: '1px solid var(--color-warning-border)' }}>
+              <Alert
+                type='warning'
+                showIcon
+                icon={<IconSound />}
+                title={<span style={{ fontWeight: 'bold' }}>库存不足警告</span>}
+                content={
+                  <div style={{ marginTop: 8 }}>
+                    以下商品库存不足，请及时补货：
+                    <ul style={{ margin: '4px 0 0 0', paddingLeft: 20 }}>
+                      {lowStockProducts.map((p: any) => (
+                        <li key={p.id} style={{ color: 'var(--color-warning-text)', margin: '2px 0' }}>
+                          {p.nameZh} (剩余 {p.stock} 件)
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                }
+              />
+            </Card>
           )}
         </Grid.Col>
 
         {/* Right Side: Timeline & Logs */}
         <Grid.Col span={8}>
           <Card
-            title={<span style={{ color: '#D4AF37', fontFamily: 'serif' }}>Recent Aura Events</span>}
-            bordered={false}
-            style={{
-              background: '#1a1a1a',
-              border: '1px solid rgba(212, 175, 55, 0.15)',
-              borderRadius: 8,
-              minHeight: 400,
-            }}
+            title="最近系统事件"
+            bordered={true}
+            style={{ minHeight: 400 }}
           >
             <Timeline style={{ paddingLeft: 10 }}>
               {recentLogs.map((log: any) => (
@@ -277,20 +248,20 @@ export default function Dashboard() {
                         width: 8,
                         height: 8,
                         borderRadius: '50%',
-                        background: log.level === 'error' ? '#ff4d4f' : '#D4AF37',
+                        background: log.level === 'error' ? 'var(--color-danger-6)' : 'var(--color-primary-6)',
                         display: 'inline-block',
                       }}
                     />
                   }
                 >
-                  <div style={{ color: '#fff', fontSize: 13 }}>{log.message}</div>
-                  <div style={{ color: '#888', fontSize: 11, marginTop: 2 }}>
-                    Level: {log.level.toUpperCase()}
+                  <div style={{ fontSize: 13 }}>{log.message}</div>
+                  <div style={{ color: 'var(--color-text-3)', fontSize: 11, marginTop: 2 }}>
+                    级别: {log.level.toUpperCase()}
                   </div>
                 </Timeline.Item>
               ))}
               {recentLogs.length === 0 && (
-                <Timeline.Item>No recent events recorded in the logger.</Timeline.Item>
+                <Timeline.Item>暂无最新系统日志。</Timeline.Item>
               )}
             </Timeline>
           </Card>

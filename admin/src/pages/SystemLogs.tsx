@@ -31,7 +31,7 @@ export default function SystemLogs() {
         total: total || 0,
       }));
     } catch (err) {
-      console.error('Failed to load system logs', err);
+      console.error('加载系统日志失败', err);
     } finally {
       setLoading(false);
     }
@@ -68,18 +68,17 @@ export default function SystemLogs() {
       width: 80,
     },
     {
-      title: 'Level',
+      title: '日志级别',
       dataIndex: 'level',
       width: 100,
       render: (val: string) => getLevelTag(val),
     },
     {
-      title: 'Message',
+      title: '日志内容',
       dataIndex: 'message',
-      render: (val: string) => <span style={{ color: '#fff' }}>{val}</span>,
     },
     {
-      title: 'Logged At',
+      title: '记录时间',
       dataIndex: 'createdAt',
       width: 200,
       render: (val: string) => new Date(val).toLocaleString(),
@@ -88,48 +87,42 @@ export default function SystemLogs() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'between', alignItems: 'center', marginBottom: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <div>
-          <h2 style={{ margin: 0, color: '#D4AF37', fontFamily: 'serif', fontSize: 28, letterSpacing: 1.5 }}>
-            System Logs & Telemetry
+          <h2 style={{ margin: 0, fontSize: 24 }}>
+            系统日志与运行监控
           </h2>
-          <p style={{ margin: '4px 0 0 0', color: '#c5a059' }}>
-            Monitor C-end client crashes, performance logging, and server audit trails.
+          <p style={{ margin: '4px 0 0 0', color: 'var(--color-text-3)' }}>
+            监控前台客户端崩溃、性能日志及服务器审计轨迹。
           </p>
         </div>
         <Button
           type='outline'
           icon={<IconRefresh />}
           onClick={handleRefresh}
-          style={{
-            marginLeft: 'auto',
-            borderColor: '#AA7C11',
-            color: '#D4AF37',
-          }}
         >
-          Refresh Logs
+          刷新日志
         </Button>
       </div>
 
       {/* Filter Bar */}
       <div
         style={{
-          background: '#1a1a1a',
           padding: 16,
           borderRadius: 8,
           marginBottom: 16,
-          border: '1px solid rgba(212, 175, 55, 0.1)',
+          border: '1px solid var(--color-border)',
           display: 'flex',
           gap: 16,
           alignItems: 'center',
         }}
       >
-        <span style={{ color: '#c5a059' }}>Filter by Severity:</span>
+        <span>按日志级别筛选：</span>
         <Select
-          placeholder='All Levels'
+          placeholder='全部级别'
           value={levelFilter}
           onChange={handleLevelChange}
-          style={{ width: 200, background: '#222', border: '1px solid #333', color: '#fff' }}
+          style={{ width: 200 }}
           allowClear
         >
           <Select.Option value='info'>INFO</Select.Option>
@@ -151,21 +144,21 @@ export default function SystemLogs() {
         }}
         onChange={handleTableChange}
         expandedRowRender={(record: any) => {
-          if (!record.meta) return <div style={{ padding: 8, color: '#888' }}>No metadata recorded.</div>;
+          if (!record.meta) return <div style={{ padding: 8, color: 'var(--color-text-3)' }}>暂无记录元数据。</div>;
           try {
             const parsed = JSON.parse(record.meta);
             return (
               <pre
                 style={{
-                  background: '#0d0d0d',
-                  color: '#a3be8c',
+                  background: 'var(--color-fill-2)',
+                  color: 'var(--color-text-1)',
                   padding: 12,
                   margin: 0,
                   borderRadius: 4,
                   fontSize: 12,
                   maxHeight: 250,
                   overflowY: 'auto',
-                  border: '1px solid #333',
+                  border: '1px solid var(--color-border)',
                 }}
               >
                 {JSON.stringify(parsed, null, 2)}
@@ -175,26 +168,21 @@ export default function SystemLogs() {
             return (
               <pre
                 style={{
-                  background: '#0d0d0d',
-                  color: '#a3be8c',
+                  background: 'var(--color-fill-2)',
+                  color: 'var(--color-text-1)',
                   padding: 12,
                   margin: 0,
                   borderRadius: 4,
                   fontSize: 12,
                   maxHeight: 250,
                   overflowY: 'auto',
-                  border: '1px solid #333',
+                  border: '1px solid var(--color-border)',
                 }}
               >
                 {record.meta}
               </pre>
             );
           }
-        }}
-        style={{
-          background: '#1a1a1a',
-          border: '1px solid rgba(212, 175, 55, 0.15)',
-          borderRadius: 8,
         }}
       />
     </div>

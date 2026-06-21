@@ -14,14 +14,12 @@ export default function Categories() {
     setLoading(true);
     try {
       const res = await api.get('/categories');
-      // Backend returns either array directly or { items, total }
       const items = Array.isArray(res.data) ? res.data : res.data.items || [];
       setData(items);
     } catch (err: any) {
       console.error(err);
-      Message.error('Failed to load categories');
+      Message.error('加载分类失败');
     } finally {
-      setLoading(true); // Wait, should be false!
       setLoading(false);
     }
   };
@@ -51,27 +49,27 @@ export default function Categories() {
       const values = await form.validate();
       if (editingId) {
         await api.patch(`/categories/${editingId}`, values);
-        Message.success('Category updated successfully');
+        Message.success('更新分类成功');
       } else {
         await api.post('/categories', values);
-        Message.success('Category created successfully');
+        Message.success('创建分类成功');
       }
       setVisible(false);
       fetchCategories();
     } catch (err: any) {
       console.error(err);
-      Message.error(err.response?.data?.message || 'Operation failed');
+      Message.error(err.response?.data?.message || '操作失败');
     }
   };
 
   const handleDelete = async (id: number) => {
     try {
       await api.delete(`/categories/${id}`);
-      Message.success('Category deleted successfully');
+      Message.success('删除分类成功');
       fetchCategories();
     } catch (err: any) {
       console.error(err);
-      Message.error(err.response?.data?.message || 'Delete failed');
+      Message.error(err.response?.data?.message || '删除失败');
     }
   };
 
@@ -82,25 +80,25 @@ export default function Categories() {
       width: 80,
     },
     {
-      title: 'Name (Chinese)',
+      title: '分类名称(中文)',
       dataIndex: 'nameZh',
-      render: (text: string) => <strong style={{ color: '#D4AF37' }}>{text}</strong>,
+      render: (text: string) => <strong>{text}</strong>,
     },
     {
-      title: 'Name (English)',
+      title: '分类名称(英文)',
       dataIndex: 'nameEn',
     },
     {
-      title: 'Slug',
+      title: '标识符 (Slug)',
       dataIndex: 'slug',
-      render: (text: string) => <code style={{ color: '#fff' }}>{text}</code>,
+      render: (text: string) => <code>{text}</code>,
     },
     {
-      title: 'Description',
+      title: '描述',
       dataIndex: 'description',
     },
     {
-      title: 'Actions',
+      title: '操作',
       width: 150,
       render: (_: any, record: any) => (
         <Space>
@@ -109,15 +107,14 @@ export default function Categories() {
             size='small'
             icon={<IconEdit />}
             onClick={() => showModal(record)}
-            style={{ color: '#D4AF37' }}
           >
-            Edit
+            编辑
           </Button>
           <Popconfirm
-            title='Are you sure to delete this category?'
+            title='确定要删除该分类吗？'
             onOk={() => handleDelete(record.id)}
-            okText='Yes'
-            cancelText='No'
+            okText='确定'
+            cancelText='取消'
           >
             <Button
               type='text'
@@ -125,7 +122,7 @@ export default function Categories() {
               status='danger'
               icon={<IconDelete />}
             >
-              Delete
+              删除
             </Button>
           </Popconfirm>
         </Space>
@@ -135,28 +132,21 @@ export default function Categories() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'between', alignItems: 'center', marginBottom: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <div>
-          <h2 style={{ margin: 0, color: '#D4AF37', fontFamily: 'serif', fontSize: 28, letterSpacing: 1.5 }}>
-            Accessory Categories
+          <h2 style={{ margin: 0, fontSize: 24 }}>
+            商品分类管理
           </h2>
-          <p style={{ margin: '4px 0 0 0', color: '#c5a059' }}>
-            Manage classifications for spiritual accessories.
+          <p style={{ margin: '4px 0 0 0', color: 'var(--color-text-3)' }}>
+            管理店铺内手串配饰的分类等级。
           </p>
         </div>
         <Button
           type='primary'
           icon={<IconPlus />}
           onClick={() => showModal()}
-          style={{
-            marginLeft: 'auto',
-            background: 'linear-gradient(135deg, #AA7C11 0%, #D4AF37 50%, #F3E5AB 100%)',
-            border: 'none',
-            color: '#000',
-            fontWeight: 'bold',
-          }}
         >
-          Add Category
+          添加分类
         </Button>
       </div>
 
@@ -165,19 +155,13 @@ export default function Categories() {
         loading={loading}
         columns={columns}
         data={data}
-        style={{
-          background: '#1a1a1a',
-          border: '1px solid rgba(212, 175, 55, 0.15)',
-          borderRadius: 8,
-        }}
       />
 
       <Modal
-        title={editingId ? 'Edit Category' : 'Create Category'}
+        title={editingId ? '编辑分类' : '创建分类'}
         visible={visible}
         onOk={handleOk}
         onCancel={() => setVisible(false)}
-        style={{ background: '#1a1a1a', border: '1px solid rgba(212, 175, 55, 0.2)' }}
       >
         <Form
           form={form}
@@ -185,28 +169,28 @@ export default function Categories() {
           style={{ padding: '10px 0' }}
         >
           <Form.Item
-            label='Chinese Name'
+            label='中文名称'
             field='nameZh'
-            rules={[{ required: true, message: 'Please input Chinese name' }]}
+            rules={[{ required: true, message: '请输入中文名称' }]}
           >
-            <Input placeholder='e.g., 琉璃手串' style={{ background: '#222', color: '#fff', border: '1px solid #333' }} />
+            <Input placeholder='例如：琉璃手串' />
           </Form.Item>
           <Form.Item
-            label='English Name'
+            label='英文名称'
             field='nameEn'
-            rules={[{ required: true, message: 'Please input English name' }]}
+            rules={[{ required: true, message: '请输入英文名称' }]}
           >
-            <Input placeholder='e.g., Colored Glaze Bracelets' style={{ background: '#222', color: '#fff', border: '1px solid #333' }} />
+            <Input placeholder='例如：Colored Glaze Bracelets' />
           </Form.Item>
           <Form.Item
-            label='Slug'
+            label='标识符'
             field='slug'
-            rules={[{ required: true, message: 'Please input slug' }]}
+            rules={[{ required: true, message: '请输入标识符' }]}
           >
-            <Input placeholder='e.g., colored-glaze-bracelets' style={{ background: '#222', color: '#fff', border: '1px solid #333' }} />
+            <Input placeholder='例如：colored-glaze-bracelets' />
           </Form.Item>
-          <Form.Item label='Description' field='description'>
-            <Input.TextArea placeholder='Category description' rows={3} style={{ background: '#222', color: '#fff', border: '1px solid #333', resize: 'none' }} />
+          <Form.Item label='分类描述' field='description'>
+            <Input.TextArea placeholder='分类描述' rows={3} style={{ resize: 'none' }} />
           </Form.Item>
         </Form>
       </Modal>

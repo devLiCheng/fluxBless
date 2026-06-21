@@ -39,7 +39,7 @@ export default function Products() {
       const items = Array.isArray(res.data) ? res.data : res.data.items || [];
       setCategories(items);
     } catch (err) {
-      console.error('Failed to load categories for select dropdown', err);
+      console.error('加载分类下拉菜单失败', err);
     }
   };
 
@@ -60,7 +60,7 @@ export default function Products() {
       }));
     } catch (err: any) {
       console.error(err);
-      Message.error('Failed to load products');
+      Message.error('加载商品失败');
     } finally {
       setLoading(false);
     }
@@ -138,33 +138,33 @@ export default function Products() {
 
       if (editingId) {
         await api.patch(`/products/${editingId}`, payload);
-        Message.success('Product updated successfully');
+        Message.success('更新商品成功');
       } else {
         await api.post('/products', payload);
-        Message.success('Product created successfully');
+        Message.success('创建商品成功');
       }
       setVisible(false);
       fetchProducts(pagination.current);
     } catch (err: any) {
       console.error(err);
-      Message.error(err.response?.data?.message || 'Operation failed');
+      Message.error(err.response?.data?.message || '操作失败');
     }
   };
 
   const handleDelete = async (id: number) => {
     try {
       await api.delete(`/products/${id}`);
-      Message.success('Product deleted successfully');
+      Message.success('删除商品成功');
       fetchProducts(pagination.current);
     } catch (err: any) {
       console.error(err);
-      Message.error(err.response?.data?.message || 'Delete failed');
+      Message.error(err.response?.data?.message || '删除失败');
     }
   };
 
   const columns = [
     {
-      title: 'Thumbnail',
+      title: '缩略图',
       dataIndex: 'images',
       width: 100,
       render: (images: any) => {
@@ -182,42 +182,42 @@ export default function Products() {
           }
         }
         return (
-          <Avatar shape='square' size={48} style={{ border: '1px solid rgba(212, 175, 55, 0.2)' }}>
-            <img src={url} alt='Product Thumbnail' style={{ objectFit: 'cover' }} />
+          <Avatar shape='square' size={48}>
+            <img src={url} alt='商品缩略图' style={{ objectFit: 'cover' }} />
           </Avatar>
         );
       },
     },
     {
-      title: 'Bilingual Name',
+      title: '商品名称',
       render: (_: any, record: any) => (
         <div>
-          <strong style={{ color: '#D4AF37' }}>{record.nameZh}</strong>
-          <div style={{ color: '#aaa', fontSize: 12 }}>{record.nameEn}</div>
+          <strong>{record.nameZh}</strong>
+          <div style={{ color: 'var(--color-text-3)', fontSize: 12 }}>{record.nameEn}</div>
         </div>
       ),
     },
     {
-      title: 'Category',
+      title: '分类',
       dataIndex: 'category',
-      render: (cat: any) => cat?.nameZh || 'Uncategorized',
+      render: (cat: any) => cat?.nameZh || '未分类',
     },
     {
-      title: 'Price',
+      title: '价格',
       dataIndex: 'price',
       width: 100,
-      render: (val: any) => <span style={{ color: '#fff', fontWeight: 'bold' }}>${parseFloat(val).toFixed(2)}</span>,
+      render: (val: any) => <span style={{ fontWeight: 'bold' }}>${parseFloat(val).toFixed(2)}</span>,
     },
     {
-      title: 'Stock',
+      title: '库存',
       dataIndex: 'stock',
       width: 100,
       render: (val: number) => (
-        <span style={{ color: val < 25 ? '#ff4d4f' : '#52c41a', fontWeight: 'bold' }}>{val}</span>
+        <span style={{ color: val < 25 ? 'var(--color-danger-6)' : 'var(--color-success-6)', fontWeight: 'bold' }}>{val}</span>
       ),
     },
     {
-      title: 'Actions',
+      title: '操作',
       width: 150,
       render: (_: any, record: any) => (
         <Space>
@@ -226,15 +226,14 @@ export default function Products() {
             size='small'
             icon={<IconEdit />}
             onClick={() => showModal(record)}
-            style={{ color: '#D4AF37' }}
           >
-            Edit
+            编辑
           </Button>
           <Popconfirm
-            title='Are you sure to delete this product?'
+            title='确定要删除该商品吗？'
             onOk={() => handleDelete(record.id)}
-            okText='Yes'
-            cancelText='No'
+            okText='确定'
+            cancelText='取消'
           >
             <Button
               type='text'
@@ -242,7 +241,7 @@ export default function Products() {
               status='danger'
               icon={<IconDelete />}
             >
-              Delete
+              删除
             </Button>
           </Popconfirm>
         </Space>
@@ -252,78 +251,65 @@ export default function Products() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'between', alignItems: 'center', marginBottom: 24 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <div>
-          <h2 style={{ margin: 0, color: '#D4AF37', fontFamily: 'serif', fontSize: 28, letterSpacing: 1.5 }}>
-            Product Inventory
+          <h2 style={{ margin: 0, fontSize: 24 }}>
+            商品库存管理
           </h2>
-          <p style={{ margin: '4px 0 0 0', color: '#c5a059' }}>
-            List, update, and manage spiritual bracelets, necklaces, and accessories.
+          <p style={{ margin: '4px 0 0 0', color: 'var(--color-text-3)' }}>
+            列出、更新和管理店铺内的开运手串、吊坠及各类能量配饰。
           </p>
         </div>
         <Button
           type='primary'
           icon={<IconPlus />}
           onClick={() => showModal()}
-          style={{
-            marginLeft: 'auto',
-            background: 'linear-gradient(135deg, #AA7C11 0%, #D4AF37 50%, #F3E5AB 100%)',
-            border: 'none',
-            color: '#000',
-            fontWeight: 'bold',
-          }}
         >
-          Add Product
+          添加商品
         </Button>
       </div>
 
       {/* Filter and Search Bar */}
       <div
         style={{
-          background: '#1a1a1a',
           padding: 16,
           borderRadius: 8,
           marginBottom: 16,
-          border: '1px solid rgba(212, 175, 55, 0.1)',
+          border: '1px solid var(--color-border)',
           display: 'flex',
           gap: 16,
           alignItems: 'center',
         }}
       >
         <Input
-          prefix={<IconSearch style={{ color: '#AA7C11' }} />}
-          placeholder='Search products...'
+          prefix={<IconSearch />}
+          placeholder='搜索商品...'
           value={searchQuery}
           onChange={setSearchQuery}
           onPressEnter={handleSearch}
-          style={{ width: 250, background: '#222', border: '1px solid #333', color: '#fff' }}
+          style={{ width: 250 }}
         />
         <Select
-          placeholder='Filter by Category'
+          placeholder='过滤分类'
           value={selectedCategory}
           onChange={setSelectedCategory}
-          style={{ width: 200, background: '#222', border: '1px solid #333', color: '#fff' }}
+          style={{ width: 200 }}
           allowClear
         >
           {categories.map((cat: any) => (
             <Select.Option key={cat.id} value={cat.id}>
-              {cat.nameZh} / {cat.nameEn}
+              {cat.nameZh}
             </Select.Option>
           ))}
         </Select>
         <Button
           type='primary'
           onClick={handleSearch}
-          style={{
-            background: '#AA7C11',
-            borderColor: '#AA7C11',
-            color: '#fff',
-          }}
         >
-          Search
+          搜索
         </Button>
-        <Button type='secondary' onClick={handleReset} style={{ border: '1px solid #333', color: '#ccc' }}>
-          Reset
+        <Button type='secondary' onClick={handleReset}>
+          重置
         </Button>
       </div>
 
@@ -339,19 +325,14 @@ export default function Products() {
           showTotal: true,
         }}
         onChange={handleTableChange}
-        style={{
-          background: '#1a1a1a',
-          border: '1px solid rgba(212, 175, 55, 0.15)',
-          borderRadius: 8,
-        }}
       />
 
       <Modal
-        title={editingId ? 'Edit Product' : 'Create Product'}
+        title={editingId ? '编辑商品' : '创建商品'}
         visible={visible}
         onOk={handleOk}
         onCancel={() => setVisible(false)}
-        style={{ width: 650, background: '#1a1a1a', border: '1px solid rgba(212, 175, 55, 0.2)' }}
+        style={{ width: 650 }}
       >
         <Form
           form={form}
@@ -361,20 +342,20 @@ export default function Products() {
           <Grid.Row gutter={16}>
             <Grid.Col span={12}>
               <Form.Item
-                label='Chinese Name'
+                label='中文名称'
                 field='nameZh'
-                rules={[{ required: true, message: 'Please input Chinese name' }]}
+                rules={[{ required: true, message: '请输入中文名称' }]}
               >
-                <Input placeholder='e.g., 五行合香珠手串' style={{ background: '#222', color: '#fff', border: '1px solid #333' }} />
+                <Input placeholder='例如：五行合香珠手串' />
               </Form.Item>
             </Grid.Col>
             <Grid.Col span={12}>
               <Form.Item
-                label='English Name'
+                label='英文名称'
                 field='nameEn'
-                rules={[{ required: true, message: 'Please input English name' }]}
+                rules={[{ required: true, message: '请输入英文名称' }]}
               >
-                <Input placeholder='e.g., Five Elements Incense Beads' style={{ background: '#222', color: '#fff', border: '1px solid #333' }} />
+                <Input placeholder='例如：Five Elements Incense Beads' />
               </Form.Item>
             </Grid.Col>
           </Grid.Row>
@@ -382,29 +363,29 @@ export default function Products() {
           <Grid.Row gutter={16}>
             <Grid.Col span={8}>
               <Form.Item
-                label='Price ($)'
+                label='价格 ($)'
                 field='price'
-                rules={[{ required: true, message: 'Please input price' }]}
+                rules={[{ required: true, message: '请输入价格' }]}
               >
-                <InputNumber min={0.01} step={1} style={{ width: '100%', background: '#222', color: '#fff', border: '1px solid #333' }} />
+                <InputNumber min={0.01} step={1} style={{ width: '100%' }} />
               </Form.Item>
             </Grid.Col>
             <Grid.Col span={8}>
               <Form.Item
-                label='Stock Quantity'
+                label='库存数量'
                 field='stock'
-                rules={[{ required: true, message: 'Please input stock' }]}
+                rules={[{ required: true, message: '请输入库存数量' }]}
               >
-                <InputNumber min={0} step={1} style={{ width: '100%', background: '#222', color: '#fff', border: '1px solid #333' }} />
+                <InputNumber min={0} step={1} style={{ width: '100%' }} />
               </Form.Item>
             </Grid.Col>
             <Grid.Col span={8}>
               <Form.Item
-                label='Category'
+                label='所属分类'
                 field='categoryId'
-                rules={[{ required: true, message: 'Please select category' }]}
+                rules={[{ required: true, message: '请选择分类' }]}
               >
-                <Select placeholder='Select Category' style={{ background: '#222', color: '#fff', border: '1px solid #333' }}>
+                <Select placeholder='选择分类'>
                   {categories.map((cat: any) => (
                     <Select.Option key={cat.id} value={cat.id}>
                       {cat.nameZh}
@@ -416,31 +397,31 @@ export default function Products() {
           </Grid.Row>
 
           <Form.Item
-            label='Image URLs (comma-separated list)'
+            label='图片链接 (逗号分隔)'
             field='imagesStr'
-            rules={[{ required: true, message: 'Please input at least one image URL' }]}
+            rules={[{ required: true, message: '请输入至少一张图片链接' }]}
           >
             <Input.TextArea
-              placeholder='e.g., /products/red-agate-1.jpg, /products/red-agate-2.jpg'
+              placeholder='例如：/products/red-agate-1.jpg, /products/red-agate-2.jpg'
               rows={2}
-              style={{ background: '#222', color: '#fff', border: '1px solid #333', resize: 'none' }}
+              style={{ resize: 'none' }}
             />
           </Form.Item>
 
           <Form.Item
-            label='Chinese Description'
+            label='中文描述'
             field='descriptionZh'
-            rules={[{ required: true, message: 'Please input Chinese description' }]}
+            rules={[{ required: true, message: '请输入中文描述' }]}
           >
-            <Input.TextArea placeholder='Chinese description of the product and its spiritual details' rows={3} style={{ background: '#222', color: '#fff', border: '1px solid #333', resize: 'none' }} />
+            <Input.TextArea placeholder='请输入商品中文描述和开运寓意详情' rows={3} style={{ resize: 'none' }} />
           </Form.Item>
 
           <Form.Item
-            label='English Description'
+            label='英文描述'
             field='descriptionEn'
-            rules={[{ required: true, message: 'Please input English description' }]}
+            rules={[{ required: true, message: '请输入英文描述' }]}
           >
-            <Input.TextArea placeholder='English description of the product and its spiritual details' rows={3} style={{ background: '#222', color: '#fff', border: '1px solid #333', resize: 'none' }} />
+            <Input.TextArea placeholder='请输入商品英文描述和开运寓意详情' rows={3} style={{ resize: 'none' }} />
           </Form.Item>
         </Form>
       </Modal>

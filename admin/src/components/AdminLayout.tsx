@@ -24,7 +24,7 @@ export default function AdminLayout() {
   const handleLogout = () => {
     localStorage.removeItem('fluxbless_admin_token');
     localStorage.removeItem('fluxbless_admin_user');
-    Message.success('Logged out successfully');
+    Message.success('成功退出登录');
     navigate('/login');
   };
 
@@ -33,7 +33,7 @@ export default function AdminLayout() {
   };
 
   return (
-    <Layout style={{ minHeight: '100vh', background: '#121212' }}>
+    <Layout style={{ minHeight: '100vh' }}>
       {/* Sider Navigation */}
       <Sider
         collapsible
@@ -42,8 +42,7 @@ export default function AdminLayout() {
         trigger={null}
         breakpoint='lg'
         style={{
-          background: '#1a1a1a',
-          borderRight: '1px solid rgba(212, 175, 55, 0.15)',
+          borderRight: '1px solid var(--color-border)',
         }}
       >
         <div
@@ -53,81 +52,48 @@ export default function AdminLayout() {
             alignItems: 'center',
             justifyContent: collapsed ? 'center' : 'flex-start',
             paddingLeft: collapsed ? 0 : 20,
-            borderBottom: '1px solid rgba(212, 175, 55, 0.15)',
-            background: '#0d0d0d',
+            borderBottom: '1px solid var(--color-border)',
           }}
         >
           <Typography.Title
             heading={5}
             style={{
-              color: '#D4AF37',
               margin: 0,
               fontWeight: 'bold',
-              letterSpacing: 1.5,
               display: collapsed ? 'none' : 'block',
             }}
           >
-            FluxBless Admin
+            FluxBless 后台管理
           </Typography.Title>
           {collapsed && (
-            <span style={{ color: '#D4AF37', fontWeight: 'bold', fontSize: 18 }}>FB</span>
+            <span style={{ fontWeight: 'bold', fontSize: 18 }}>FB</span>
           )}
         </div>
         <Menu
           selectedKeys={[activeKey]}
           onClickMenuItem={handleMenuClick}
-          style={{ width: '100%', background: 'transparent' }}
+          style={{ width: '100%' }}
           hasCollapseButton={false}
         >
-          <Menu.Item
-            key='dashboard'
-            style={{
-              color: activeKey === 'dashboard' ? '#000' : '#c5a059',
-              background: activeKey === 'dashboard' ? 'linear-gradient(135deg, #AA7C11, #D4AF37)' : 'transparent',
-            }}
-          >
-            <IconDashboard style={{ color: activeKey === 'dashboard' ? '#000' : '#AA7C11' }} />
-            {!collapsed && 'Dashboard'}
+          <Menu.Item key='dashboard'>
+            <IconDashboard />
+            {!collapsed && '仪表盘'}
           </Menu.Item>
-          <Menu.Item
-            key='categories'
-            style={{
-              color: activeKey === 'categories' ? '#000' : '#c5a059',
-              background: activeKey === 'categories' ? 'linear-gradient(135deg, #AA7C11, #D4AF37)' : 'transparent',
-            }}
-          >
-            <IconList style={{ color: activeKey === 'categories' ? '#000' : '#AA7C11' }} />
-            {!collapsed && 'Categories'}
+          <Menu.Item key='categories'>
+            <IconList />
+            {!collapsed && '分类管理'}
           </Menu.Item>
-          <Menu.Item
-            key='products'
-            style={{
-              color: activeKey === 'products' ? '#000' : '#c5a059',
-              background: activeKey === 'products' ? 'linear-gradient(135deg, #AA7C11, #D4AF37)' : 'transparent',
-            }}
-          >
-            <IconGift style={{ color: activeKey === 'products' ? '#000' : '#AA7C11' }} />
-            {!collapsed && 'Products'}
+          <Menu.Item key='products'>
+            <IconGift />
+            {!collapsed && '商品管理'}
           </Menu.Item>
-          <Menu.Item
-            key='orders'
-            style={{
-              color: activeKey === 'orders' ? '#000' : '#c5a059',
-              background: activeKey === 'orders' ? 'linear-gradient(135deg, #AA7C11, #D4AF37)' : 'transparent',
-            }}
-          >
-            <IconBook style={{ color: activeKey === 'orders' ? '#000' : '#AA7C11' }} />
-            {!collapsed && 'Orders'}
+          <Menu.Item key='orders'>
+            <IconBook />
+            {!collapsed && '订单管理'}
           </Menu.Item>
-          <Menu.Item
-            key='logs'
-            style={{
-              color: activeKey === 'logs' ? '#000' : '#c5a059',
-              background: activeKey === 'logs' ? 'linear-gradient(135deg, #AA7C11, #D4AF37)' : 'transparent',
-            }}
-          >
-            <IconFile style={{ color: activeKey === 'logs' ? '#000' : '#AA7C11' }} />
-            {!collapsed && 'System Logs'}
+          <Menu.Item key='logs'>
+            <IconFile />
+            {!collapsed && '系统日志'}
           </Menu.Item>
         </Menu>
       </Sider>
@@ -138,28 +104,28 @@ export default function AdminLayout() {
         <Header
           style={{
             height: 64,
-            background: '#1a1a1a',
-            borderBottom: '1px solid rgba(212, 175, 55, 0.15)',
+            borderBottom: '1px solid var(--color-border)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             padding: '0 24px',
+            background: 'var(--color-bg-3)',
           }}
         >
           <div>
-            <Typography.Text style={{ color: '#fff', fontSize: 16 }}>
-              Let positive energy flow, attract endless blessings
+            <Typography.Text type='secondary'>
+              让正向能量流转，吸纳源源不断好运
             </Typography.Text>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <Avatar style={{ background: '#AA7C11' }}>
+            <Avatar>
               {adminUser.name ? adminUser.name[0].toUpperCase() : <IconUser />}
             </Avatar>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ color: '#fff', fontSize: 14, fontWeight: 'bold' }}>
-                {adminUser.name || 'Admin'}
+              <span style={{ fontSize: 14, fontWeight: 'bold' }}>
+                {adminUser.name || '管理员'}
               </span>
-              <span style={{ color: '#c5a059', fontSize: 12 }}>{adminUser.email}</span>
+              <span style={{ fontSize: 12, color: 'var(--color-text-3)' }}>{adminUser.email}</span>
             </div>
             <Button
               type='text'
@@ -167,13 +133,13 @@ export default function AdminLayout() {
               onClick={handleLogout}
               style={{ color: '#ff4d4f', marginLeft: 8 }}
             >
-              Sign Out
+              退出登录
             </Button>
           </div>
         </Header>
 
         {/* Content Panel */}
-        <Content style={{ padding: 24, overflowY: 'auto', background: '#121212' }}>
+        <Content style={{ padding: 24, overflowY: 'auto' }}>
           <Outlet />
         </Content>
       </Layout>
