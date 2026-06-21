@@ -3,6 +3,14 @@
 
 set -e
 
+# Support both docker-compose (V1) and docker compose (V2)
+if ! command -v docker-compose &> /dev/null; then
+  echo "docker-compose command not found. Falling back to 'docker compose' wrapper function..."
+  docker-compose() {
+    docker compose "$@"
+  }
+fi
+
 echo "========================================="
 echo "🪐 Deploying FluxBless Production Aura..."
 echo "========================================="
