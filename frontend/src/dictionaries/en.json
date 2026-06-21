@@ -1,0 +1,71 @@
+{
+  "nav": {
+    "home": "Home",
+    "shop": "Products",
+    "about": "About Us",
+    "cart": "Cart",
+    "admin": "Admin Portal"
+  },
+  "hero": {
+    "motto": "Let positive energy flow, attract endless blessings",
+    "description": "FluxBless curates premium blessing accessories containing natural healing energies. We specialize in ancient colored glaze, natural agate, selected cinnabar, and white jade to bring harmony, fortune, and inner peace to your daily life.",
+    "shopNow": "Explore Blessings",
+    "features": {
+      "natural": "Natural Gemstones",
+      "handcrafted": "Handcrafted Artisanship",
+      "spiritual": "Energy Blessed",
+      "shipping": "Free Shipping"
+    }
+  },
+  "categories": {
+    "all": "All",
+    "agate-accessories": "Agate Accessories",
+    "five-elements-beads": "Five Elements Incense Beads",
+    "colored-glaze-bracelets": "Colored Glaze Bracelets",
+    "cinnabar-bracelets": "Cinnabar Bracelets",
+    "prayer-beads": "Prayer Beads & Ropes",
+    "white-jade": "White Jade Accessories"
+  },
+  "product": {
+    "price": "Price",
+    "stock": "Stock",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "addToCart": "Add to Cart",
+    "details": "Details",
+    "sizeSpecs": "Sizing Specifications",
+    "spiritualMeaning": "Spiritual Meaning",
+    "sizingTitle": "Sizing Guide",
+    "sizingDesc": "Our bracelets feature slight elasticity, fitting most wrist sizes (14cm-18cm). For custom sizing, please contact customer support.",
+    "relatedProducts": "Recommended for You"
+  },
+  "cart": {
+    "title": "Your Cart",
+    "empty": "Your cart is currently empty",
+    "checkout": "Secure Checkout",
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "items": "items",
+    "remove": "Remove",
+    "keepShopping": "Continue Shopping"
+  },
+  "checkout": {
+    "title": "Secure Checkout",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "address": "Shipping Address",
+    "fullName": "Full Name",
+    "shipping": "Shipping Information",
+    "payNow": "Pay Now",
+    "submitting": "Redirecting to checkout...",
+    "error": "Failed to initialize payment. Please try again."
+  },
+  "success": {
+    "title": "Blessing Attracted! Thank you for your order.",
+    "message1": "Your payment was successful and order is locked. Positive energy is gathering for you.",
+    "message2": "We will package and ship your blessed accessory as soon as possible. Your order receipt and tracking details will be sent to your email.",
+    "blessing": "May positive energy flow, attracting endless blessings. May harmony and good fortune accompany you always!",
+    "goHome": "Return Home",
+    "orderDetail": "Order Details"
+  }
+}

@@ -1,0 +1,105 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
+  password  String
+  name      String?
+  role      String     @default("user") // "user" or "admin"
+  orders    Order[]
+  cartItems CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("users")
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  nameZh      String
+  nameEn      String
+  slug        String    @unique
+  description String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("categories")
+}
+
+model Product {
+  id            Int         @id @default(autoincrement())
+  nameZh        String
+  nameEn        String
+  descriptionZh String      @db.Text
+  descriptionEn String      @db.Text
+  price         Decimal     @db.Decimal(10, 2)
+  stock         Int         @default(0)
+  images        Json        // Storing array of image URLs
+  categoryId    Int
+  category      Category    @relation(fields: [categoryId], references: [id])
+  orderItems    OrderItem[]
+  cartItems     CartItem[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@map("products")
+}
+
+model Order {
+  id              Int         @id @default(autoincrement())
+  userId          Int
+  user            User        @relation(fields: [userId], references: [id])
+  totalAmount     Decimal     @db.Decimal(10, 2)
+  status          String      // "pending", "paid", "shipped", "completed", "cancelled"
+  paymentMethod   String      // "stripe" or "paypal"
+  paymentId       String?     // Stripe Payment Intent ID or PayPal Order ID
+  shippingAddress String      @db.Text
+  contactPhone    String
+  contactEmail    String
+  items           OrderItem[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Decimal @db.Decimal(10, 2)
+
+  @@map("order_items")
+}
+
+model CartItem {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+
+  @@map("cart_items")
+}
+
+model SystemLog {
+  id        Int      @id @default(autoincrement())
+  level     String   // "info", "warn", "error"
+  message   String   @db.Text
+  meta      String?  @db.Text // JSON metadata
+  createdAt DateTime @default(now())
+
+  @@map("system_logs")
+}

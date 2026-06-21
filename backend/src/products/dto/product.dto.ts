@@ -1,0 +1,95 @@
+import { IsString, IsNumber, IsOptional, IsArray, Min } from 'class-validator';
+import { Type } from 'class-transformer';
+
+export class CreateProductDto {
+  @IsString()
+  nameZh: string;
+
+  @IsString()
+  nameEn: string;
+
+  @IsString()
+  descriptionZh: string;
+
+  @IsString()
+  descriptionEn: string;
+
+  @IsNumber()
+  @Type(() => Number)
+  @Min(0)
+  price: number;
+
+  @IsNumber()
+  @Type(() => Number)
+  @Min(0)
+  stock: number;
+
+  @IsArray()
+  images: string[];
+
+  @IsNumber()
+  @Type(() => Number)
+  categoryId: number;
+}
+
+export class UpdateProductDto {
+  @IsOptional()
+  @IsString()
+  nameZh?: string;
+
+  @IsOptional()
+  @IsString()
+  nameEn?: string;
+
+  @IsOptional()
+  @IsString()
+  descriptionZh?: string;
+
+  @IsOptional()
+  @IsString()
+  descriptionEn?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  @Min(0)
+  price?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  @Min(0)
+  stock?: number;
+
+  @IsOptional()
+  @IsArray()
+  images?: string[];
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  categoryId?: number;
+}
+
+export class ProductQueryDto {
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  categoryId?: number;
+
+  @IsOptional()
+  @IsString()
+  search?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  @Min(1)
+  page?: number = 1;
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  @Min(1)
+  limit?: number = 12;
+}
