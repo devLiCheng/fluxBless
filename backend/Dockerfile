@@ -7,6 +7,7 @@ COPY prisma ./prisma/
 RUN npx prisma generate
 COPY . .
 RUN npm run build
+RUN npx tsc prisma/seed.ts --esModuleInterop --skipLibCheck
 RUN npm prune --production
 
 # Production stage
