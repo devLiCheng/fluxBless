@@ -80,7 +80,7 @@ services:
     container_name: fluxbless_nginx
     restart: always
     ports:
-      - "8090:80"
+      - "8095:80"
     depends_on:
       - frontend
       - admin
