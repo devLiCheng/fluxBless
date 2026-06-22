@@ -7,7 +7,7 @@ COPY prisma ./prisma/
 RUN npx prisma generate
 COPY . .
 RUN npm run build
-RUN npx tsc prisma/seed.ts --esModuleInterop --skipLibCheck
+RUN npx tsc prisma/seed.ts --module commonjs --target es2017 --esModuleInterop --skipLibCheck --outDir prisma
 RUN npm prune --production
 
 # Production stage
@@ -18,4 +18,5 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 EXPOSE 4000
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node prisma/seed.js && node dist/src/main.js"]
+
