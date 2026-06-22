@@ -19,15 +19,45 @@ export class UsersService {
     return user;
   }
 
-  async findAll() {
-    return this.prisma.user.findMany({
+  async findAll(page = 1, limit = 10) {
+    const skip = (page - 1) * limit;
+    const [items, total] = await Promise.all([
+      this.prisma.user.findMany({
+        skip,
+        take: limit,
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+          createdAt: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+      this.prisma.user.count(),
+    ]);
+
+    return { items, total };
+  }
+
+  async update(id: number, data: { name?: string; role?: string }) {
+    return this.prisma.user.update({
+      where: { id },
+      data,
       select: {
         id: true,
         email: true,
         name: true,
         role: true,
-        createdAt: true,
       },
+    });
+  }
+
+  async delete(id: number) {
+    return this.prisma.user.delete({
+      where: { id },
     });
   }
 }

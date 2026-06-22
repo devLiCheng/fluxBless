@@ -8,6 +8,8 @@ import {
   IconFile,
   IconPoweroff,
   IconUser,
+  IconUserGroup,
+  IconHistory,
 } from '@arco-design/web-react/icon';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
@@ -19,7 +21,9 @@ export default function AdminLayout() {
   const [collapsed, setCollapsed] = useState(false);
 
   const adminUser = JSON.parse(localStorage.getItem('fluxbless_admin_user') || '{}');
-  const activeKey = location.pathname.split('/').pop() || 'dashboard';
+  // Handle active key selection for user/login logs
+  const pathnameParts = location.pathname.split('/');
+  const activeKey = pathnameParts[pathnameParts.length - 1] || 'dashboard';
 
   const handleLogout = () => {
     localStorage.removeItem('fluxbless_admin_token');
@@ -90,6 +94,14 @@ export default function AdminLayout() {
           <Menu.Item key='orders'>
             <IconBook />
             {!collapsed && '订单管理'}
+          </Menu.Item>
+          <Menu.Item key='users'>
+            <IconUserGroup />
+            {!collapsed && '用户管理'}
+          </Menu.Item>
+          <Menu.Item key='login-logs'>
+            <IconHistory />
+            {!collapsed && '登录日志'}
           </Menu.Item>
           <Menu.Item key='logs'>
             <IconFile />

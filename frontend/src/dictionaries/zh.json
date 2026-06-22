@@ -37,7 +37,22 @@
     "spiritualMeaning": "能量寓意",
     "sizingTitle": "配戴尺寸指南",
     "sizingDesc": "手串均带有微弹力，适合大多数手围佩戴（14cm-18cm）。如需特别定制，请联系客服。",
-    "relatedProducts": "为您推荐"
+    "relatedProducts": "为您推荐",
+    "material": "材质",
+    "origin": "产地",
+    "purification": "开光净化",
+    "benefits": "功效与寓意",
+    "specWeight": "重量",
+    "specBeadSize": "珠径",
+    "specBeadCount": "珠数",
+    "productInfo": "商品信息",
+    "buyNow": "立即购买",
+    "authenticity": "正品保障",
+    "authenticityDesc": "所有商品均为天然原石，经专业鉴定，确保品质正宗。",
+    "blessing": "能量开光",
+    "blessingDesc": "每件商品出货前均经过传统净化与开光仪式，以激活其内在能量。",
+    "shipping": "全球包邮",
+    "shippingDesc": "订单满¥199包邮，精心包装，安全送达。"
   },
   "cart": {
     "title": "您的购物车",

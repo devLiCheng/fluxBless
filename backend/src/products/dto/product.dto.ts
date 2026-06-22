@@ -30,6 +30,50 @@ export class CreateProductDto {
   @IsNumber()
   @Type(() => Number)
   categoryId: number;
+
+  @IsOptional()
+  @IsString()
+  materialZh?: string;
+
+  @IsOptional()
+  @IsString()
+  materialEn?: string;
+
+  @IsOptional()
+  @IsString()
+  originZh?: string;
+
+  @IsOptional()
+  @IsString()
+  originEn?: string;
+
+  @IsOptional()
+  @IsString()
+  purificationZh?: string;
+
+  @IsOptional()
+  @IsString()
+  purificationEn?: string;
+
+  @IsOptional()
+  @IsString()
+  benefitsZh?: string;
+
+  @IsOptional()
+  @IsString()
+  benefitsEn?: string;
+
+  @IsOptional()
+  @IsString()
+  specWeight?: string;
+
+  @IsOptional()
+  @IsString()
+  specBeadSize?: string;
+
+  @IsOptional()
+  @IsString()
+  specBeadCount?: string;
 }
 
 export class UpdateProductDto {
@@ -69,6 +113,50 @@ export class UpdateProductDto {
   @IsNumber()
   @Type(() => Number)
   categoryId?: number;
+
+  @IsOptional()
+  @IsString()
+  materialZh?: string;
+
+  @IsOptional()
+  @IsString()
+  materialEn?: string;
+
+  @IsOptional()
+  @IsString()
+  originZh?: string;
+
+  @IsOptional()
+  @IsString()
+  originEn?: string;
+
+  @IsOptional()
+  @IsString()
+  purificationZh?: string;
+
+  @IsOptional()
+  @IsString()
+  purificationEn?: string;
+
+  @IsOptional()
+  @IsString()
+  benefitsZh?: string;
+
+  @IsOptional()
+  @IsString()
+  benefitsEn?: string;
+
+  @IsOptional()
+  @IsString()
+  specWeight?: string;
+
+  @IsOptional()
+  @IsString()
+  specBeadSize?: string;
+
+  @IsOptional()
+  @IsString()
+  specBeadCount?: string;
 }
 
 export class ProductQueryDto {
@@ -93,3 +181,4 @@ export class ProductQueryDto {
   @Min(1)
   limit?: number = 12;
 }
+

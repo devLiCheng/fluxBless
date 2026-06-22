@@ -15,6 +15,8 @@ model User {
   role      String     @default("user") // "user" or "admin"
   orders    Order[]
   cartItems CartItem[]
+  loginLogs LoginLog[]
+  reviews   Review[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
@@ -35,20 +37,33 @@ model Category {
 }
 
 model Product {
-  id            Int         @id @default(autoincrement())
-  nameZh        String
-  nameEn        String
-  descriptionZh String      @db.Text
-  descriptionEn String      @db.Text
-  price         Decimal     @db.Decimal(10, 2)
-  stock         Int         @default(0)
-  images        Json        // Storing array of image URLs
-  categoryId    Int
-  category      Category    @relation(fields: [categoryId], references: [id])
-  orderItems    OrderItem[]
-  cartItems     CartItem[]
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id               Int         @id @default(autoincrement())
+  nameZh           String
+  nameEn           String
+  descriptionZh    String      @db.Text
+  descriptionEn    String      @db.Text
+  price            Decimal     @db.Decimal(10, 2)
+  stock            Int         @default(0)
+  images           Json        // Storing array of image URLs
+  categoryId       Int
+  category         Category    @relation(fields: [categoryId], references: [id])
+  // Rich detail fields
+  materialZh       String?     // 材质（中文）e.g. 天然红玛瑙
+  materialEn       String?     // Material (English)
+  originZh         String?     // 产地（中文）e.g. 云南腾冲
+  originEn         String?     // Origin (English)
+  purificationZh   String?     // 开光净化方式（中文）
+  purificationEn   String?     // Purification method (English)
+  benefitsZh       String?     @db.Text  // 功效与寓意（中文）
+  benefitsEn       String?     @db.Text  // Spiritual benefits (English)
+  specWeight       String?     // 重量规格 e.g. 约15g
+  specBeadSize     String?     // 珠径 e.g. 8mm
+  specBeadCount    String?     // 珠数 e.g. 18颗
+  orderItems       OrderItem[]
+  cartItems        CartItem[]
+  reviews          Review[]
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
 
   @@map("products")
 }
@@ -102,4 +117,29 @@ model SystemLog {
   createdAt DateTime @default(now())
 
   @@map("system_logs")
+}
+
+model LoginLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ip        String
+  country   String?
+  userAgent String?
+  loginTime DateTime @default(now())
+
+  @@map("login_logs")
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating    Int      // 1 to 5
+  comment   String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@map("reviews")
 }

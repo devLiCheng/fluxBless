@@ -35,6 +35,8 @@ services:
       STRIPE_SECRET_KEY: sk_test_placeholder
       STRIPE_WEBHOOK_SECRET: whsec_placeholder
       SENTRY_DSN: "https://03a9c9407fc458366e79da05982b92aa@o4511607466295296.ingest.us.sentry.io/4511607479599104"
+    volumes:
+      - uploads_data:/app/uploads
     depends_on:
       - mysql
       - redis
@@ -86,3 +88,4 @@ services:
 
 volumes:
   mysql_data:
+  uploads_data:

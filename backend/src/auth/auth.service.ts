@@ -3,15 +3,17 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto, LoginDto } from './dto/auth.dto';
+import { LoginLogsService } from '../login-logs/login-logs.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
+    private loginLogsService: LoginLogsService,
   ) {}
 
-  async register(dto: RegisterDto) {
+  async register(dto: RegisterDto, ip?: string, userAgent?: string) {
     const existing = await this.prisma.user.findUnique({
       where: { email: dto.email },
     });
@@ -30,6 +32,15 @@ export class AuthService {
       },
     });
 
+    // Write login/register log
+    if (ip) {
+      try {
+        await this.loginLogsService.create(user.id, ip, userAgent || '');
+      } catch (err) {
+        console.warn('Failed to write login log on registration', err);
+      }
+    }
+
     const token = this.generateToken(user.id, user.email, user.role);
 
     return {
@@ -43,7 +54,7 @@ export class AuthService {
     };
   }
 
-  async login(dto: LoginDto) {
+  async login(dto: LoginDto, ip?: string, userAgent?: string) {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
     });
@@ -56,6 +67,15 @@ export class AuthService {
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Write login log
+    if (ip) {
+      try {
+        await this.loginLogsService.create(user.id, ip, userAgent || '');
+      } catch (err) {
+        console.warn('Failed to write login log on login', err);
+      }
     }
 
     const token = this.generateToken(user.id, user.email, user.role);

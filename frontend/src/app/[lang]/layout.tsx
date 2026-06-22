@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams, usePathname, useRouter } from 'next/navigation';
-import { ShoppingBag, X, Globe, Plus, Minus, Trash2, ArrowRight } from 'lucide-react';
+import { ShoppingBag, X, Globe, Plus, Minus, Trash2, ArrowRight, User, LogOut, Lock } from 'lucide-react';
 import { CartProvider, useCart } from '../../context/CartContext';
+import { AuthProvider, useAuth } from '../../context/AuthContext';
 import { getDictionary } from '../../lib/dictionary';
 
 // Subcomponent for Telemetry
@@ -45,11 +46,41 @@ const LayoutShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [dict, setDict] = useState<any>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+  // Auth modal state
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [authEmail, setAuthEmail] = useState('');
+  const [authPassword, setAuthPassword] = useState('');
+  const [authName, setAuthName] = useState('');
+  const [authError, setAuthError] = useState('');
+  const [authSubmitting, setAuthSubmitting] = useState(false);
+
   const { cart, removeFromCart, updateQuantity, cartCount, cartTotal } = useCart();
+  const { user, login, register, logout } = useAuth();
 
   useEffect(() => {
     getDictionary(lang).then(setDict);
   }, [lang]);
+
+  const handleAuthSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthError('');
+    setAuthSubmitting(true);
+    try {
+      if (authMode === 'login') {
+        await login(authEmail, authPassword);
+      } else {
+        await register(authName, authEmail, authPassword);
+      }
+      setIsAuthOpen(false);
+      setAuthPassword('');
+      setAuthName('');
+    } catch (err: any) {
+      setAuthError(err.message || 'Authentication failed');
+    } finally {
+      setAuthSubmitting(false);
+    }
+  };
 
   if (!dict) {
     return (
@@ -112,6 +143,36 @@ const LayoutShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               <Globe className="w-3.5 h-3.5" />
               <span className="text-xs uppercase font-medium">{lang === 'zh' ? 'English' : '中文'}</span>
             </button>
+
+            {/* User Icon */}
+            {user ? (
+              <div className="flex items-center space-x-2">
+                <span className="hidden sm:inline text-xs text-gold-secondary font-medium font-serif max-w-[80px] truncate">
+                  {user.name}
+                </span>
+                <button
+                  onClick={logout}
+                  className="p-2 text-zinc-400 hover:text-red-400 transition-colors"
+                  title="Logout"
+                  aria-label="Logout"
+                >
+                  <LogOut className="w-5 h-5" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  setAuthMode('login');
+                  setAuthError('');
+                  setIsAuthOpen(true);
+                }}
+                className="p-2 text-gold-primary hover:text-gold-light transition-colors"
+                title="Login / Register"
+                aria-label="Login or Register"
+              >
+                <User className="w-6 h-6" />
+              </button>
+            )}
 
             {/* Cart Icon */}
             <button
@@ -287,6 +348,111 @@ const LayoutShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </div>
         </div>
       )}
+
+      {/* Auth Modal Panel */}
+      {isAuthOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden" role="dialog" aria-modal="true">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/70 backdrop-blur-md transition-opacity"
+            onClick={() => setIsAuthOpen(false)}
+          />
+
+          {/* Modal Box */}
+          <div className="relative pointer-events-auto w-full max-w-sm gold-glass text-cream shadow-2xl border border-gold-primary/20 rounded-2xl mx-4 overflow-hidden z-10">
+            {/* Header */}
+            <div className="px-6 py-5 border-b border-gold-primary/10 flex items-center justify-between">
+              <h2 className="text-base font-serif tracking-widest text-gold-primary uppercase">
+                {authMode === 'login' ? (lang === 'zh' ? '用户登录' : 'User Login') : (lang === 'zh' ? '用户注册' : 'User Register')}
+              </h2>
+              <button
+                onClick={() => setIsAuthOpen(false)}
+                className="text-zinc-400 hover:text-gold-primary p-1.5 rounded-full hover:bg-white/5 transition-all"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Form Content */}
+            <form onSubmit={handleAuthSubmit} className="p-6 space-y-4">
+              {authError && (
+                <div className="bg-red-950/40 border border-red-500/40 text-red-300 text-xs px-4 py-3 rounded-lg">
+                  {authError}
+                </div>
+              )}
+
+              {authMode === 'register' && (
+                <div>
+                  <label className="block text-xs uppercase tracking-wider text-zinc-400 mb-1.5">
+                    {lang === 'zh' ? '昵称' : 'Full Name'}
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={authName}
+                    onChange={(e) => setAuthName(e.target.value)}
+                    className="w-full bg-black/60 border border-gold-primary/20 focus:border-gold-primary text-sm text-cream px-4 py-2.5 rounded-lg focus:outline-none"
+                    placeholder={lang === 'zh' ? '请输入您的昵称' : 'Enter your name'}
+                  />
+                </div>
+              )}
+
+              <div>
+                <label className="block text-xs uppercase tracking-wider text-zinc-400 mb-1.5">
+                  {lang === 'zh' ? '电子邮箱' : 'Email Address'}
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={authEmail}
+                  onChange={(e) => setAuthEmail(e.target.value)}
+                  className="w-full bg-black/60 border border-gold-primary/20 focus:border-gold-primary text-sm text-cream px-4 py-2.5 rounded-lg focus:outline-none"
+                  placeholder="name@example.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs uppercase tracking-wider text-zinc-400 mb-1.5">
+                  {lang === 'zh' ? '密码' : 'Password'}
+                </label>
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  value={authPassword}
+                  onChange={(e) => setAuthPassword(e.target.value)}
+                  className="w-full bg-black/60 border border-gold-primary/20 focus:border-gold-primary text-sm text-cream px-4 py-2.5 rounded-lg focus:outline-none"
+                  placeholder="••••••••"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={authSubmitting}
+                className="w-full mt-2 gold-gradient hover:gold-border-glow text-black font-semibold uppercase tracking-widest py-3 rounded-lg flex items-center justify-center space-x-2 transition-all hover:scale-[1.01] disabled:opacity-50"
+              >
+                <span>{authSubmitting ? (lang === 'zh' ? '处理中...' : 'Processing...') : (authMode === 'login' ? (lang === 'zh' ? '立即登录' : 'Sign In') : (lang === 'zh' ? '立即注册' : 'Sign Up'))}</span>
+              </button>
+
+              {/* Toggle Mode */}
+              <div className="text-center pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthMode(authMode === 'login' ? 'register' : 'login');
+                    setAuthError('');
+                  }}
+                  className="text-xs text-gold-secondary hover:text-gold-light border-b border-gold-primary/30 pb-0.5"
+                >
+                  {authMode === 'login'
+                    ? (lang === 'zh' ? '没有账号？立即注册' : "Don't have an account? Sign Up")
+                    : (lang === 'zh' ? '已有账号？立即登录' : 'Already have an account? Sign In')}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -297,9 +463,11 @@ export default function LocalizedLayout({
   children: React.ReactNode;
 }) {
   return (
-    <CartProvider>
-      <Telemetry />
-      <LayoutShell>{children}</LayoutShell>
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        <Telemetry />
+        <LayoutShell>{children}</LayoutShell>
+      </CartProvider>
+    </AuthProvider>
   );
 }

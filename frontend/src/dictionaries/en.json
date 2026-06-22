@@ -37,7 +37,22 @@
     "spiritualMeaning": "Spiritual Meaning",
     "sizingTitle": "Sizing Guide",
     "sizingDesc": "Our bracelets feature slight elasticity, fitting most wrist sizes (14cm-18cm). For custom sizing, please contact customer support.",
-    "relatedProducts": "Recommended for You"
+    "relatedProducts": "Recommended for You",
+    "material": "Material",
+    "origin": "Origin",
+    "purification": "Purification & Blessing",
+    "benefits": "Spiritual Benefits",
+    "specWeight": "Weight",
+    "specBeadSize": "Bead Size",
+    "specBeadCount": "Bead Count",
+    "productInfo": "Product Details",
+    "buyNow": "Buy Now",
+    "authenticity": "Authenticity Guaranteed",
+    "authenticityDesc": "All items are genuine natural gemstones, professionally authenticated for quality and purity.",
+    "blessing": "Energy Blessed",
+    "blessingDesc": "Every item undergoes a traditional purification and blessing ceremony before shipping to activate its inner energy.",
+    "shipping": "Free Shipping",
+    "shippingDesc": "Free shipping on orders over $29. Carefully packaged, safely delivered."
   },
   "cart": {
     "title": "Your Cart",
