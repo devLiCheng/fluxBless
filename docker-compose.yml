@@ -34,6 +34,7 @@ services:
       ADMIN_URL: "${ADMIN_URL:-http://localhost/admin}"
       STRIPE_SECRET_KEY: sk_test_placeholder
       STRIPE_WEBHOOK_SECRET: whsec_placeholder
+      SENTRY_DSN: "https://03a9c9407fc458366e79da05982b92aa@o4511607466295296.ingest.us.sentry.io/4511607479599104"
     depends_on:
       - mysql
       - redis
@@ -46,10 +47,12 @@ services:
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_API_URL: "${NEXT_PUBLIC_API_URL:-http://localhost/api}"
+        NEXT_PUBLIC_SENTRY_DSN: "https://03a9c9407fc458366e79da05982b92aa@o4511607466295296.ingest.us.sentry.io/4511607479599104"
     container_name: fluxbless_frontend
     restart: always
     environment:
       NEXT_PUBLIC_API_URL: "${NEXT_PUBLIC_API_URL:-http://localhost/api}"
+      NEXT_PUBLIC_SENTRY_DSN: "https://03a9c9407fc458366e79da05982b92aa@o4511607466295296.ingest.us.sentry.io/4511607479599104"
     depends_on:
       - backend
     expose:
