@@ -18,7 +18,7 @@ export default function ErrorBoundary({
     // 2. Report to backend client logs API
     const reportCrash = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
         await fetch(`${apiUrl}/logs/client`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

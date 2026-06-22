@@ -74,7 +74,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
   const fetchReviews = async () => {
     setReviewsLoading(true);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       const res = await fetch(`${apiUrl}/products/${product.id}/reviews`);
       if (res.ok) {
         const data = await res.json();
@@ -102,7 +102,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
       return;
     }
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       const res = await fetch(`${apiUrl}/products/${product.id}/reviews`, {
         method: 'POST',
         headers: {

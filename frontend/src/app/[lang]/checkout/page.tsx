@@ -58,7 +58,7 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
     setErrorMsg('');
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
 
     try {
       // 1. Frictionless login/registration

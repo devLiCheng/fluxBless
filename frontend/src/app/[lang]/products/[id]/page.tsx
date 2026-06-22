@@ -89,7 +89,7 @@ export default async function ProductDetailPage({
   // Fetch from NestJS backend API
   let product = FALLBACK_PRODUCTS.find((p) => p.id === productId);
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+    const apiUrl = process.env.BACKEND_URL || 'http://backend:4000/api';
     const res = await fetch(`${apiUrl}/products/${productId}`, { cache: 'no-store' });
     if (res.ok) {
       const data = await res.json();
