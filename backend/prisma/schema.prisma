@@ -60,6 +60,8 @@ model Product {
   specWeight       String?     // 重量规格 e.g. 约15g
   specBeadSize     String?     // 珠径 e.g. 8mm
   specBeadCount    String?     // 珠数 e.g. 18颗
+  ratingOverride   Float?
+  salesOverride    Int?
   orderItems       OrderItem[]
   cartItems        CartItem[]
   reviews          Review[]

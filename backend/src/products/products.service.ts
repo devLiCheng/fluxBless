@@ -6,6 +6,26 @@ import { CreateProductDto, UpdateProductDto, ProductQueryDto } from './dto/produ
 export class ProductsService {
   constructor(private prisma: PrismaService) {}
 
+  private formatProductStats(product: any) {
+    const reviews = product.reviews || [];
+    const actualCount = reviews.length;
+    const actualAvg = actualCount > 0 
+      ? reviews.reduce((sum, r) => sum + r.rating, 0) / actualCount 
+      : 5.0;
+
+    const { reviews: _, ...rest } = product;
+
+    return {
+      ...rest,
+      rating: product.ratingOverride !== null && product.ratingOverride !== undefined 
+        ? parseFloat(String(product.ratingOverride)) 
+        : parseFloat(actualAvg.toFixed(1)),
+      reviewCount: product.salesOverride !== null && product.salesOverride !== undefined 
+        ? product.salesOverride 
+        : actualCount,
+    };
+  }
+
   async findAll(query: ProductQueryDto) {
     const { categoryId, search, page = 1, limit = 12 } = query;
     const skip = (page - 1) * limit;
@@ -28,7 +48,12 @@ export class ProductsService {
     const [items, total] = await Promise.all([
       this.prisma.product.findMany({
         where,
-        include: { category: true },
+        include: { 
+          category: true,
+          reviews: {
+            select: { rating: true }
+          }
+        },
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
@@ -36,8 +61,10 @@ export class ProductsService {
       this.prisma.product.count({ where }),
     ]);
 
+    const itemsWithStats = items.map(p => this.formatProductStats(p));
+
     return {
-      items,
+      items: itemsWithStats,
       total,
       page,
       limit,
@@ -48,14 +75,19 @@ export class ProductsService {
   async findOne(id: number) {
     const product = await this.prisma.product.findUnique({
       where: { id },
-      include: { category: true },
+      include: { 
+        category: true,
+        reviews: {
+          select: { rating: true }
+        }
+      },
     });
     if (!product) throw new NotFoundException('Product not found');
-    return product;
+    return this.formatProductStats(product);
   }
 
   async create(dto: CreateProductDto) {
-    return this.prisma.product.create({
+    const product = await this.prisma.product.create({
       data: {
         nameZh: dto.nameZh,
         nameEn: dto.nameEn,
@@ -76,18 +108,20 @@ export class ProductsService {
         specWeight: dto.specWeight,
         specBeadSize: dto.specBeadSize,
         specBeadCount: dto.specBeadCount,
+        ratingOverride: dto.ratingOverride,
+        salesOverride: dto.salesOverride,
       },
-      include: { category: true },
     });
+    return this.findOne(product.id);
   }
 
   async update(id: number, dto: UpdateProductDto) {
     await this.findOne(id);
-    return this.prisma.product.update({
+    await this.prisma.product.update({
       where: { id },
       data: dto as any,
-      include: { category: true },
     });
+    return this.findOne(id);
   }
 
   async remove(id: number) {

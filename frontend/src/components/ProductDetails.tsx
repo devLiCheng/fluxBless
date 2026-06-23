@@ -14,6 +14,7 @@ import {
   Flame,
   Award,
   ChevronRight,
+  ChevronLeft,
   X,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -47,6 +48,8 @@ interface Product {
   specWeight?: string;
   specBeadSize?: string;
   specBeadCount?: string;
+  rating?: number;
+  reviewCount?: number;
 }
 
 interface ProductDetailsProps {
@@ -218,6 +221,37 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
   const purification = lang === 'zh' ? product.purificationZh : product.purificationEn;
   const benefits = lang === 'zh' ? product.benefitsZh : product.benefitsEn;
 
+  // Lightbox states
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  // Keyboard navigation for Lightbox
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsLightboxOpen(false);
+      } else if (e.key === 'ArrowLeft' && images.length > 1) {
+        setLightboxIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+      } else if (e.key === 'ArrowRight' && images.length > 1) {
+        setLightboxIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [isLightboxOpen, images.length]);
+
+  const displayRating = product.rating !== undefined && product.rating !== null ? product.rating : 5.0;
+  const displayReviewCount = product.reviewCount !== undefined && product.reviewCount !== null ? product.reviewCount : 0;
+
+
   // Fallback spiritual meaning based on category
   const getFallbackBenefits = () => {
     const slug = product.category.slug;
@@ -295,15 +329,27 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
         {/* ── Left: Image Gallery ── */}
         <div className="space-y-4">
           {/* Main Image */}
-          <div className="relative aspect-square bg-zinc-900 border border-gold-primary/10 rounded-2xl overflow-hidden group">
+          <div 
+            onClick={() => {
+              setLightboxIndex(selectedImageIndex);
+              setIsLightboxOpen(true);
+            }}
+            className="relative aspect-square bg-zinc-900 border border-gold-primary/10 rounded-2xl overflow-hidden group cursor-zoom-in"
+          >
             <img
               src={images[selectedImageIndex]}
               alt={name}
-              className="w-full h-full object-cover group-hover:scale-[1.06] transition-transform duration-700 cursor-zoom-in"
+              className="w-full h-full object-cover group-hover:scale-[1.06] transition-transform duration-700"
               onError={(e) => {
                 e.currentTarget.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop';
               }}
             />
+            {/* Image Counter Badge */}
+            {images.length > 0 && (
+              <div className="absolute bottom-4 right-4 bg-black/60 border border-gold-primary/30 text-cream px-3 py-1 rounded-full text-[10px] tracking-widest backdrop-blur-sm select-none z-10">
+                {selectedImageIndex + 1} / {images.length}
+              </div>
+            )}
             {/* Badge overlay */}
             <div className="absolute top-4 left-4 flex flex-col gap-2">
               {product.stock > 0 && product.stock < 20 && (
@@ -376,13 +422,23 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
             {name}
           </h1>
 
-          {/* Star rating (decorative) */}
+          {/* Star rating */}
           <div className="flex items-center gap-1 mb-4">
-            {[1, 2, 3, 4, 5].map((s) => (
-              <Star key={s} className="w-4 h-4 fill-gold-primary text-gold-primary" />
-            ))}
+            {[1, 2, 3, 4, 5].map((s) => {
+              const fillStar = s <= Math.round(displayRating);
+              return (
+                <Star 
+                  key={s} 
+                  className={`w-4 h-4 text-gold-primary transition-all ${
+                    fillStar ? 'fill-gold-primary opacity-100' : 'opacity-25'
+                  }`} 
+                />
+              );
+            })}
             <span className="text-xs text-zinc-400 ml-2">
-              {lang === 'zh' ? '5.0 · 108+ 买家好评' : '5.0 · 108+ happy buyers'}
+              {lang === 'zh' 
+                ? `${displayRating.toFixed(1)} · ${displayReviewCount}+ 买家好评` 
+                : `${displayRating.toFixed(1)} · ${displayReviewCount}+ happy buyers`}
             </span>
           </div>
 
@@ -882,6 +938,70 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                 )}
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Original Image Lightbox Overlay ── */}
+      {isLightboxOpen && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center select-none"
+          onClick={() => setIsLightboxOpen(false)}
+        >
+          {/* Close Button */}
+          <button
+            onClick={() => setIsLightboxOpen(false)}
+            className="absolute top-6 right-6 text-zinc-400 hover:text-gold-primary p-2 transition-colors z-50 cursor-pointer animate-fade-in"
+            aria-label="Close original view"
+          >
+            <X className="w-6 h-6" />
+          </button>
+
+          {/* Navigation Arrows */}
+          {images.length > 1 && (
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightboxIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+                }}
+                className="absolute left-6 text-zinc-400 hover:text-gold-primary p-3 transition-colors z-50 bg-zinc-900/40 border border-zinc-800 rounded-full hover:bg-zinc-900/80 cursor-pointer"
+                aria-label="Previous image"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightboxIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+                }}
+                className="absolute right-6 text-zinc-400 hover:text-gold-primary p-3 transition-colors z-50 bg-zinc-900/40 border border-zinc-800 rounded-full hover:bg-zinc-900/80 cursor-pointer"
+                aria-label="Next image"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            </>
+          )}
+
+          {/* Original Image Container */}
+          <div 
+            className="relative max-w-[90vw] max-h-[90vh] flex flex-col items-center gap-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={images[lightboxIndex]}
+              alt={name}
+              className="max-w-full max-h-[82vh] object-contain rounded-lg shadow-2xl border border-gold-primary/10 transition-transform duration-300"
+              onError={(e) => {
+                e.currentTarget.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop';
+              }}
+            />
+            {/* Image Index Caption */}
+            {images.length > 0 && (
+              <span className="text-zinc-500 text-xs tracking-widest">
+                {lightboxIndex + 1} / {images.length}
+              </span>
+            )}
           </div>
         </div>
       )}

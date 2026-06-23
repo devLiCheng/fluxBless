@@ -107,6 +107,8 @@ export default function Products() {
         specWeight: record.specWeight || '',
         specBeadSize: record.specBeadSize || '',
         specBeadCount: record.specBeadCount || '',
+        ratingOverride: record.ratingOverride !== null && record.ratingOverride !== undefined ? parseFloat(record.ratingOverride) : undefined,
+        salesOverride: record.salesOverride !== null && record.salesOverride !== undefined ? record.salesOverride : undefined,
       });
     } else {
       setEditingId(null);
@@ -132,13 +134,14 @@ export default function Products() {
         images: imgArray,
       };
 
-      const richFields = [
+      const optionalFields = [
         'materialZh', 'materialEn', 'originZh', 'originEn',
         'purificationZh', 'purificationEn', 'benefitsZh', 'benefitsEn',
         'specWeight', 'specBeadSize', 'specBeadCount',
+        'ratingOverride', 'salesOverride',
       ];
-      richFields.forEach((f) => {
-        if (values[f]) payload[f] = values[f];
+      optionalFields.forEach((f) => {
+        payload[f] = values[f] !== undefined && values[f] !== '' && values[f] !== null ? values[f] : null;
       });
 
       if (editingId) {
@@ -408,6 +411,21 @@ export default function Products() {
                 <Grid.Col span={8}>
                   <Form.Item label='重量' field='specWeight'>
                     <Input placeholder='例如：约15g' />
+                  </Form.Item>
+                </Grid.Col>
+              </Grid.Row>
+            </Collapse.Item>
+
+            <Collapse.Item header='⭐ 评分与销量人工干预（选填）' name='overrides'>
+              <Grid.Row gutter={16}>
+                <Grid.Col span={12}>
+                  <Form.Item label='人工干预评分 (1.0 - 5.0)' field='ratingOverride'>
+                    <InputNumber min={1.0} max={5.0} step={0.1} placeholder='留空则根据真实买家评价自动计算' style={{ width: '100%' }} />
+                  </Form.Item>
+                </Grid.Col>
+                <Grid.Col span={12}>
+                  <Form.Item label='人工干预买家数' field='salesOverride'>
+                    <InputNumber min={0} step={1} placeholder='留空则按真实买家评价数量统计' style={{ width: '100%' }} />
                   </Form.Item>
                 </Grid.Col>
               </Grid.Row>

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `products` ADD COLUMN `ratingOverride` DOUBLE NULL,
+                       ADD COLUMN `salesOverride` INTEGER NULL;

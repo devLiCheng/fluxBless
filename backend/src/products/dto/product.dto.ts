@@ -74,6 +74,16 @@ export class CreateProductDto {
   @IsOptional()
   @IsString()
   specBeadCount?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  ratingOverride?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  salesOverride?: number;
 }
 
 export class UpdateProductDto {
@@ -157,6 +167,16 @@ export class UpdateProductDto {
   @IsOptional()
   @IsString()
   specBeadCount?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  ratingOverride?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  salesOverride?: number;
 }
 
 export class ProductQueryDto {
