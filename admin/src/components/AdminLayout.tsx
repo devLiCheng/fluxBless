@@ -131,7 +131,7 @@ export default function AdminLayout() {
         >
           <div>
             <Typography.Text type='secondary'>
-              让正向能量流转，吸纳源源不断好运
+              传统东方美学，点缀精致生活
             </Typography.Text>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>

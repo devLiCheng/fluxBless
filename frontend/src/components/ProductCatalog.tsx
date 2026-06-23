@@ -94,7 +94,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
         <div className="relative max-w-xs w-full">
           <input
             type="text"
-            placeholder={lang === 'zh' ? '搜索护身手串...' : 'Search accessories...'}
+            placeholder={lang === 'zh' ? '搜索精选手串...' : 'Search accessories...'}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full bg-[#1A1A1A] border border-gold-primary/20 hover:border-gold-primary/40 focus:border-gold-primary text-sm text-cream px-4 py-2.5 rounded-full focus:outline-none transition-colors"
@@ -106,7 +106,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
       {filteredProducts.length === 0 ? (
         <div className="py-24 text-center">
           <p className="text-zinc-500 tracking-wider">
-            {lang === 'zh' ? '未找到符合条件的幸运配饰' : 'No matching items found'}
+            {lang === 'zh' ? '未找到符合条件的精致配饰' : 'No matching items found'}
           </p>
         </div>
       ) : (
@@ -157,10 +157,10 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
                     </button>
                   </div>
 
-                  {/* Energy tag */}
+                  {/* Premium tag */}
                   <span className="absolute top-4 left-4 bg-black/85 backdrop-blur-sm text-gold-secondary text-[10px] tracking-widest px-2.5 py-1 rounded-full border border-gold-primary/20 flex items-center space-x-1 uppercase">
                     <Sparkles className="w-2.5 h-2.5 text-gold-primary animate-pulse" />
-                    <span>Blessed</span>
+                    <span>{lang === 'zh' ? '精选' : 'Selected'}</span>
                   </span>
                 </div>
 

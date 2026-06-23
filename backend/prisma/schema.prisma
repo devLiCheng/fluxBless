@@ -53,10 +53,10 @@ model Product {
   materialEn       String?     // Material (English)
   originZh         String?     // 产地（中文）e.g. 云南腾冲
   originEn         String?     // Origin (English)
-  purificationZh   String?     // 开光净化方式（中文）
-  purificationEn   String?     // Purification method (English)
-  benefitsZh       String?     @db.Text  // 功效与寓意（中文）
-  benefitsEn       String?     @db.Text  // Spiritual benefits (English)
+  purificationZh   String?     // 清洁保养方式（中文）
+  purificationEn   String?     // Care and cleaning method (English)
+  benefitsZh       String?     @db.Text  // 材质与设计（中文）
+  benefitsEn       String?     @db.Text  // Materials and design (English)
   specWeight       String?     // 重量规格 e.g. 约15g
   specBeadSize     String?     // 珠径 e.g. 8mm
   specBeadCount    String?     // 珠数 e.g. 18颗

@@ -251,41 +251,40 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
   const displayRating = product.rating !== undefined && product.rating !== null ? product.rating : 5.0;
   const displayReviewCount = product.reviewCount !== undefined && product.reviewCount !== null ? product.reviewCount : 0;
 
-
   // Fallback spiritual meaning based on category
   const getFallbackBenefits = () => {
     const slug = product.category.slug;
     const map: Record<string, { zh: string; en: string }> = {
       'agate-accessories': {
-        zh: '玛瑙是佛教七宝之一，自古以来被当做辟邪物、护身符使用，象征友善的爱心和希望，有助于消除压力、疲劳、浊气等负性能量。红玛瑙尤为适合增强自信心与行动力，助佩戴者在事业与感情上双双顺遂。',
-        en: 'Agate is one of the seven treasures of Buddhism. Since ancient times, it has been used as an amulet symbolizing friendly love and hope. It helps clear stress, fatigue, and negative energy. Red agate especially boosts confidence and action, bringing success in career and relationships.',
+        zh: '玛瑙色彩斑斓，纹理独特。自古以来在东方美学中被视为优美的日常配饰，象征友善与希望，有助于舒缓压力，让人保持从容的心态。',
+        en: 'Agate features beautiful colors and unique textures. Since ancient times in Eastern aesthetics, it has been worn as classic daily jewelry, symbolizing hope and friendliness, helping to soothe everyday stress.',
       },
       'five-elements-beads': {
-        zh: '五行合香珠融合多种名贵香材，能调和五行能量，促进身心平衡。沉静悠远的香气有助于安神静心，招来福运与祥和之气。长期佩戴可净化磁场，使气场清明，贵人相助。',
-        en: 'Five Elements incense beads blend precious herbs to harmonize personal elements and restore body-mind balance. The tranquil aroma calms the spirit and attracts good fortune and peace. Regular wear purifies your energy field, attracting helpful people.',
+        zh: '五行合香珠融合多种名贵木香材质，散发清新淡雅的自然芬芳。静心盘玩或日常佩戴，香气怡人，让人感到心旷神怡，展现温婉大方的气质。',
+        en: 'Five Elements incense beads blend premium aromatic woods to emit a natural, calming scent. Perfect for daily wear and sensory relaxation, adding a touch of elegance to any style.',
       },
       'colored-glaze-bracelets': {
-        zh: '琉璃被誉为佛教五大名器之首。古法琉璃工艺澄澈透明，象征纯洁的精神与辟邪转运。佩戴可增强感知力，聚福纳祥，尤其适合希望改变运势、提升财运者。',
-        en: 'Colored glaze is revered as the first of the five sacred treasures of Buddhism. Ancient glaze works are transparent, symbolizing spiritual purity, evil protection, and lucky turns. Ideal for those wishing to change fortunes and enhance wealth luck.',
+        zh: '古法琉璃工艺澄澈透亮，色彩斑斓璀璨，在中国传统工艺中代表着极高的手工审美。每一件古法琉璃均为手工精制，纹理与气泡独一无二，展现佩戴者的优雅品味。',
+        en: 'Ancient colored glaze is clear and brilliant, featuring radiant colors that represent the pinnacle of traditional handcrafted aesthetics. Each piece is unique, reflecting refined personal taste.',
       },
       'cinnabar-bracelets': {
-        zh: '朱砂具有极强的阳气，自古被视为驱邪化煞、镇惊安神的极品。佩戴朱砂手串可护佑身心安康，开启智慧与鸿运。适合经常出行、从事特殊职业或需要身心保护的人士。',
-        en: 'Cinnabar possesses powerful Yang energy and is regarded as the ultimate amulet to expel negative spirits. Wearing it protects health, welcomes good fortune, and awakens wisdom. Perfect for frequent travelers and those needing strong protection.',
+        zh: '朱砂呈现沉稳大气的朱红色，质地温润，古朴大方。其厚重端庄的色泽与经典设计相结合，既保留古典温雅气质，又具现代美感，是赠礼与佩戴的佳品。',
+        en: 'Cinnabar features a classic vermilion color with a warm texture. Its elegant red shade combined with timeless design offers both traditional charm and modern beauty, making it a great gift.',
       },
       'prayer-beads': {
-        zh: '小叶紫檀香气浓郁，蕴含强大的辟邪能量。108颗念珠对应一百零八种烦恼，每日诵念可消除业障，积累功德。此外，盘玩时间越长，包浆越美，具有极高的收藏价值。',
-        en: 'Red sandalwood emits a powerful fragrance with strong protective energy. 108 beads correspond to 108 afflictions; daily chanting dissolves karma and accumulates merit. The longer you handle them, the more beautiful the patina becomes, adding collectible value.',
+        zh: '108颗念珠精选优质木质材质，散发自然淡雅的芳香，有助于安定心神。木珠经过长期佩戴与盘玩后色泽更为圆润饱满，质感更佳，极具欣赏与收藏价值。',
+        en: 'These 108 wood beads are selected from premium natural wood, emitting a subtle soothing fragrance. The beads develop a beautiful natural patina over time, adding unique aesthetic value.',
       },
       'white-jade': {
-        zh: '白玉温润无瑕，象征高洁的品德与平安祥瑞。佩戴白玉配饰可平和情绪，滋养身心，化解生活中的波折，保佑一生平安。和田玉尤为珍贵，具有极高保值与升值空间。',
-        en: 'White jade is warm and flawless, symbolizing moral excellence, peace, and auspiciousness. Wearing it balances emotions, nourishes the spirit, and protects against life obstacles. Hetian jade is particularly precious with exceptional investment value.',
+        zh: '白玉温润无瑕，玉质细腻，象征着温润如玉的高洁品格与古典气质。日常佩戴可点缀服饰，衬托佩戴者优雅温婉、大方得体的东方美学风采。',
+        en: 'White jade is warm and smooth with a delicate texture, representing purity, elegance, and classic aesthetics. Perfect for daily wear, it complements your outfit with graceful Eastern style.',
       },
     };
     const entry = map[slug];
     if (entry) return lang === 'zh' ? entry.zh : entry.en;
     return lang === 'zh'
-      ? '此开运配饰汇聚吉祥能量，具有辟邪挡灾、凝聚福缘、保佑身心安康之神效。'
-      : 'This blessed accessory gathers auspicious energy, offering protection, attracting fortune, and bringing tranquility to the wearer.';
+      ? '此款精致配饰由优质材质手工打造，做工考究，设计典雅，是展现个人独特审美与优雅气质的上佳之选。'
+      : 'This premium accessory is meticulously handcrafted from selected materials, featuring a refined and elegant design that showcases your unique style.';
   };
 
   const handleAddToCart = () => {
@@ -303,7 +302,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
 
   const tabs: { key: Tab; label: string }[] = [
     { key: 'description', label: lang === 'zh' ? '商品描述' : 'Description' },
-    { key: 'benefits', label: lang === 'zh' ? '功效寓意' : 'Spiritual Benefits' },
+    { key: 'benefits', label: dict.product.benefits || (lang === 'zh' ? '美学与价值' : 'Aesthetics & Value') },
     { key: 'specs', label: lang === 'zh' ? '规格参数' : 'Specifications' },
   ];
 
@@ -359,7 +358,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
               )}
               <span className="bg-black/60 border border-gold-primary/30 text-gold-primary text-[10px] uppercase tracking-widest px-3 py-1 rounded-full backdrop-blur-sm flex items-center gap-1">
                 <Sparkles className="w-3 h-3" />
-                {lang === 'zh' ? '已开光' : 'Energy Blessed'}
+                {lang === 'zh' ? '手工甄选' : 'Premium Selected'}
               </span>
             </div>
           </div>
@@ -394,7 +393,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
           <div className="grid grid-cols-3 gap-3 mt-2">
             {[
               { icon: <Award className="w-4 h-4 text-gold-secondary" />, title: lang === 'zh' ? '正品保证' : 'Authentic', desc: lang === 'zh' ? '专业鉴定' : 'Certified' },
-              { icon: <Flame className="w-4 h-4 text-gold-secondary" />, title: lang === 'zh' ? '能量开光' : 'Blessed', desc: lang === 'zh' ? '传统仪式' : 'Traditional rite' },
+              { icon: <Flame className="w-4 h-4 text-gold-secondary" />, title: lang === 'zh' ? '声波清洗' : 'Sonic Cleaned', desc: lang === 'zh' ? '手工清洁' : 'Hand-Cleaned' },
               { icon: <Package className="w-4 h-4 text-gold-secondary" />, title: lang === 'zh' ? '精心包装' : 'Gift Ready', desc: lang === 'zh' ? '礼盒发货' : 'Box included' },
             ].map((badge, i) => (
               <div
@@ -621,7 +620,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
             {[
               { icon: <ShieldCheck className="w-4 h-4 text-gold-secondary flex-shrink-0" />, text: lang === 'zh' ? '安全加密支付' : 'Secure SSL Payment' },
               { icon: <RefreshCw className="w-4 h-4 text-gold-secondary flex-shrink-0" />, text: lang === 'zh' ? '7天无理由退换' : '7-Day Easy Returns' },
-              { icon: <Sparkles className="w-4 h-4 text-gold-secondary flex-shrink-0" />, text: lang === 'zh' ? '能量开光净化' : 'Energy Purified & Blessed' },
+              { icon: <Sparkles className="w-4 h-4 text-gold-secondary flex-shrink-0" />, text: lang === 'zh' ? '手工细致清洁' : 'Hand-Cleaned & Polished' },
               { icon: <Package className="w-4 h-4 text-gold-secondary flex-shrink-0" />, text: lang === 'zh' ? '精美礼盒包装' : 'Premium Gift Packaging' },
             ].map((g, i) => (
               <div key={i} className="flex items-center gap-2">
@@ -642,7 +641,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
               <Sparkles className="w-4 h-4 text-gold-primary" />
             </div>
             <h2 className="text-sm font-serif tracking-widest text-gold-primary uppercase">
-              {lang === 'zh' ? '能量与寓意' : 'Energy & Meaning'}
+              {lang === 'zh' ? '设计与寓意' : 'Design & Meaning'}
             </h2>
           </div>
           <p className="text-zinc-300 text-sm leading-loose">
@@ -663,8 +662,8 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
             <p className="text-xs text-zinc-400 leading-relaxed">
               {purification ||
                 (lang === 'zh'
-                  ? '每件商品出货前均经传统寺院净化仪式与大师开光加持，激活石材内在灵性能量。'
-                  : 'Every item undergoes a traditional temple purification and master blessing ceremony before shipping to activate its inner spiritual energy.')}
+                  ? '每件商品出货前均经过细致的手工清洁与声波清洗，确保展现矿石天然纯净品质。'
+                  : 'Every item is carefully hand-cleaned and ultrasonic-cleansed before shipping to ensure its pure, natural quality.')}
             </p>
           </div>
 

@@ -372,7 +372,7 @@ export default function CheckoutPage() {
 
             <div className="mt-6 pt-6 border-t border-gold-primary/5 flex items-center space-x-2 text-[10px] text-zinc-500">
               <ShieldCheck className="w-4 h-4 text-gold-secondary" />
-              <span>Checkout is processed securely. Natural energy is guaranteed.</span>
+              <span>Checkout is processed securely. Authentic materials are guaranteed.</span>
             </div>
           </div>
         </div>

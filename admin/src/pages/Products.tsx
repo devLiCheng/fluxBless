@@ -246,7 +246,7 @@ export default function Products() {
         <div>
           <h2 style={{ margin: 0, fontSize: 24 }}>商品库存管理</h2>
           <p style={{ margin: '4px 0 0 0', color: 'var(--color-text-3)' }}>
-            列出、更新和管理店铺内的开运手串、吊坠及各类能量配饰。
+            列出、更新和管理店铺内的精致手串、吊坠及各类经典配饰。
           </p>
         </div>
         <Button type='primary' icon={<IconPlus />} onClick={() => showModal()}>添加商品</Button>
@@ -372,25 +372,25 @@ export default function Products() {
               </Grid.Row>
             </Collapse.Item>
 
-            <Collapse.Item header='✨ 功效寓意（选填）' name='benefits'>
-              <Form.Item label='功效与寓意（中文）' field='benefitsZh'>
-                <Input.TextArea placeholder='请输入中文功效寓意，可包含传统文化背景与适合人群...' rows={4} style={{ resize: 'none' }} />
+            <Collapse.Item header='✨ 材质与设计（选填）' name='benefits'>
+              <Form.Item label='材质与设计（中文）' field='benefitsZh'>
+                <Input.TextArea placeholder='请输入中文材质与设计说明，可包含材质特性与设计细节...' rows={4} style={{ resize: 'none' }} />
               </Form.Item>
-              <Form.Item label='功效与寓意（英文）' field='benefitsEn'>
-                <Input.TextArea placeholder='Describe the spiritual benefits and cultural significance in English...' rows={4} style={{ resize: 'none' }} />
+              <Form.Item label='材质与设计（英文）' field='benefitsEn'>
+                <Input.TextArea placeholder='Describe the materials and design details in English...' rows={4} style={{ resize: 'none' }} />
               </Form.Item>
             </Collapse.Item>
 
-            <Collapse.Item header='🔮 开光净化方式（选填）' name='purification'>
+            <Collapse.Item header='🔮 清洁保养方式（选填）' name='purification'>
               <Grid.Row gutter={16}>
                 <Grid.Col span={12}>
-                  <Form.Item label='净化方式（中文）' field='purificationZh'>
-                    <Input.TextArea placeholder='例如：经高僧开光加持，月光净化7天...' rows={3} style={{ resize: 'none' }} />
+                  <Form.Item label='清洁保养（中文）' field='purificationZh'>
+                    <Input.TextArea placeholder='例如：声波清洗，手工擦拭保养...' rows={3} style={{ resize: 'none' }} />
                   </Form.Item>
                 </Grid.Col>
                 <Grid.Col span={12}>
-                  <Form.Item label='净化方式（英文）' field='purificationEn'>
-                    <Input.TextArea placeholder='e.g. Blessed by monk, moonlight purified for 7 days...' rows={3} style={{ resize: 'none' }} />
+                  <Form.Item label='清洁保养（英文）' field='purificationEn'>
+                    <Input.TextArea placeholder='e.g. Ultrasonic cleaned, hand polished...' rows={3} style={{ resize: 'none' }} />
                   </Form.Item>
                 </Grid.Col>
               </Grid.Row>

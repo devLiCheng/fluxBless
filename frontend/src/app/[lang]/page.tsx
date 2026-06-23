@@ -44,8 +44,8 @@ const FALLBACK_PRODUCTS = [
     id: 10,
     nameZh: '高品质朱砂手串',
     nameEn: 'Premium Cinnabar Bracelet',
-    descriptionZh: '选用高品质天然朱砂，含砂量高，色泽鲜红如血。朱砂自古被认为具有镇宅辟邪、安神定魄的功效。',
-    descriptionEn: 'Made from premium natural cinnabar with high mineral content and vivid blood-red color. Cinnabar has been revered since ancient times.',
+    descriptionZh: '选用高品质天然朱砂，色泽沉稳朱红。精致的打磨工艺使每颗珠子手感细腻温润，是具有传统古典美感的经典饰品。',
+    descriptionEn: 'Made from premium natural cinnabar featuring a rich red color. The smooth texture and classic design offer an elegant look perfect for daily styling.',
     price: 158.00,
     stock: 35,
     images: ['https://images.unsplash.com/photo-1605100804763-247f67b3557e?q=80&w=600&auto=format&fit=crop'],
@@ -113,7 +113,7 @@ export default async function LocalizedHomePage({
             <div className="inline-flex items-center space-x-2 border border-gold-primary/30 rounded-full px-4 py-1.5 bg-black/60 backdrop-blur-md mb-8">
               <Sparkles className="w-4 h-4 text-gold-primary animate-pulse" />
               <span className="text-[10px] sm:text-xs tracking-[0.25em] text-gold-secondary font-serif uppercase">
-                {lang === 'zh' ? '开启您的好运能量场' : 'Open Your Aura of Good Fortune'}
+                {lang === 'zh' ? '探寻传统手工美学' : 'Explore Traditional Craft Aesthetics'}
               </span>
             </div>
 
@@ -154,7 +154,7 @@ export default async function LocalizedHomePage({
           <div className="flex flex-col items-center">
             <Sparkles className="w-6 h-6 text-gold-primary mb-2" />
             <h4 className="text-xs font-semibold tracking-widest uppercase mb-1">{dict.hero.features.spiritual}</h4>
-            <p className="text-[10px] text-zinc-500">{lang === 'zh' ? '正向能量诵经开光' : 'Aura purification ritual'}</p>
+            <p className="text-[10px] text-zinc-500">{lang === 'zh' ? '手工多重清理净化' : 'Hand-cleaned and purified'}</p>
           </div>
           <div className="flex flex-col items-center">
             <ShieldCheck className="w-6 h-6 text-gold-primary mb-2" />

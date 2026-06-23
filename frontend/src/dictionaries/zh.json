@@ -7,13 +7,13 @@
     "admin": "管理系统"
   },
   "hero": {
-    "motto": "让正向能量流转，吸纳源源不断好运",
-    "description": "FluxBless 为您甄选蕴含大自然治愈能量的开运配饰。我们专注古法琉璃、天然玛瑙、精选朱砂与白玉，为您的日常生活注入和谐、好运与内心的平和。",
-    "shopNow": "探索开运配饰",
+    "motto": "传统东方美学，点缀精致生活",
+    "description": "FluxBless 为您甄选富含东方古典美学的精致配饰。我们专注古法琉璃、天然玛瑙、精选朱砂与白玉，为您的日常生活注入和谐、优雅与内心的平和。",
+    "shopNow": "探索全部商品",
     "features": {
       "natural": "天然原石",
       "handcrafted": "匠心手作",
-      "spiritual": "能量开光",
+      "spiritual": "工艺精制",
       "shipping": "全球包邮"
     }
   },
@@ -34,14 +34,14 @@
     "addToCart": "加入购物车",
     "details": "商品详情",
     "sizeSpecs": "规格尺寸",
-    "spiritualMeaning": "能量寓意",
+    "spiritualMeaning": "材质与设计",
     "sizingTitle": "配戴尺寸指南",
     "sizingDesc": "手串均带有微弹力，适合大多数手围佩戴（14cm-18cm）。如需特别定制，请联系客服。",
     "relatedProducts": "为您推荐",
     "material": "材质",
     "origin": "产地",
-    "purification": "开光净化",
-    "benefits": "功效与寓意",
+    "purification": "保养与清洁",
+    "benefits": "美学与价值",
     "specWeight": "重量",
     "specBeadSize": "珠径",
     "specBeadCount": "珠数",
@@ -49,8 +49,8 @@
     "buyNow": "立即购买",
     "authenticity": "正品保障",
     "authenticityDesc": "所有商品均为天然原石，经专业鉴定，确保品质正宗。",
-    "blessing": "能量开光",
-    "blessingDesc": "每件商品出货前均经过传统净化与开光仪式，以激活其内在能量。",
+    "blessing": "手工甄选",
+    "blessingDesc": "每件商品出货前均经过细致的手工清洁与声波净化，确保展现天然纯净品质。",
     "shipping": "全球包邮",
     "shippingDesc": "订单满¥199包邮，精心包装，安全送达。"
   },
@@ -76,10 +76,10 @@
     "error": "支付初始化失败，请重试。"
   },
   "success": {
-    "title": "福运已至，感谢您的支持！",
-    "message1": "您的订单已成功支付并锁定。好运能量正在为您凝聚。",
-    "message2": "我们会尽快为您包装并寄出这份充满祝福的开运配饰。您的订单号与物流信息已发送至您的联系邮箱。",
-    "blessing": "愿正向能量流转，吸纳源源不断好运。福星高照，万事顺遂！",
+    "title": "支付成功，感谢您的订单！",
+    "message1": "您的订单已成功支付并锁定。我们将尽快安排为您发货。",
+    "message2": "我们会尽快为您打包并寄出精选配饰。您的订单号与物流信息已发送至您的联系邮箱。",
+    "blessing": "感谢您的支持。祝您身体安康，工作顺利，万事如意，幸福美满！",
     "goHome": "返回首页",
     "orderDetail": "订单信息"
   }

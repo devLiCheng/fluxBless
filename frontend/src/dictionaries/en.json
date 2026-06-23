@@ -7,13 +7,13 @@
     "admin": "Admin Portal"
   },
   "hero": {
-    "motto": "Let positive energy flow, attract endless blessings",
-    "description": "FluxBless curates premium blessing accessories containing natural healing energies. We specialize in ancient colored glaze, natural agate, selected cinnabar, and white jade to bring harmony, fortune, and inner peace to your daily life.",
-    "shopNow": "Explore Blessings",
+    "motto": "Traditional Eastern Aesthetics, Elegant Life",
+    "description": "FluxBless curates premium accessories reflecting classic Eastern aesthetics. We specialize in ancient colored glaze, natural agate, selected cinnabar, and white jade to bring harmony, elegance, and inner peace to your daily life.",
+    "shopNow": "Shop Collection",
     "features": {
       "natural": "Natural Gemstones",
       "handcrafted": "Handcrafted Artisanship",
-      "spiritual": "Energy Blessed",
+      "spiritual": "Premium Craft",
       "shipping": "Free Shipping"
     }
   },
@@ -34,14 +34,14 @@
     "addToCart": "Add to Cart",
     "details": "Details",
     "sizeSpecs": "Sizing Specifications",
-    "spiritualMeaning": "Spiritual Meaning",
+    "spiritualMeaning": "Design & Heritage",
     "sizingTitle": "Sizing Guide",
     "sizingDesc": "Our bracelets feature slight elasticity, fitting most wrist sizes (14cm-18cm). For custom sizing, please contact customer support.",
     "relatedProducts": "Recommended for You",
     "material": "Material",
     "origin": "Origin",
-    "purification": "Purification & Blessing",
-    "benefits": "Spiritual Benefits",
+    "purification": "Care & Cleaning",
+    "benefits": "Aesthetics & Value",
     "specWeight": "Weight",
     "specBeadSize": "Bead Size",
     "specBeadCount": "Bead Count",
@@ -49,8 +49,8 @@
     "buyNow": "Buy Now",
     "authenticity": "Authenticity Guaranteed",
     "authenticityDesc": "All items are genuine natural gemstones, professionally authenticated for quality and purity.",
-    "blessing": "Energy Blessed",
-    "blessingDesc": "Every item undergoes a traditional purification and blessing ceremony before shipping to activate its inner energy.",
+    "blessing": "Premium Selected",
+    "blessingDesc": "Every item is carefully selected and hand-cleaned before shipping to ensure pure quality.",
     "shipping": "Free Shipping",
     "shippingDesc": "Free shipping on orders over $29. Carefully packaged, safely delivered."
   },
@@ -76,10 +76,10 @@
     "error": "Failed to initialize payment. Please try again."
   },
   "success": {
-    "title": "Blessing Attracted! Thank you for your order.",
-    "message1": "Your payment was successful and order is locked. Positive energy is gathering for you.",
-    "message2": "We will package and ship your blessed accessory as soon as possible. Your order receipt and tracking details will be sent to your email.",
-    "blessing": "May positive energy flow, attracting endless blessings. May harmony and good fortune accompany you always!",
+    "title": "Order Placed Successfully! Thank you for your order.",
+    "message1": "Your payment was successful and your order is confirmed. We are preparing your items.",
+    "message2": "We will package and ship your items as soon as possible. Your order receipt and tracking details will be sent to your email.",
+    "blessing": "Thank you for shopping with us. Wish you health, happiness, and peace always!",
     "goHome": "Return Home",
     "orderDetail": "Order Details"
   }

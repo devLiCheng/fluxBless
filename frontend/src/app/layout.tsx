@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "FluxBless - Overseas Premium Blessing Store",
-  description: "Let positive energy flow, attract endless blessings. Shop handcrafted bracelets, agate, cinnabar, and white jade accessories.",
+  title: "FluxBless - Overseas Premium Accessory Store",
+  description: "Curated premium accessories reflecting classic Eastern aesthetics. Shop handcrafted bracelets, agate, cinnabar, and white jade accessories.",
 };
 
 export default function RootLayout({

@@ -115,7 +115,7 @@ const LayoutShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               FluxBless
             </span>
             <span className="text-[9px] tracking-[0.2em] uppercase text-gold-secondary font-serif text-center sm:text-left mt-0.5">
-              Let energy flow
+              Eastern Aesthetics
             </span>
           </Link>
 

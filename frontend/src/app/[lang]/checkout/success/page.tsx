@@ -54,7 +54,7 @@ export default function SuccessPage() {
         {/* Spiritual Blessing Card */}
         <div className="gold-glass max-w-md mx-auto p-6 rounded-xl border border-gold-primary/30 mt-8 relative">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#121212] px-3 text-[10px] tracking-[0.2em] text-gold-primary uppercase font-serif">
-            Aura Blessing
+            Best Wishes
           </div>
           <p className="text-sm font-serif italic text-gold-secondary leading-relaxed tracking-wider">
             &ldquo;{dict.success.blessing}&rdquo;
