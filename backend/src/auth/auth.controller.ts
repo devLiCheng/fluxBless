@@ -20,6 +20,6 @@ export class AuthController {
     const rawIp = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || '127.0.0.1';
     const ip = rawIp.split(',')[0].trim();
     const userAgent = req.headers['user-agent'] || '';
-    return this.authService.login(dto, ip, userAgent);
+    return this.authService.login(dto, 'user', ip, userAgent);
   }
 }

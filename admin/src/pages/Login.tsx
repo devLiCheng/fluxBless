@@ -16,7 +16,7 @@ export default function Login() {
     const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
     try {
-      const res = await axios.post(`${apiUrl}/auth/login`, {
+      const res = await axios.post(`${apiUrl}/admin/auth/login`, {
         email: values.email,
         password: values.password,
       });

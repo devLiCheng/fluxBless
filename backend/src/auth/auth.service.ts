@@ -54,12 +54,12 @@ export class AuthService {
     };
   }
 
-  async login(dto: LoginDto, ip?: string, userAgent?: string) {
+  async login(dto: LoginDto, requiredRole: 'user' | 'admin', ip?: string, userAgent?: string) {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email },
     });
 
-    if (!user) {
+    if (!user || user.role !== requiredRole) {
       throw new UnauthorizedException('Invalid credentials');
     }
 

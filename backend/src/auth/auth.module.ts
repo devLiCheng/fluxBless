@@ -4,6 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { AdminAuthController } from './admin-auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 import { LoginLogsModule } from '../login-logs/login-logs.module';
 
@@ -22,7 +23,7 @@ import { LoginLogsModule } from '../login-logs/login-logs.module';
     }),
     LoginLogsModule,
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, AdminAuthController],
   providers: [AuthService, JwtStrategy],
   exports: [AuthService, JwtModule],
 })
