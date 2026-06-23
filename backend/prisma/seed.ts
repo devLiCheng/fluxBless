@@ -249,6 +249,15 @@ async function main() {
 
     const { categorySlug, ...productData } = product;
 
+    // Check if the product already exists before creating it
+    const existingProduct = await prisma.product.findFirst({
+      where: { nameZh: product.nameZh },
+    });
+    if (existingProduct) {
+      console.log(`ℹ️ Product already exists: ${product.nameZh}`);
+      continue;
+    }
+
     await prisma.product.create({
       data: {
         ...productData,
