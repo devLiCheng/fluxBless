@@ -9,6 +9,7 @@ import Orders from './pages/Orders';
 import SystemLogs from './pages/SystemLogs';
 import Users from './pages/Users';
 import LoginLogs from './pages/LoginLogs';
+import Inquiries from './pages/Inquiries';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const token = localStorage.getItem('fluxbless_admin_token');
@@ -36,6 +37,7 @@ export const AppRouter = () => {
           <Route path="categories" element={<Categories />} />
           <Route path="orders" element={<Orders />} />
           <Route path="users" element={<Users />} />
+          <Route path="inquiries" element={<Inquiries />} />
           <Route path="login-logs" element={<LoginLogs />} />
           <Route path="logs" element={<SystemLogs />} />
           <Route path="" element={<Navigate to="dashboard" replace />} />

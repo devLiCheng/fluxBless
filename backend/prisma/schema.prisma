@@ -17,6 +17,7 @@ model User {
   cartItems CartItem[]
   loginLogs LoginLog[]
   reviews   Review[]
+  inquiries Inquiry[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
@@ -62,6 +63,7 @@ model Product {
   orderItems       OrderItem[]
   cartItems        CartItem[]
   reviews          Review[]
+  inquiries        Inquiry[]
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
 
@@ -143,3 +145,20 @@ model Review {
 
   @@map("reviews")
 }
+
+model Inquiry {
+  id          Int      @id @default(autoincrement())
+  name        String?
+  contactInfo String
+  message     String   @db.Text
+  status      String   @default("pending") // "pending", "processed"
+  productId   Int?
+  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  userId      Int?
+  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("inquiries")
+}
+

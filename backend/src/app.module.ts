@@ -12,6 +12,7 @@ import { LoggerModule } from './logger/logger.module';
 import { UploadModule } from './upload/upload.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { LoginLogsModule } from './login-logs/login-logs.module';
+import { InquiriesModule } from './inquiries/inquiries.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { LoginLogsModule } from './login-logs/login-logs.module';
     UploadModule,
     ReviewsModule,
     LoginLogsModule,
+    InquiriesModule,
   ],
 })
 export class AppModule {}

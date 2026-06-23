@@ -14,6 +14,7 @@ import {
   Flame,
   Award,
   ChevronRight,
+  X,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
@@ -71,6 +72,14 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
   const [submittingReview, setSubmittingReview] = useState(false);
   const [reviewError, setReviewError] = useState('');
 
+  // Contact customer service states
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [contactName, setContactName] = useState('');
+  const [contactInfo, setContactInfo] = useState('');
+  const [contactMessage, setContactMessage] = useState('');
+  const [submittingInquiry, setSubmittingInquiry] = useState(false);
+  const [inquiryStatus, setInquiryStatus] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
   const fetchReviews = async () => {
     setReviewsLoading(true);
     try {
@@ -123,6 +132,66 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
       setReviewError(err.message || 'Error submitting review');
     } finally {
       setSubmittingReview(false);
+    }
+  };
+
+  const handleInquirySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!contactInfo.trim() || !contactMessage.trim()) {
+      setInquiryStatus({
+        type: 'error',
+        text: lang === 'zh' ? '请填写联系方式和留言内容。' : 'Please fill out contact info and message.',
+      });
+      return;
+    }
+
+    setSubmittingInquiry(true);
+    setInquiryStatus(null);
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
+      const token = localStorage.getItem('fluxbless_token');
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const res = await fetch(`${apiUrl}/inquiries`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          name: contactName || undefined,
+          contactInfo,
+          message: contactMessage,
+          productId: product.id,
+        }),
+      });
+
+      if (res.ok) {
+        setInquiryStatus({
+          type: 'success',
+          text: lang === 'zh' ? '您的留言已成功提交，我们将尽快与您联系！' : 'Message submitted successfully. We will get back to you soon!',
+        });
+        setContactName('');
+        setContactInfo('');
+        setContactMessage('');
+        setTimeout(() => {
+          setIsContactModalOpen(false);
+          setInquiryStatus(null);
+        }, 2200);
+      } else {
+        const errData = await res.json();
+        throw new Error(errData.message || 'Submission failed');
+      }
+    } catch (err: any) {
+      setInquiryStatus({
+        type: 'error',
+        text: err.message || (lang === 'zh' ? '提交留言失败，请稍后重试。' : 'Failed to submit. Please try again later.'),
+      });
+    } finally {
+      setSubmittingInquiry(false);
     }
   };
 
@@ -567,12 +636,12 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
           <h3 className="text-sm font-medium text-cream mb-1">{dict.product.sizeSpecs}</h3>
           <p className="text-xs text-zinc-500 leading-relaxed">{dict.product.sizingDesc}</p>
         </div>
-        <Link
-          href={`/${lang}`}
-          className="sm:ml-auto text-xs text-gold-primary border border-gold-primary/30 px-4 py-2 rounded-lg hover:bg-gold-primary/10 transition-colors uppercase tracking-widest flex-shrink-0"
+        <button
+          onClick={() => setIsContactModalOpen(true)}
+          className="sm:ml-auto text-xs text-gold-primary border border-gold-primary/30 px-4 py-2 rounded-lg hover:bg-gold-primary/10 transition-colors uppercase tracking-widest flex-shrink-0 cursor-pointer"
         >
           {lang === 'zh' ? '联系客服' : 'Contact Us'}
-        </Link>
+        </button>
       </div>
 
       {/* ── User Reviews Section (At the bottom, below specs/sizing guide) ── */}
@@ -717,6 +786,105 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
           </div>
         </div>
       </div>
+
+      {/* ── Contact Customer Service Modal ── */}
+      {isContactModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm transition-opacity duration-300">
+          <div 
+            className="relative w-full max-w-md bg-[#161616] border border-gold-primary/20 rounded-2xl p-6 shadow-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Background design elements */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gold-primary/5 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-gold-primary/5 rounded-full blur-3xl pointer-events-none" />
+
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6 pb-3 border-b border-gold-primary/10">
+              <h3 className="text-base font-serif font-semibold tracking-widest text-gold-primary uppercase">
+                {lang === 'zh' ? '联系客服 / 问题反馈' : 'Contact Support'}
+              </h3>
+              <button
+                onClick={() => {
+                  setIsContactModalOpen(false);
+                  setInquiryStatus(null);
+                }}
+                className="text-zinc-400 hover:text-gold-primary transition-colors p-1 cursor-pointer"
+                aria-label="Close modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleInquirySubmit} className="space-y-4">
+              <div>
+                <label className="block text-[10px] text-zinc-400 mb-1.5 uppercase tracking-wider">
+                  {lang === 'zh' ? '您的称呼 (选填)' : 'Your Name (Optional)'}
+                </label>
+                <input
+                  type="text"
+                  value={contactName}
+                  onChange={(e) => setContactName(e.target.value)}
+                  placeholder={lang === 'zh' ? '例如：张先生 / 李女士' : 'e.g. John Doe'}
+                  className="w-full text-xs text-cream bg-[#222] border border-gold-primary/10 rounded-lg px-3.5 py-2.5 focus:outline-none focus:border-gold-primary focus:ring-1 focus:ring-gold-primary transition-all placeholder-zinc-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] text-zinc-400 mb-1.5 uppercase tracking-wider">
+                  {lang === 'zh' ? '联系方式 (必填)' : 'Contact Info (Required)'}
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={contactInfo}
+                  onChange={(e) => setContactInfo(e.target.value)}
+                  placeholder={lang === 'zh' ? 'Email, WhatsApp, 微信等' : 'Email, WhatsApp, WeChat, etc.'}
+                  className="w-full text-xs text-cream bg-[#222] border border-gold-primary/10 rounded-lg px-3.5 py-2.5 focus:outline-none focus:border-gold-primary focus:ring-1 focus:ring-gold-primary transition-all placeholder-zinc-600"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] text-zinc-400 mb-1.5 uppercase tracking-wider">
+                  {lang === 'zh' ? '咨询内容 / 问题反馈 (必填)' : 'Inquiry / Feedback (Required)'}
+                </label>
+                <textarea
+                  required
+                  rows={4}
+                  value={contactMessage}
+                  onChange={(e) => setContactMessage(e.target.value)}
+                  placeholder={lang === 'zh' ? '请详细描述您想咨询的问题或特别定制的需求...' : 'Describe your questions or customization requests in detail...'}
+                  className="w-full text-xs text-cream bg-[#222] border border-gold-primary/10 rounded-lg px-3.5 py-2.5 focus:outline-none focus:border-gold-primary focus:ring-1 focus:ring-gold-primary transition-all placeholder-zinc-600 resize-none custom-scrollbar"
+                />
+              </div>
+
+              {inquiryStatus && (
+                <div 
+                  className={`p-3 rounded-lg text-[11px] leading-relaxed ${
+                    inquiryStatus.type === 'success' 
+                      ? 'bg-green-500/10 border border-green-500/20 text-green-400' 
+                      : 'bg-red-500/10 border border-red-500/20 text-red-400'
+                  }`}
+                >
+                  {inquiryStatus.text}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={submittingInquiry}
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-gold-primary/80 to-gold-primary text-black font-semibold text-xs tracking-widest uppercase py-3 rounded-lg hover:from-gold-primary hover:to-gold-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg cursor-pointer"
+              >
+                {submittingInquiry ? (
+                  <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></span>
+                ) : (
+                  lang === 'zh' ? '提交咨询' : 'Submit Inquiry'
+                )}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

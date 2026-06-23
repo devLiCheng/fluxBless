@@ -10,6 +10,7 @@ import {
   IconUser,
   IconUserGroup,
   IconHistory,
+  IconMessage,
 } from '@arco-design/web-react/icon';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
@@ -98,6 +99,10 @@ export default function AdminLayout() {
           <Menu.Item key='users'>
             <IconUserGroup />
             {!collapsed && '用户管理'}
+          </Menu.Item>
+          <Menu.Item key='inquiries'>
+            <IconMessage />
+            {!collapsed && '客服消息'}
           </Menu.Item>
           <Menu.Item key='login-logs'>
             <IconHistory />
