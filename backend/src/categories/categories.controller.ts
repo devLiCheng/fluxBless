@@ -1,5 +1,5 @@
 import {
-  Controller, Get, Post, Put, Delete,
+  Controller, Get, Post, Put, Patch, Delete,
   Param, Body, UseGuards, ParseIntPipe,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
@@ -35,6 +35,7 @@ export class CategoriesController {
   }
 
   @Put(':id')
+  @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateCategoryDto) {

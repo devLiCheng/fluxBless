@@ -1,5 +1,5 @@
 import {
-  Controller, Get, Post, Put, Delete,
+  Controller, Get, Post, Put, Patch, Delete,
   Param, Body, Query, UseGuards, ParseIntPipe,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
@@ -30,6 +30,7 @@ export class ProductsController {
   }
 
   @Put(':id')
+  @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateProductDto) {
