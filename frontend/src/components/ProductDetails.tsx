@@ -54,7 +54,7 @@ interface ProductDetailsProps {
   lang: 'zh' | 'en';
 }
 
-type Tab = 'description' | 'benefits' | 'specs' | 'reviews';
+type Tab = 'description' | 'benefits' | 'specs';
 
 export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, lang }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -202,7 +202,6 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
     { key: 'description', label: lang === 'zh' ? '商品描述' : 'Description' },
     { key: 'benefits', label: lang === 'zh' ? '功效寓意' : 'Spiritual Benefits' },
     { key: 'specs', label: lang === 'zh' ? '规格参数' : 'Specifications' },
-    { key: 'reviews', label: lang === 'zh' ? '用户评价' : 'Reviews' },
   ];
 
   const hasSpecs = product.specWeight || product.specBeadSize || product.specBeadCount || material || origin || purification;
@@ -439,134 +438,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
               </div>
             )}
 
-            {activeTab === 'reviews' && (
-              <div className="space-y-6">
-                {/* Average Rating */}
-                <div className="flex items-center gap-4 bg-zinc-900/60 border border-gold-primary/10 p-5 rounded-2xl">
-                  <div className="text-center px-4 border-r border-gold-primary/10">
-                    <div className="text-3xl font-bold text-gold-primary font-serif">
-                      {reviews.length > 0
-                        ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)
-                        : '5.0'}
-                    </div>
-                    <div className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">
-                      {lang === 'zh' ? `${reviews.length} 条评价` : `${reviews.length} Reviews`}
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-1 mb-1">
-                      {[1, 2, 3, 4, 5].map((s) => {
-                        const avg = reviews.length > 0 ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length) : 5.0;
-                        return (
-                          <Star
-                            key={s}
-                            className={`w-3.5 h-3.5 ${
-                              s <= Math.round(avg) ? 'fill-gold-primary text-gold-primary' : 'text-zinc-600'
-                            }`}
-                          />
-                        );
-                      })}
-                    </div>
-                    <p className="text-xs text-zinc-400">
-                      {lang === 'zh' ? '真实买家购买后的真实评价，百分百真实可信。' : 'Authentic reviews from verified buyers.'}
-                    </p>
-                  </div>
-                </div>
 
-                {/* Review Form */}
-                {user ? (
-                  <form onSubmit={handleReviewSubmit} className="bg-zinc-900/40 border border-gold-primary/5 p-4 rounded-2xl space-y-4">
-                    <h3 className="text-xs font-serif tracking-widest text-gold-secondary uppercase">
-                      {lang === 'zh' ? '撰写您的评价' : 'Write a Review'}
-                    </h3>
-                    {reviewError && (
-                      <div className="bg-red-950/40 border border-red-500/40 text-red-300 text-[11px] px-3 py-2 rounded-lg">
-                        {reviewError}
-                      </div>
-                    )}
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-zinc-400">{lang === 'zh' ? '评分：' : 'Rating: '}</span>
-                      <div className="flex items-center gap-1">
-                        {[1, 2, 3, 4, 5].map((s) => (
-                          <button
-                            key={s}
-                            type="button"
-                            onClick={() => setNewRating(s)}
-                            className="p-0.5 hover:scale-110 transition-transform"
-                          >
-                            <Star
-                              className={`w-4 h-4 ${
-                                s <= newRating ? 'fill-gold-primary text-gold-primary' : 'text-zinc-600'
-                              }`}
-                            />
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <textarea
-                        required
-                        rows={2}
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                        placeholder={lang === 'zh' ? '说说您的佩戴体验和感受吧...' : 'Share your wearing experience...'}
-                        className="w-full bg-black/60 border border-gold-primary/20 focus:border-gold-primary text-xs text-cream px-3 py-2 rounded-lg focus:outline-none resize-none"
-                      />
-                    </div>
-                    <button
-                      type="submit"
-                      disabled={submittingReview}
-                      className="gold-gradient hover:gold-border-glow text-black font-semibold text-[10px] tracking-widest uppercase px-4 py-2 rounded-lg transition-all disabled:opacity-50"
-                    >
-                      {submittingReview ? (lang === 'zh' ? '提交中...' : 'Submitting...') : (lang === 'zh' ? '提交评价' : 'Submit Review')}
-                    </button>
-                  </form>
-                ) : (
-                  <div className="bg-zinc-900/20 border border-gold-primary/5 p-3 rounded-xl text-center">
-                    <p className="text-xs text-zinc-500">
-                      {lang === 'zh' ? '请登录后发表评价。' : 'Please log in to submit a review.'}
-                    </p>
-                  </div>
-                )}
-
-                {/* Review List */}
-                <div className="space-y-4 divide-y divide-gold-primary/5">
-                  {reviewsLoading ? (
-                    <div className="flex justify-center py-4">
-                      <div className="w-5 h-5 border-2 border-gold-primary border-t-transparent rounded-full animate-spin"></div>
-                    </div>
-                  ) : reviews.length === 0 ? (
-                    <p className="text-zinc-500 text-xs py-2">
-                      {lang === 'zh' ? '暂无评价，欢迎您成为首位评价者！' : 'No reviews yet. Be the first to review!'}
-                    </p>
-                  ) : (
-                    reviews.map((r, i) => (
-                      <div key={r.id} className={`pt-4 ${i === 0 ? 'pt-0' : ''}`}>
-                        <div className="flex items-center justify-between mb-1">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs font-semibold text-cream">{r.user?.name || 'Anonymous'}</span>
-                            <div className="flex items-center gap-0.5">
-                              {[1, 2, 3, 4, 5].map((s) => (
-                                <Star
-                                  key={s}
-                                  className={`w-3 h-3 ${
-                                    s <= r.rating ? 'fill-gold-primary text-gold-primary' : 'text-zinc-700'
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                          <span className="text-[10px] text-zinc-500">
-                            {new Date(r.createdAt).toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US')}
-                          </span>
-                        </div>
-                        <p className="text-zinc-300 text-xs leading-relaxed">{r.comment}</p>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Quantity & CTA */}
@@ -701,6 +573,149 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
         >
           {lang === 'zh' ? '联系客服' : 'Contact Us'}
         </Link>
+      </div>
+
+      {/* ── User Reviews Section (At the bottom, below specs/sizing guide) ── */}
+      <div className="mt-12 bg-[#1A1A1A] border border-gold-primary/10 rounded-2xl p-8">
+        <div className="flex items-center gap-3 mb-6 border-b border-gold-primary/10 pb-4">
+          <div className="w-8 h-8 rounded-full bg-gold-primary/10 flex items-center justify-center">
+            <Star className="w-4 h-4 text-gold-primary fill-gold-primary" />
+          </div>
+          <h2 className="text-lg font-serif tracking-widest text-gold-primary uppercase">
+            {lang === 'zh' ? '用户真实评价' : 'Customer Reviews'}
+          </h2>
+        </div>
+
+        {/* Inner grid to split: left summary & form, right review list */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Col: Overall Rating & Write Review Form */}
+          <div className="space-y-6 lg:border-r lg:border-gold-primary/10 lg:pr-8">
+            {/* Average Rating Block */}
+            <div className="flex items-center gap-4 bg-zinc-900/60 border border-gold-primary/10 p-5 rounded-xl">
+              <div className="text-center px-4 border-r border-gold-primary/10">
+                <div className="text-3xl font-bold text-gold-primary font-serif">
+                  {reviews.length > 0
+                    ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)
+                    : '5.0'}
+                </div>
+                <div className="text-[10px] text-zinc-500 uppercase tracking-widest mt-1">
+                  {lang === 'zh' ? `${reviews.length} 条评价` : `${reviews.length} Reviews`}
+                </div>
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-1 mb-1">
+                  {[1, 2, 3, 4, 5].map((s) => {
+                    const avg = reviews.length > 0 ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length) : 5.0;
+                    return (
+                      <Star
+                        key={s}
+                        className={`w-3.5 h-3.5 ${
+                          s <= Math.round(avg) ? 'fill-gold-primary text-gold-primary' : 'text-zinc-600'
+                        }`}
+                      />
+                    );
+                  })}
+                </div>
+                <p className="text-xs text-zinc-400">
+                  {lang === 'zh' ? '真实买家购买后的真实评价，百分百真实可信。' : 'Authentic reviews from verified buyers.'}
+                </p>
+              </div>
+            </div>
+
+            {/* Write a Review form */}
+            {user ? (
+              <form onSubmit={handleReviewSubmit} className="bg-zinc-900/40 border border-gold-primary/5 p-5 rounded-xl space-y-4">
+                <h3 className="text-xs font-serif tracking-widest text-gold-secondary uppercase">
+                  {lang === 'zh' ? '撰写您的评价' : 'Write a Review'}
+                </h3>
+                {reviewError && (
+                  <div className="bg-red-950/40 border border-red-500/40 text-red-300 text-[11px] px-3 py-2 rounded-lg">
+                    {reviewError}
+                  </div>
+                )}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-zinc-400">{lang === 'zh' ? '评分：' : 'Rating: '}</span>
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setNewRating(s)}
+                        className="p-0.5 hover:scale-110 transition-transform"
+                      >
+                        <Star
+                          className={`w-4 h-4 ${
+                            s <= newRating ? 'fill-gold-primary text-gold-primary' : 'text-zinc-600'
+                          }`}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <textarea
+                    required
+                    rows={3}
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    placeholder={lang === 'zh' ? '说说您的佩戴体验和感受吧...' : 'Share your wearing experience...'}
+                    className="w-full bg-black/60 border border-gold-primary/20 focus:border-gold-primary text-xs text-cream px-3 py-2 rounded-lg focus:outline-none resize-none"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={submittingReview}
+                  className="gold-gradient hover:gold-border-glow text-black font-semibold text-[10px] tracking-widest uppercase px-4 py-2.5 rounded-lg transition-all disabled:opacity-50 w-full"
+                >
+                  {submittingReview ? (lang === 'zh' ? '提交中...' : 'Submitting...') : (lang === 'zh' ? '提交评价' : 'Submit Review')}
+                </button>
+              </form>
+            ) : (
+              <div className="bg-zinc-900/20 border border-gold-primary/5 p-4 rounded-xl text-center">
+                <p className="text-xs text-zinc-500">
+                  {lang === 'zh' ? '请登录后发表评价。' : 'Please log in to submit a review.'}
+                </p>
+              </div>
+            )}
+          </div>
+
+          {/* Right Col: Reviews List */}
+          <div className="lg:col-span-2 space-y-4 divide-y divide-gold-primary/10 max-h-[500px] overflow-y-auto pr-2 scrollbar-thin">
+            {reviewsLoading ? (
+              <div className="flex justify-center py-12">
+                <div className="w-6 h-6 border-2 border-gold-primary border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            ) : reviews.length === 0 ? (
+              <div className="py-12 text-center text-zinc-500 text-xs">
+                {lang === 'zh' ? '暂无评价，欢迎您成为首位评价者！' : 'No reviews yet. Be the first to review!'}
+              </div>
+            ) : (
+              reviews.map((r, i) => (
+                <div key={r.id} className={`pt-4 ${i === 0 ? 'pt-0' : ''}`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-cream">{r.user?.name || 'Anonymous'}</span>
+                      <div className="flex items-center gap-0.5">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <Star
+                            key={s}
+                            className={`w-3.5 h-3.5 ${
+                              s <= r.rating ? 'fill-gold-primary text-gold-primary' : 'text-zinc-700'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <span className="text-[10px] text-zinc-500">
+                      {new Date(r.createdAt).toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US')}
+                    </span>
+                  </div>
+                  <p className="text-zinc-300 text-xs leading-relaxed">{r.comment}</p>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
