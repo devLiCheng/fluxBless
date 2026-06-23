@@ -93,7 +93,9 @@ export default async function LocalizedHomePage({
     const res = await fetch(`${apiUrl}/products`, { cache: 'no-store' });
     if (res.ok) {
       const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
+      if (data && Array.isArray(data.items) && data.items.length > 0) {
+        products = data.items;
+      } else if (Array.isArray(data) && data.length > 0) {
         products = data;
       }
     }
