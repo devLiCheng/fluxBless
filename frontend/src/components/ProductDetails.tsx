@@ -680,7 +680,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
           </div>
 
           {/* Right Col: Reviews List */}
-          <div className="lg:col-span-2 space-y-4 divide-y divide-gold-primary/10 max-h-[500px] overflow-y-auto pr-2 scrollbar-thin">
+          <div className="lg:col-span-2 space-y-4 divide-y divide-gold-primary/10 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
             {reviewsLoading ? (
               <div className="flex justify-center py-12">
                 <div className="w-6 h-6 border-2 border-gold-primary border-t-transparent rounded-full animate-spin"></div>
