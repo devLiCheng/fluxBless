@@ -43,16 +43,29 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
     { slug: 'white-jade', name: dict.categories['white-jade'] },
   ];
 
+  const getFullImageUrl = (url: string) => {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || '';
+    if (apiBase.startsWith('http')) {
+      const origin = new URL(apiBase).origin;
+      return `${origin}${url}`;
+    }
+    return url;
+  };
+
   // Parse images helper
   const getProductImage = (images: any): string => {
     try {
-      if (Array.isArray(images)) return images[0];
-      if (typeof images === 'string') {
+      let rawUrl = '';
+      if (Array.isArray(images)) {
+        rawUrl = images[0];
+      } else if (typeof images === 'string') {
         const parsed = JSON.parse(images);
-        if (Array.isArray(parsed)) return parsed[0];
-        return images;
+        if (Array.isArray(parsed)) rawUrl = parsed[0];
+        else rawUrl = images;
       }
-      return 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=600&auto=format&fit=crop';
+      return getFullImageUrl(rawUrl || 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=600&auto=format&fit=crop');
     } catch {
       return 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=600&auto=format&fit=crop';
     }

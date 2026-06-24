@@ -16,6 +16,9 @@ import {
   ChevronRight,
   ChevronLeft,
   X,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
@@ -198,16 +201,34 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
     }
   };
 
+  const getFullImageUrl = (url: string) => {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || '';
+    if (apiBase.startsWith('http')) {
+      const origin = new URL(apiBase).origin;
+      return `${origin}${url}`;
+    }
+    return url;
+  };
+
   // Parse images
   const getImages = (): string[] => {
     try {
-      if (Array.isArray(product.images)) return product.images;
-      if (typeof product.images === 'string') {
+      let rawImages: string[] = [];
+      if (Array.isArray(product.images)) {
+        rawImages = product.images;
+      } else if (typeof product.images === 'string') {
         const parsed = JSON.parse(product.images);
-        if (Array.isArray(parsed)) return parsed;
-        return [product.images];
+        if (Array.isArray(parsed)) rawImages = parsed;
+        else rawImages = [product.images];
+      } else {
+        rawImages = [];
       }
-      return ['https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop'];
+      if (rawImages.length === 0) {
+        return ['https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop'];
+      }
+      return rawImages.map(getFullImageUrl);
     } catch {
       return ['https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop'];
     }
@@ -225,6 +246,51 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
+  // Lightbox Zoom and Drag state
+  const [lightboxScale, setLightboxScale] = useState(1);
+  const [lightboxPos, setLightboxPos] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
+  const handleLightboxReset = () => {
+    setLightboxScale(1);
+    setLightboxPos({ x: 0, y: 0 });
+  };
+
+  const handleLightboxZoomIn = () => {
+    setLightboxScale((s) => (s >= 3.5 ? 1 : s + 0.5));
+    if (lightboxScale >= 3.5) {
+      setLightboxPos({ x: 0, y: 0 });
+    }
+  };
+
+  const handleLightboxZoomOut = () => {
+    setLightboxScale((s) => (s <= 1 ? 1 : s - 0.5));
+    if (lightboxScale <= 1.5) {
+      setLightboxPos({ x: 0, y: 0 });
+    }
+  };
+
+  const handleLightboxMouseDown = (e: React.MouseEvent<HTMLImageElement>) => {
+    if (lightboxScale === 1) return;
+    e.preventDefault();
+    setIsDragging(true);
+    setDragStart({ x: e.clientX - lightboxPos.x, y: e.clientY - lightboxPos.y });
+  };
+
+  const handleLightboxMouseMove = (e: React.MouseEvent<HTMLImageElement>) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    setLightboxPos({
+      x: e.clientX - dragStart.x,
+      y: e.clientY - dragStart.y,
+    });
+  };
+
+  const handleLightboxMouseUp = () => {
+    setIsDragging(false);
+  };
+
   // Keyboard navigation for Lightbox
   useEffect(() => {
     if (!isLightboxOpen) return;
@@ -232,10 +298,13 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setIsLightboxOpen(false);
+        handleLightboxReset();
       } else if (e.key === 'ArrowLeft' && images.length > 1) {
         setLightboxIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+        handleLightboxReset();
       } else if (e.key === 'ArrowRight' && images.length > 1) {
         setLightboxIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+        handleLightboxReset();
       }
     };
 
@@ -247,6 +316,29 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
       document.body.style.overflow = '';
     };
   }, [isLightboxOpen, images.length]);
+
+  // Hover Zoom state for main detail image
+  const [zoomStyle, setZoomStyle] = useState<React.CSSProperties>({});
+  const [isZoomed, setIsZoomed] = useState(false);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - left) / width) * 100;
+    const y = ((e.clientY - top) / height) * 100;
+    setZoomStyle({
+      transformOrigin: `${x}% ${y}%`,
+      transform: 'scale(1.8)',
+    });
+  };
+
+  const handleMouseEnter = () => {
+    setIsZoomed(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsZoomed(false);
+    setZoomStyle({});
+  };
 
   const displayRating = product.rating !== undefined && product.rating !== null ? product.rating : 5.0;
   const displayReviewCount = product.reviewCount !== undefined && product.reviewCount !== null ? product.reviewCount : 0;
@@ -329,8 +421,12 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
         <div className="space-y-4">
           {/* Main Image */}
           <div 
+            onMouseMove={handleMouseMove}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
             onClick={() => {
               setLightboxIndex(selectedImageIndex);
+              handleLightboxReset();
               setIsLightboxOpen(true);
             }}
             className="relative aspect-square bg-zinc-900 border border-gold-primary/10 rounded-2xl overflow-hidden group cursor-zoom-in"
@@ -338,7 +434,8 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
             <img
               src={images[selectedImageIndex]}
               alt={name}
-              className="w-full h-full object-cover group-hover:scale-[1.06] transition-transform duration-700"
+              style={isZoomed ? zoomStyle : { transition: 'transform 0.5s ease-out' }}
+              className="w-full h-full object-cover"
               onError={(e) => {
                 e.currentTarget.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop';
               }}
@@ -944,18 +1041,59 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
       {/* ── Original Image Lightbox Overlay ── */}
       {isLightboxOpen && (
         <div 
-          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center select-none"
-          onClick={() => setIsLightboxOpen(false)}
+          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex flex-col items-center justify-center select-none"
+          onClick={() => {
+            setIsLightboxOpen(false);
+            handleLightboxReset();
+          }}
         >
-          {/* Close Button */}
-          <button
-            onClick={() => setIsLightboxOpen(false)}
-            className="absolute top-6 right-6 text-zinc-400 hover:text-gold-primary p-2 transition-colors z-50 cursor-pointer animate-fade-in"
-            aria-label="Close original view"
-          >
-            <X className="w-6 h-6" />
-          </button>
+          {/* Header Controls (Close and Zoom Control Panel) */}
+          <div className="absolute top-6 left-0 right-0 flex items-center justify-between px-8 z-50" onClick={(e) => e.stopPropagation()}>
+            {/* Zoom Control Panel */}
+            <div className="flex items-center gap-4 bg-zinc-900/85 border border-gold-primary/20 px-4 py-2 rounded-full backdrop-blur-sm shadow-lg">
+              <button
+                onClick={handleLightboxZoomOut}
+                disabled={lightboxScale <= 1}
+                className="text-zinc-400 hover:text-gold-primary disabled:text-zinc-700 disabled:hover:text-zinc-700 transition-colors p-1 cursor-pointer"
+                title={lang === 'zh' ? '缩小' : 'Zoom Out'}
+              >
+                <ZoomOut className="w-4 h-4" />
+              </button>
+              <span className="text-[10px] text-zinc-300 font-mono tracking-widest min-w-[32px] text-center select-none">
+                {Math.round(lightboxScale * 100)}%
+              </span>
+              <button
+                onClick={handleLightboxZoomIn}
+                disabled={lightboxScale >= 3.5}
+                className="text-zinc-400 hover:text-gold-primary disabled:text-zinc-700 disabled:hover:text-zinc-700 transition-colors p-1 cursor-pointer"
+                title={lang === 'zh' ? '放大' : 'Zoom In'}
+              >
+                <ZoomIn className="w-4 h-4" />
+              </button>
+              <div className="w-px h-3 bg-zinc-700" />
+              <button
+                onClick={handleLightboxReset}
+                disabled={lightboxScale === 1 && lightboxPos.x === 0 && lightboxPos.y === 0}
+                className="text-zinc-400 hover:text-gold-primary disabled:text-zinc-700 disabled:hover:text-zinc-700 transition-colors p-1 cursor-pointer"
+                title={lang === 'zh' ? '重置' : 'Reset'}
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
+            </div>
 
+            {/* Close Button */}
+            <button
+              onClick={() => {
+                setIsLightboxOpen(false);
+                handleLightboxReset();
+              }}
+              className="text-zinc-400 hover:text-gold-primary p-2 transition-colors cursor-pointer bg-zinc-900/40 border border-zinc-800 rounded-full hover:bg-zinc-900/80"
+              aria-label="Close original view"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+ 
           {/* Navigation Arrows */}
           {images.length > 1 && (
             <>
@@ -963,6 +1101,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                 onClick={(e) => {
                   e.stopPropagation();
                   setLightboxIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+                  handleLightboxReset();
                 }}
                 className="absolute left-6 text-zinc-400 hover:text-gold-primary p-3 transition-colors z-50 bg-zinc-900/40 border border-zinc-800 rounded-full hover:bg-zinc-900/80 cursor-pointer"
                 aria-label="Previous image"
@@ -973,6 +1112,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                 onClick={(e) => {
                   e.stopPropagation();
                   setLightboxIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+                  handleLightboxReset();
                 }}
                 className="absolute right-6 text-zinc-400 hover:text-gold-primary p-3 transition-colors z-50 bg-zinc-900/40 border border-zinc-800 rounded-full hover:bg-zinc-900/80 cursor-pointer"
                 aria-label="Next image"
@@ -981,29 +1121,45 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
               </button>
             </>
           )}
-
+ 
           {/* Original Image Container */}
           <div 
-            className="relative max-w-[90vw] max-h-[90vh] flex flex-col items-center gap-4"
+            className="relative max-w-[90vw] max-h-[82vh] overflow-hidden flex flex-col items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
             <img
               src={images[lightboxIndex]}
               alt={name}
-              className="max-w-full max-h-[82vh] object-contain rounded-lg shadow-2xl border border-gold-primary/10 transition-transform duration-300"
+              style={{
+                transform: `translate(${lightboxPos.x}px, ${lightboxPos.y}px) scale(${lightboxScale})`,
+                cursor: lightboxScale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in',
+                transition: isDragging ? 'none' : 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+              }}
+              onMouseDown={handleLightboxMouseDown}
+              onMouseMove={handleLightboxMouseMove}
+              onMouseUp={handleLightboxMouseUp}
+              onMouseLeave={handleLightboxMouseUp}
+              onClick={() => {
+                if (lightboxScale === 1) {
+                  setLightboxScale(2);
+                } else {
+                  handleLightboxReset();
+                }
+              }}
+              className="max-w-[90vw] max-h-[75vh] object-contain rounded-lg shadow-2xl border border-gold-primary/10 select-none pointer-events-auto"
               onError={(e) => {
                 e.currentTarget.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop';
               }}
             />
             {/* Image Index Caption */}
             {images.length > 0 && (
-              <span className="text-zinc-500 text-xs tracking-widest">
-                {lightboxIndex + 1} / {images.length}
+              <span className="text-zinc-500 text-xs tracking-widest mt-4 block select-none">
+                ${lightboxIndex + 1} / ${images.length}
               </span>
             )}
           </div>
         </div>
       )}
-    </div>
+      </div>
   );
 };
