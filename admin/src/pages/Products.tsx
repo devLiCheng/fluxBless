@@ -13,9 +13,22 @@ import {
   Avatar,
   Grid,
   Collapse,
+  Upload,
 } from '@arco-design/web-react';
 import { IconPlus, IconEdit, IconDelete, IconSearch } from '@arco-design/web-react/icon';
 import api from '../utils/api';
+
+const getFullImageUrl = (url: string) => {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  // Relative URL like /api/uploads/...
+  const apiBase = api.defaults.baseURL || '';
+  if (apiBase.startsWith('http')) {
+    const origin = new URL(apiBase).origin;
+    return `${origin}${url}`;
+  }
+  return url;
+};
 
 export default function Products() {
   const [loading, setLoading] = useState(false);
@@ -28,6 +41,43 @@ export default function Products() {
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 });
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<number | undefined>(undefined);
+
+  const [fileList, setFileList] = useState<any[]>([]);
+  const [externalUrl, setExternalUrl] = useState('');
+
+  const customRequest = async (option: any) => {
+    const { file, onProgress, onSuccess, onError } = option;
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const res = await api.post('/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: (event) => {
+          let percent = 0;
+          if (event.total && event.total > 0) {
+            percent = Math.round((event.loaded / event.total) * 100);
+          }
+          onProgress(percent, event);
+        },
+      });
+      onSuccess(res.data);
+    } catch (err) {
+      onError(err);
+    }
+  };
+
+  const handleAddExternalUrl = () => {
+    if (!externalUrl.trim()) return;
+    const newFile = {
+      uid: String(Date.now()),
+      name: `external-image-${Date.now()}`,
+      status: 'done' as const,
+      url: externalUrl.trim(),
+    };
+    setFileList((prev) => [...prev, newFile]);
+    setExternalUrl('');
+    Message.success('成功添加网络图片');
+  };
 
   const fetchCategories = async () => {
     try {
@@ -95,7 +145,6 @@ export default function Products() {
         price: parseFloat(record.price),
         stock: record.stock,
         categoryId: record.categoryId,
-        imagesStr: parseImgStr(record.images),
         materialZh: record.materialZh || '',
         materialEn: record.materialEn || '',
         originZh: record.originZh || '',
@@ -110,18 +159,47 @@ export default function Products() {
         ratingOverride: record.ratingOverride !== null && record.ratingOverride !== undefined ? parseFloat(record.ratingOverride) : undefined,
         salesOverride: record.salesOverride !== null && record.salesOverride !== undefined ? record.salesOverride : undefined,
       });
+      let imgs: string[] = [];
+      if (Array.isArray(record.images)) {
+        imgs = record.images;
+      } else if (typeof record.images === 'string') {
+        try {
+          const parsed = JSON.parse(record.images);
+          if (Array.isArray(parsed)) imgs = parsed;
+        } catch {
+          if (record.images) imgs = [record.images];
+        }
+      }
+      const initialFiles = imgs.map((url: string, index: number) => ({
+        uid: String(-index - 1),
+        name: `image-${index + 1}`,
+        status: 'done' as const,
+        url: url,
+      }));
+      setFileList(initialFiles);
     } else {
       setEditingId(null);
       form.resetFields();
+      setFileList([]);
     }
   };
 
   const handleOk = async () => {
     try {
       const values = await form.validate();
-      const imgArray = values.imagesStr
-        ? values.imagesStr.split(',').map((img: string) => img.trim()).filter(Boolean)
-        : [];
+      const imgArray = fileList
+        .map((file) => {
+          if (file.response && file.response.url) {
+            return file.response.url;
+          }
+          return file.url;
+        })
+        .filter(Boolean);
+
+      if (imgArray.length === 0) {
+        Message.error('请至少上传或添加一张商品图片');
+        return;
+      }
 
       const payload: Record<string, any> = {
         nameZh: values.nameZh,
@@ -178,12 +256,12 @@ export default function Products() {
       render: (images: any) => {
         let url = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=100&auto=format&fit=crop';
         if (Array.isArray(images) && images.length > 0) {
-          url = images[0];
+          url = getFullImageUrl(images[0]);
         } else if (typeof images === 'string') {
           try {
             const parsed = JSON.parse(images);
-            if (Array.isArray(parsed) && parsed.length > 0) url = parsed[0];
-          } catch { url = images; }
+            if (Array.isArray(parsed) && parsed.length > 0) url = getFullImageUrl(parsed[0]);
+          } catch { url = getFullImageUrl(images); }
         }
         return (
           <Avatar shape='square' size={48}>
@@ -326,8 +404,23 @@ export default function Products() {
             </Grid.Col>
           </Grid.Row>
 
-          <Form.Item label='图片链接 (逗号分隔)' field='imagesStr' rules={[{ required: true, message: '请输入至少一张图片链接' }]}>
-            <Input.TextArea placeholder='例如：https://example.com/img1.jpg, https://example.com/img2.jpg' rows={2} style={{ resize: 'none' }} />
+          <Form.Item label='商品图片' required>
+            <Upload
+              listType='picture-card'
+              multiple
+              fileList={fileList}
+              onChange={setFileList}
+              customRequest={customRequest}
+              imagePreview
+            />
+            <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+              <Input
+                placeholder='输入外部图片链接 (例如: https://example.com/image.jpg)'
+                value={externalUrl}
+                onChange={setExternalUrl}
+              />
+              <Button type='secondary' onClick={handleAddExternalUrl}>添加链接</Button>
+            </div>
           </Form.Item>
 
           <Grid.Row gutter={16}>
