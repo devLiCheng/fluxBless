@@ -120,19 +120,6 @@ export default function Products() {
     fetchProducts(1, '', undefined);
   };
 
-  const parseImgStr = (images: any): string => {
-    if (Array.isArray(images)) return images.join(', ');
-    if (typeof images === 'string') {
-      try {
-        const parsed = JSON.parse(images);
-        return Array.isArray(parsed) ? parsed.join(', ') : images;
-      } catch {
-        return images;
-      }
-    }
-    return '';
-  };
-
   const showModal = (record?: any) => {
     setVisible(true);
     if (record) {
