@@ -117,7 +117,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
 
       {/* Grid */}
       {filteredProducts.length === 0 ? (
-        <div className="py-24 text-center">
+        <div className="min-h-[500px] flex flex-col items-center justify-center text-center">
           <p className="text-zinc-500 tracking-wider">
             {lang === 'zh' ? '未找到符合条件的精致配饰' : 'No matching items found'}
           </p>
