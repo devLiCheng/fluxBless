@@ -11,6 +11,7 @@ import {
   IconUserGroup,
   IconHistory,
   IconMessage,
+  IconSettings,
 } from '@arco-design/web-react/icon';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
@@ -107,6 +108,10 @@ export default function AdminLayout() {
           <Menu.Item key='login-logs'>
             <IconHistory />
             {!collapsed && '登录日志'}
+          </Menu.Item>
+          <Menu.Item key='settings'>
+            <IconSettings />
+            {!collapsed && '系统设置'}
           </Menu.Item>
           <Menu.Item key='logs'>
             <IconFile />

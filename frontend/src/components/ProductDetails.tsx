@@ -23,6 +23,7 @@ import {
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useSettings } from '../context/SettingsContext';
 
 interface Product {
   id: number;
@@ -65,6 +66,7 @@ type Tab = 'description' | 'benefits' | 'specs';
 
 export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, lang }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const { getSetting, getSettingL } = useSettings();
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<Tab>('description');
   const { addToCart } = useCart();
@@ -668,7 +670,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                   { label: dict.product.specWeight, value: product.specWeight },
                   {
                     label: lang === 'zh' ? '适合手围' : 'Wrist Size',
-                    value: '14cm – 18cm',
+                    value: getSetting('detail_wrist_size', '14cm – 18cm'),
                   },
                 ]
                   .filter((row) => row.value)
@@ -792,7 +794,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
             </div>
             <p className="text-xs text-zinc-400 leading-relaxed">
               {purification ||
-                (lang === 'zh'
+                getSettingL('detail_purification', lang, lang === 'zh'
                   ? '每件商品出货前均经过细致的手工清洁与声波清洗，确保展现矿石天然纯净品质。'
                   : 'Every item is carefully hand-cleaned and ultrasonic-cleansed before shipping to ensure its pure, natural quality.')}
             </p>
@@ -820,7 +822,9 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
         </div>
         <div>
           <h3 className="text-sm font-medium text-cream mb-1">{dict.product.sizeSpecs}</h3>
-          <p className="text-xs text-zinc-500 leading-relaxed">{dict.product.sizingDesc}</p>
+          <p className="text-xs text-zinc-500 leading-relaxed">
+            {getSettingL('detail_sizing_desc', lang, dict.product.sizingDesc)}
+          </p>
         </div>
         <button
           onClick={() => setIsContactModalOpen(true)}
@@ -872,7 +876,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                   })}
                 </div>
                 <p className="text-xs text-zinc-400">
-                  {lang === 'zh' ? '真实买家购买后的真实评价，百分百真实可信。' : 'Authentic reviews from verified buyers.'}
+                  {getSettingL('detail_review_subtext', lang, lang === 'zh' ? '真实买家购买后的真实评价，百分百真实可信。' : 'Authentic reviews from verified buyers.')}
                 </p>
               </div>
             </div>

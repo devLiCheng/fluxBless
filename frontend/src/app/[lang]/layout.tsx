@@ -7,6 +7,7 @@ import { ShoppingBag, X, Globe, Plus, Minus, Trash2, ArrowRight, User, LogOut, L
 import { CartProvider, useCart } from '../../context/CartContext';
 import { AuthProvider, useAuth } from '../../context/AuthContext';
 import { getDictionary } from '../../lib/dictionary';
+import { SettingsProvider, useSettings } from '../../context/SettingsContext';
 
 // Subcomponent for Telemetry
 const Telemetry: React.FC = () => {
@@ -45,6 +46,7 @@ const LayoutShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const [dict, setDict] = useState<any>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const { getSetting, getSettingL } = useSettings();
 
   // Auth modal state
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -103,7 +105,7 @@ const LayoutShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <div className="min-h-screen flex flex-col bg-[#121212] text-[#FAF9F6]">
       {/* Slogan Banner */}
       <div className="bg-[#0D0D0D] border-b border-gold-primary/10 text-center py-2 px-4 text-xs tracking-widest text-gold-secondary font-serif uppercase">
-        {dict.hero.motto}
+        {getSettingL('top_slogan', lang, dict.hero.motto)}
       </div>
 
       {/* Header */}
@@ -112,10 +114,10 @@ const LayoutShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           {/* Logo */}
           <Link href={`/${lang}`} className="flex flex-col">
             <span className="text-2xl sm:text-3xl font-bold font-serif tracking-widest text-gold-primary gold-text-gradient">
-              FluxBless
+              {getSetting('header_logo_title', 'FluxBless')}
             </span>
             <span className="text-[9px] tracking-[0.2em] uppercase text-gold-secondary font-serif text-center sm:text-left mt-0.5">
-              Eastern Aesthetics
+              {getSetting('header_logo_subtitle', 'Eastern Aesthetics')}
             </span>
           </Link>
 
@@ -126,9 +128,6 @@ const LayoutShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             </Link>
             <Link href={`/${lang}#catalog`} className="text-cream hover:text-gold-primary transition-colors">
               {dict.nav.shop}
-            </Link>
-            <Link href={`http://localhost:5173`} target="_blank" className="text-gold-secondary hover:text-gold-primary transition-colors">
-              {dict.nav.admin}
             </Link>
           </nav>
 
@@ -198,9 +197,11 @@ const LayoutShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <footer className="bg-[#0D0D0D] border-t border-gold-primary/10 py-12 px-4 mt-auto">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
           <div>
-            <h3 className="font-serif text-lg text-gold-primary tracking-widest mb-4">FluxBless</h3>
+            <h3 className="font-serif text-lg text-gold-primary tracking-widest mb-4">
+              {getSetting('footer_logo_title', 'FluxBless')}
+            </h3>
             <p className="text-zinc-500 leading-relaxed max-w-sm">
-              {dict.hero.description}
+              {getSettingL('footer_desc', lang, dict.hero.description)}
             </p>
           </div>
           <div>
@@ -226,8 +227,8 @@ const LayoutShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <h4 className="font-serif text-gold-secondary tracking-widest mb-4 uppercase">
               Contact
             </h4>
-            <p className="text-zinc-500 mb-2">Email: contact@fluxbless.com</p>
-            <p className="text-zinc-500">© 2026 FluxBless. All rights reserved.</p>
+            <p className="text-zinc-500 mb-2">Email: {getSetting('footer_contact_email', 'contact@fluxbless.com')}</p>
+            <p className="text-zinc-500">{getSettingL('footer_copyright', lang, '© 2026 FluxBless. All rights reserved.')}</p>
           </div>
         </div>
       </footer>
@@ -464,10 +465,12 @@ export default function LocalizedLayout({
 }) {
   return (
     <AuthProvider>
-      <CartProvider>
-        <Telemetry />
-        <LayoutShell>{children}</LayoutShell>
-      </CartProvider>
+      <SettingsProvider>
+        <CartProvider>
+          <Telemetry />
+          <LayoutShell>{children}</LayoutShell>
+        </CartProvider>
+      </SettingsProvider>
     </AuthProvider>
   );
 }

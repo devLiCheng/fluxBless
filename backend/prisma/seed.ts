@@ -267,6 +267,63 @@ async function main() {
     console.log(`✅ Product: ${product.nameZh} (${product.nameEn})`);
   }
 
+  // Create default system settings
+  const defaultSettings = [
+    { key: 'header_logo_title', value: 'FluxBless' },
+    { key: 'header_logo_subtitle', value: 'Eastern Aesthetics' },
+    { key: 'top_slogan_zh', value: '传统东方美学，点缀精致生活' },
+    { key: 'top_slogan_en', value: 'Traditional Eastern Aesthetics, Embellishing a Refined Life' },
+    { key: 'hero_badge_zh', value: '探寻传统手工美学' },
+    { key: 'hero_badge_en', value: 'Explore Traditional Craft Aesthetics' },
+    { key: 'hero_title_zh', value: '传统东方美学，点缀精致生活' },
+    { key: 'hero_title_en', value: 'Traditional Eastern Aesthetics, Embellishing a Refined Life' },
+    { key: 'hero_desc_zh', value: 'FluxBless 为您甄选富含东方古典美学的精致配饰。我们专注古法琉璃、天然玛瑙、精选朱砂与白玉，为您的日常生活注入和谐、优雅与内心的平和。' },
+    { key: 'hero_desc_en', value: 'FluxBless curates premium accessories reflecting classic Eastern aesthetics. We specialize in ancient colored glaze, natural agate, selected cinnabar, and white jade, bringing harmony, elegance, and inner peace into your daily life.' },
+    { key: 'feature1_icon', value: 'Gem' },
+    { key: 'feature1_title_zh', value: '天然原石' },
+    { key: 'feature1_title_en', value: 'Natural Gems' },
+    { key: 'feature1_desc_zh', value: '天然玉石与玛瑙' },
+    { key: 'feature1_desc_en', value: '100% genuine crystals' },
+    { key: 'feature2_icon', value: 'HeartHandshake' },
+    { key: 'feature2_title_zh', value: '匠心手作' },
+    { key: 'feature2_title_en', value: 'Handcrafted' },
+    { key: 'feature2_desc_zh', value: '传统工艺纯手工打造' },
+    { key: 'feature2_desc_en', value: 'Traditional handcrafted knots' },
+    { key: 'feature3_icon', value: 'Sparkles' },
+    { key: 'feature3_title_zh', value: '工艺精制' },
+    { key: 'feature3_title_en', value: 'Sonic Cleaned' },
+    { key: 'feature3_desc_zh', value: '手工多重清理净化' },
+    { key: 'feature3_desc_en', value: 'Hand-cleaned and purified' },
+    { key: 'feature4_icon', value: 'ShieldCheck' },
+    { key: 'feature4_title_zh', value: '全球包邮' },
+    { key: 'feature4_title_en', value: 'Free Shipping' },
+    { key: 'feature4_desc_zh', value: '限时免运费直邮' },
+    { key: 'feature4_desc_en', value: 'Free global delivery' },
+    { key: 'footer_logo_title', value: 'FluxBless' },
+    { key: 'footer_desc_zh', value: 'FluxBless 为您甄选富含东方古典美学的精致配饰。我们专注古法琉璃、天然玛瑙、精选朱砂与白玉，为您的日常生活注入和谐、优雅与内心的平和。' },
+    { key: 'footer_desc_en', value: 'FluxBless curates premium accessories reflecting classic Eastern aesthetics. We specialize in ancient colored glaze, natural agate, selected cinnabar, and white jade, bringing harmony, elegance, and inner peace into your daily life.' },
+    { key: 'footer_contact_email', value: 'contact@fluxbless.com' },
+    { key: 'footer_copyright_zh', value: '© 2026 FluxBless. 保留所有权利。' },
+    { key: 'footer_copyright_en', value: '© 2026 FluxBless. All rights reserved.' },
+    { key: 'detail_wrist_size', value: '14cm – 18cm' },
+    { key: 'detail_purification_zh', value: '每件商品出货前均经过细致的手工清洁与声波清洗，确保展现矿石天然纯净品质。' },
+    { key: 'detail_purification_en', value: 'Every item is carefully hand-cleaned and ultrasonic-cleansed before shipping to ensure its pure, natural quality.' },
+    { key: 'detail_sizing_desc_zh', value: '手串均带有微弹力，适合大多数手围佩戴（14cm-18cm）。如需特别定制，请联系客服。' },
+    { key: 'detail_sizing_desc_en', value: 'The bracelets have slight elasticity and fit most wrist sizes (14cm-18cm). For custom requests, please contact customer support.' },
+    { key: 'detail_review_subtext_zh', value: '真实买家购买后的真实评价，百分百真实可信。' },
+    { key: 'detail_review_subtext_en', value: 'Authentic reviews from verified buyers.' },
+  ];
+
+  console.log('🌱 Seeding default system settings...');
+  for (const setting of defaultSettings) {
+    await prisma.systemSetting.upsert({
+      where: { key: setting.key },
+      update: {},
+      create: setting,
+    });
+  }
+  console.log(`✅ Seeded ${defaultSettings.length} system settings`);
+
   console.log('\n🎉 Seeding complete!');
   console.log(`📊 Created: 1 admin, ${categories.length} categories, ${products.length} products`);
 }
