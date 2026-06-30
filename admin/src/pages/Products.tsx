@@ -92,7 +92,7 @@ export default function Products() {
   const fetchProducts = async (page = 1, search = searchQuery, catId = selectedCategory) => {
     setLoading(true);
     try {
-      let url = `/products?page=${page}&limit=${pagination.pageSize}`;
+      let url = `/products?page=${page}&limit=${pagination.pageSize}&isAdmin=true`;
       if (search) url += `&search=${encodeURIComponent(search)}`;
       if (catId) url += `&categoryId=${catId}`;
       const res = await api.get(url);
@@ -145,6 +145,11 @@ export default function Products() {
         specBeadCount: record.specBeadCount || '',
         ratingOverride: record.ratingOverride !== null && record.ratingOverride !== undefined ? parseFloat(record.ratingOverride) : undefined,
         salesOverride: record.salesOverride !== null && record.salesOverride !== undefined ? record.salesOverride : undefined,
+        specWristSizeZh: record.specWristSizeZh || '',
+        specWristSizeEn: record.specWristSizeEn || '',
+        sizingDescZh: record.sizingDescZh || '',
+        sizingDescEn: record.sizingDescEn || '',
+        purchaseUrl: record.purchaseUrl || '',
       });
       let imgs: string[] = [];
       if (Array.isArray(record.images)) {
@@ -203,7 +208,8 @@ export default function Products() {
         'materialZh', 'materialEn', 'originZh', 'originEn',
         'purificationZh', 'purificationEn', 'benefitsZh', 'benefitsEn',
         'specWeight', 'specBeadSize', 'specBeadCount',
-        'ratingOverride', 'salesOverride',
+        'specWristSizeZh', 'specWristSizeEn', 'sizingDescZh', 'sizingDescEn',
+        'purchaseUrl', 'ratingOverride', 'salesOverride',
       ];
       optionalFields.forEach((f) => {
         payload[f] = values[f] !== undefined && values[f] !== '' && values[f] !== null ? values[f] : null;
@@ -391,6 +397,10 @@ export default function Products() {
             </Grid.Col>
           </Grid.Row>
 
+          <Form.Item label='采购来源网址 (URL)' field='purchaseUrl'>
+            <Input placeholder='例如：https://detail.1688.com/offer/12345678.html' />
+          </Form.Item>
+
           <Form.Item label='商品图片' required>
             <Upload
               listType='picture-card'
@@ -494,6 +504,24 @@ export default function Products() {
                   </Form.Item>
                 </Grid.Col>
               </Grid.Row>
+              <Grid.Row gutter={16}>
+                <Grid.Col span={12}>
+                  <Form.Item label='适合手围 (中文)' field='specWristSizeZh'>
+                    <Input placeholder='例如：14cm – 18cm' />
+                  </Form.Item>
+                </Grid.Col>
+                <Grid.Col span={12}>
+                  <Form.Item label='适合手围 (英文)' field='specWristSizeEn'>
+                    <Input placeholder='e.g. 14cm – 18cm' />
+                  </Form.Item>
+                </Grid.Col>
+              </Grid.Row>
+              <Form.Item label='尺寸指南说明（中文）' field='sizingDescZh'>
+                <Input.TextArea placeholder='请输入中文尺寸指南详细说明...' rows={2} style={{ resize: 'none' }} />
+              </Form.Item>
+              <Form.Item label='尺寸指南说明（英文）' field='sizingDescEn'>
+                <Input.TextArea placeholder='Describe the sizing guide in English...' rows={2} style={{ resize: 'none' }} />
+              </Form.Item>
             </Collapse.Item>
 
             <Collapse.Item header='⭐ 评分与销量人工干预（选填）' name='overrides'>

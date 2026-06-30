@@ -60,6 +60,11 @@ model Product {
   specWeight       String?     // 重量规格 e.g. 约15g
   specBeadSize     String?     // 珠径 e.g. 8mm
   specBeadCount    String?     // 珠数 e.g. 18颗
+  specWristSizeZh  String?     // 适合手围（中文）
+  specWristSizeEn  String?     // Wrist Size (English)
+  sizingDescZh     String?     @db.Text // 尺寸指南说明（中文）
+  sizingDescEn     String?     @db.Text // Sizing Guide Description (English)
+  purchaseUrl      String?     @db.Text // 采购/采集来源网址 URL
   ratingOverride   Float?
   salesOverride    Int?
   orderItems       OrderItem[]

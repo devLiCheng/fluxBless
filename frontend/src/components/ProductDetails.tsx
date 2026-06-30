@@ -52,6 +52,11 @@ interface Product {
   specWeight?: string;
   specBeadSize?: string;
   specBeadCount?: string;
+  specWristSizeZh?: string;
+  specWristSizeEn?: string;
+  sizingDescZh?: string;
+  sizingDescEn?: string;
+  purchaseUrl?: string;
   rating?: number;
   reviewCount?: number;
 }
@@ -670,7 +675,15 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                   { label: dict.product.specWeight, value: product.specWeight },
                   {
                     label: lang === 'zh' ? '适合手围' : 'Wrist Size',
-                    value: getSetting('detail_wrist_size', '14cm – 18cm'),
+                    value: (lang === 'zh' ? product.specWristSizeZh : product.specWristSizeEn) || '14cm – 18cm',
+                  },
+                  {
+                    label: lang === 'zh' ? '商品来源' : 'Sourcing Link',
+                    value: product.purchaseUrl ? (
+                      <a href={product.purchaseUrl} target="_blank" rel="noopener noreferrer" className="text-gold-primary hover:underline">
+                        {lang === 'zh' ? '点击查看' : 'Click to view'}
+                      </a>
+                    ) : null,
                   },
                 ]
                   .filter((row) => row.value)
@@ -794,7 +807,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
             </div>
             <p className="text-xs text-zinc-400 leading-relaxed">
               {purification ||
-                getSettingL('detail_purification', lang, lang === 'zh'
+                (lang === 'zh'
                   ? '每件商品出货前均经过细致的手工清洁与声波清洗，确保展现矿石天然纯净品质。'
                   : 'Every item is carefully hand-cleaned and ultrasonic-cleansed before shipping to ensure its pure, natural quality.')}
             </p>
@@ -823,7 +836,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
         <div>
           <h3 className="text-sm font-medium text-cream mb-1">{dict.product.sizeSpecs}</h3>
           <p className="text-xs text-zinc-500 leading-relaxed">
-            {getSettingL('detail_sizing_desc', lang, dict.product.sizingDesc)}
+            {(lang === 'zh' ? product.sizingDescZh : product.sizingDescEn) || dict.product.sizingDesc}
           </p>
         </div>
         <button

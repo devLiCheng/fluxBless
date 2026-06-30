@@ -27,13 +27,17 @@ export class ProductsService {
   }
 
   async findAll(query: ProductQueryDto) {
-    const { categoryId, search, page = 1, limit = 12 } = query;
+    const { categoryId, search, page = 1, limit = 12, isAdmin } = query;
     const skip = (page - 1) * limit;
 
     const where: any = {};
 
     if (categoryId) {
       where.categoryId = categoryId;
+    }
+
+    if (isAdmin !== 'true') {
+      where.stock = { gt: 0 };
     }
 
     if (search) {
@@ -72,7 +76,7 @@ export class ProductsService {
     };
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, isAdmin = false) {
     const product = await this.prisma.product.findUnique({
       where: { id },
       include: { 
@@ -83,6 +87,9 @@ export class ProductsService {
       },
     });
     if (!product) throw new NotFoundException('Product not found');
+    if (!isAdmin && product.stock <= 0) {
+      throw new NotFoundException('Product not found');
+    }
     return this.formatProductStats(product);
   }
 
@@ -108,24 +115,29 @@ export class ProductsService {
         specWeight: dto.specWeight,
         specBeadSize: dto.specBeadSize,
         specBeadCount: dto.specBeadCount,
+        specWristSizeZh: dto.specWristSizeZh,
+        specWristSizeEn: dto.specWristSizeEn,
+        sizingDescZh: dto.sizingDescZh,
+        sizingDescEn: dto.sizingDescEn,
+        purchaseUrl: dto.purchaseUrl,
         ratingOverride: dto.ratingOverride,
         salesOverride: dto.salesOverride,
       },
     });
-    return this.findOne(product.id);
+    return this.findOne(product.id, true);
   }
 
   async update(id: number, dto: UpdateProductDto) {
-    await this.findOne(id);
+    await this.findOne(id, true);
     await this.prisma.product.update({
       where: { id },
       data: dto as any,
     });
-    return this.findOne(id);
+    return this.findOne(id, true);
   }
 
   async remove(id: number) {
-    await this.findOne(id);
+    await this.findOne(id, true);
     return this.prisma.product.delete({ where: { id } });
   }
 }

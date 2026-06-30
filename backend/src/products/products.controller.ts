@@ -18,8 +18,8 @@ export class ProductsController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.productsService.findOne(id);
+  findOne(@Param('id', ParseIntPipe) id: number, @Query('isAdmin') isAdmin?: string) {
+    return this.productsService.findOne(id, isAdmin === 'true');
   }
 
   @Post()

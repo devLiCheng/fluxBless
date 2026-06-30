@@ -84,6 +84,26 @@ export class CreateProductDto {
   @IsNumber()
   @Type(() => Number)
   salesOverride?: number;
+
+  @IsOptional()
+  @IsString()
+  specWristSizeZh?: string;
+
+  @IsOptional()
+  @IsString()
+  specWristSizeEn?: string;
+
+  @IsOptional()
+  @IsString()
+  sizingDescZh?: string;
+
+  @IsOptional()
+  @IsString()
+  sizingDescEn?: string;
+
+  @IsOptional()
+  @IsString()
+  purchaseUrl?: string;
 }
 
 export class UpdateProductDto {
@@ -177,6 +197,26 @@ export class UpdateProductDto {
   @IsNumber()
   @Type(() => Number)
   salesOverride?: number;
+
+  @IsOptional()
+  @IsString()
+  specWristSizeZh?: string;
+
+  @IsOptional()
+  @IsString()
+  specWristSizeEn?: string;
+
+  @IsOptional()
+  @IsString()
+  sizingDescZh?: string;
+
+  @IsOptional()
+  @IsString()
+  sizingDescEn?: string;
+
+  @IsOptional()
+  @IsString()
+  purchaseUrl?: string;
 }
 
 export class ProductQueryDto {
@@ -200,5 +240,9 @@ export class ProductQueryDto {
   @Type(() => Number)
   @Min(1)
   limit?: number = 12;
+
+  @IsOptional()
+  @IsString()
+  isAdmin?: string;
 }
 

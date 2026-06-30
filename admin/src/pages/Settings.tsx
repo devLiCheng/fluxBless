@@ -237,33 +237,7 @@ export default function Settings() {
               {/* Tab 4: Product Detail Page */}
               <TabPane key='4' title='商品详情页配置'>
                 <div style={{ padding: '16px 0' }}>
-                  <Typography.Title heading={6} style={{ marginTop: 0 }}>手串规格参数</Typography.Title>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                    <Form.Item label='默认适合手围' field='detail_wrist_size' rules={[{ required: true }]}>
-                      <Input placeholder='例如：14cm – 18cm' />
-                    </Form.Item>
-                    <div />
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                    <Form.Item label='尺寸指南描述 (中文)' field='detail_sizing_desc_zh' rules={[{ required: true }]}>
-                      <Input.TextArea rows={2} placeholder='默认手围尺寸说明...' style={{ resize: 'none' }} />
-                    </Form.Item>
-                    <Form.Item label='尺寸指南描述 (英文)' field='detail_sizing_desc_en' rules={[{ required: true }]}>
-                      <Input.TextArea rows={2} placeholder='Enter wrist size guide description...' style={{ resize: 'none' }} />
-                    </Form.Item>
-                  </div>
-
-                  <Typography.Title heading={6}>保养与清洁默认介绍 (Purification)</Typography.Title>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                    <Form.Item label='保养说明 (中文)' field='detail_purification_zh' rules={[{ required: true }]}>
-                      <Input.TextArea rows={3} placeholder='商品默认净化清洁保养中文说明...' style={{ resize: 'none' }} />
-                    </Form.Item>
-                    <Form.Item label='保养说明 (英文)' field='detail_purification_en' rules={[{ required: true }]}>
-                      <Input.TextArea rows={3} placeholder='Enter default care and cleaning explanation...' style={{ resize: 'none' }} />
-                    </Form.Item>
-                  </div>
-
-                  <Typography.Title heading={6}>评价区副文本 (Reviews Subtext)</Typography.Title>
+                  <Typography.Title heading={6} style={{ marginTop: 0 }}>评价区副文本 (Reviews Subtext)</Typography.Title>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                     <Form.Item label='评价副文本 (中文)' field='detail_review_subtext_zh' rules={[{ required: true }]}>
                       <Input placeholder='真实买家购买后的真实评价，百分百真实可信。' />
