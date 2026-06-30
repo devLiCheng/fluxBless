@@ -9,7 +9,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: fluxbless
     ports:
-      - "${MYSQL_PORT:-3308}:3306"
+      - "${MYSQL_PORT:-3309}:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
