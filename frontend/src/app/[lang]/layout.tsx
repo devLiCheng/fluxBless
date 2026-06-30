@@ -228,6 +228,11 @@ const LayoutShell: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               Contact
             </h4>
             <p className="text-zinc-500 mb-2">Email: {getSetting('footer_contact_email', 'contact@fluxbless.com')}</p>
+            <div className="mb-3">
+              <Link href={`/${lang}/blog`} className="text-gold-primary hover:text-gold-secondary transition-colors text-xs font-serif tracking-widest uppercase">
+                {lang === 'zh' ? '博客文章' : 'Our Blog'}
+              </Link>
+            </div>
             <p className="text-zinc-500">{getSettingL('footer_copyright', lang, '© 2026 FluxBless. All rights reserved.')}</p>
           </div>
         </div>

@@ -109,6 +109,10 @@ export default function AdminLayout() {
             <IconHistory />
             {!collapsed && '登录日志'}
           </Menu.Item>
+          <Menu.Item key='blog-posts'>
+            <IconBook />
+            {!collapsed && '博客管理'}
+          </Menu.Item>
           <Menu.Item key='settings'>
             <IconSettings />
             {!collapsed && '系统设置'}

@@ -179,3 +179,22 @@ model SystemSetting {
   @@map("system_settings")
 }
 
+model BlogPost {
+  id          Int      @id @default(autoincrement())
+  titleZh     String
+  titleEn     String
+  slug        String   @unique
+  summaryZh   String   @db.Text
+  summaryEn   String   @db.Text
+  contentZh   String   @db.Text
+  contentEn   String   @db.Text
+  coverImage  String?  // Cover image URL
+  author      String   @default("FluxBless")
+  readTime    Int      @default(5) // in minutes
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("blog_posts")
+}
+
