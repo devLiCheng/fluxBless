@@ -38,3 +38,19 @@ export class LoggerController {
     );
   }
 }
+
+@Controller('logger')
+export class LoggerPageviewController {
+  constructor(private loggerService: LoggerService) {}
+
+  @Post('pageview')
+  async logPageView(
+    @Body() body: {
+      path: string;
+      referrer?: string;
+      screenSize?: string;
+    },
+  ) {
+    return this.loggerService.logPageView(body);
+  }
+}

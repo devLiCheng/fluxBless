@@ -36,6 +36,24 @@ export class LoggerService {
     });
   }
 
+  async logPageView(data: {
+    path: string;
+    referrer?: string;
+    screenSize?: string;
+  }) {
+    return this.prisma.systemLog.create({
+      data: {
+        level: 'info',
+        message: `Page view: ${data.path}`,
+        meta: JSON.stringify({
+          source: 'pageview',
+          referrer: data.referrer || '',
+          screenSize: data.screenSize || '',
+        }),
+      },
+    });
+  }
+
   async findAll(page = 1, limit = 50, level?: string) {
     const skip = (page - 1) * limit;
     const where: any = {};
