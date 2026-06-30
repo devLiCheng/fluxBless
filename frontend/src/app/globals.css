@@ -25,6 +25,25 @@
   --color-cream: var(--cream);
 }
 
+html {
+  overflow-y: scroll;
+}
+
+/* Global premium scrollbar to match Tudou Gold theme and prevent page jitter */
+html::-webkit-scrollbar {
+  width: 8px;
+}
+html::-webkit-scrollbar-track {
+  background: #121212;
+}
+html::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.2);
+  border-radius: 4px;
+}
+html::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.4);
+}
+
 body {
   background-color: var(--background);
   color: var(--foreground);

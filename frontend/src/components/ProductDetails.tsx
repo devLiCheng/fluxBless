@@ -247,6 +247,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
   // Lightbox Zoom and Drag state
+  const hasDraggedRef = React.useRef(false);
   const [lightboxScale, setLightboxScale] = useState(1);
   const [lightboxPos, setLightboxPos] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -255,6 +256,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
   const handleLightboxReset = () => {
     setLightboxScale(1);
     setLightboxPos({ x: 0, y: 0 });
+    hasDraggedRef.current = false;
   };
 
   const handleLightboxZoomIn = () => {
@@ -271,14 +273,12 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
     }
   };
 
-  const hasDraggedRef = React.useRef(false);
-
   const handleLightboxMouseDown = (e: React.MouseEvent<HTMLImageElement>) => {
+    hasDraggedRef.current = false;
     if (lightboxScale === 1) return;
     e.preventDefault();
     setIsDragging(true);
     setDragStart({ x: e.clientX - lightboxPos.x, y: e.clientY - lightboxPos.y });
-    hasDraggedRef.current = false;
   };
 
   const handleLightboxMouseMove = (e: React.MouseEvent<HTMLImageElement>) => {
@@ -302,11 +302,11 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
   };
 
   const handleLightboxTouchStart = (e: React.TouchEvent<HTMLImageElement>) => {
+    hasDraggedRef.current = false;
     if (lightboxScale === 1) return;
     setIsDragging(true);
     const touch = e.touches[0];
     setDragStart({ x: touch.clientX - lightboxPos.x, y: touch.clientY - lightboxPos.y });
-    hasDraggedRef.current = false;
   };
 
   const handleLightboxTouchMove = (e: React.TouchEvent<HTMLImageElement>) => {
