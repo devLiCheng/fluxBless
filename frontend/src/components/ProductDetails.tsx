@@ -271,24 +271,58 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
     }
   };
 
+  const hasDraggedRef = React.useRef(false);
+
   const handleLightboxMouseDown = (e: React.MouseEvent<HTMLImageElement>) => {
     if (lightboxScale === 1) return;
     e.preventDefault();
     setIsDragging(true);
     setDragStart({ x: e.clientX - lightboxPos.x, y: e.clientY - lightboxPos.y });
+    hasDraggedRef.current = false;
   };
 
   const handleLightboxMouseMove = (e: React.MouseEvent<HTMLImageElement>) => {
     if (!isDragging) return;
     e.preventDefault();
+    const newX = e.clientX - dragStart.x;
+    const newY = e.clientY - dragStart.y;
+    const deltaX = Math.abs(newX - lightboxPos.x);
+    const deltaY = Math.abs(newY - lightboxPos.y);
+    if (deltaX > 3 || deltaY > 3) {
+      hasDraggedRef.current = true;
+    }
     setLightboxPos({
-      x: e.clientX - dragStart.x,
-      y: e.clientY - dragStart.y,
+      x: newX,
+      y: newY,
     });
   };
 
   const handleLightboxMouseUp = () => {
     setIsDragging(false);
+  };
+
+  const handleLightboxTouchStart = (e: React.TouchEvent<HTMLImageElement>) => {
+    if (lightboxScale === 1) return;
+    setIsDragging(true);
+    const touch = e.touches[0];
+    setDragStart({ x: touch.clientX - lightboxPos.x, y: touch.clientY - lightboxPos.y });
+    hasDraggedRef.current = false;
+  };
+
+  const handleLightboxTouchMove = (e: React.TouchEvent<HTMLImageElement>) => {
+    if (!isDragging) return;
+    const touch = e.touches[0];
+    const newX = touch.clientX - dragStart.x;
+    const newY = touch.clientY - dragStart.y;
+    const deltaX = Math.abs(newX - lightboxPos.x);
+    const deltaY = Math.abs(newY - lightboxPos.y);
+    if (deltaX > 3 || deltaY > 3) {
+      hasDraggedRef.current = true;
+    }
+    setLightboxPos({
+      x: newX,
+      y: newY,
+    });
   };
 
   // Keyboard navigation for Lightbox
@@ -1134,12 +1168,19 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                 transform: `translate(${lightboxPos.x}px, ${lightboxPos.y}px) scale(${lightboxScale})`,
                 cursor: lightboxScale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in',
                 transition: isDragging ? 'none' : 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                touchAction: lightboxScale > 1 ? 'none' : 'auto',
               }}
               onMouseDown={handleLightboxMouseDown}
               onMouseMove={handleLightboxMouseMove}
               onMouseUp={handleLightboxMouseUp}
               onMouseLeave={handleLightboxMouseUp}
+              onTouchStart={handleLightboxTouchStart}
+              onTouchMove={handleLightboxTouchMove}
+              onTouchEnd={handleLightboxMouseUp}
               onClick={() => {
+                if (hasDraggedRef.current) {
+                  return;
+                }
                 if (lightboxScale === 1) {
                   setLightboxScale(2);
                 } else {
@@ -1154,7 +1195,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
             {/* Image Index Caption */}
             {images.length > 0 && (
               <span className="text-zinc-500 text-xs tracking-widest mt-4 block select-none">
-                ${lightboxIndex + 1} / ${images.length}
+                {lightboxIndex + 1} / {images.length}
               </span>
             )}
           </div>
