@@ -89,7 +89,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
       {/* Filters & Search */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12 border-b border-gold-primary/10 pb-8">
         {/* Category tags */}
-        <div className="flex items-center space-x-2 overflow-x-auto pb-4 md:pb-0 scrollbar-none scroll-smooth">
+        <div className="flex items-center space-x-2 overflow-x-auto pb-4 md:pb-0 scrollbar-none scroll-smooth w-full max-w-full min-w-0">
           {categories.map((cat) => (
             <button
               key={cat.slug}

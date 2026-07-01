@@ -519,7 +519,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
 
           {/* Thumbnails */}
           {images.length > 1 && (
-            <div className="flex space-x-3 overflow-x-auto pb-2 scrollbar-none scroll-smooth">
+            <div className="flex space-x-3 overflow-x-auto pb-2 scrollbar-none scroll-smooth w-full max-w-full min-w-0">
               {images.map((img, idx) => (
                 <button
                   key={idx}
@@ -642,7 +642,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
 
           {/* Tabs */}
           <div className="border-b border-gold-primary/10 mb-6">
-            <div className="flex space-x-0 overflow-x-auto scrollbar-none pb-0.5 scroll-smooth">
+            <div className="flex space-x-0 overflow-x-auto scrollbar-none pb-0.5 scroll-smooth w-full max-w-full min-w-0">
               {tabs.map((tab) => (
                 <button
                   key={tab.key}

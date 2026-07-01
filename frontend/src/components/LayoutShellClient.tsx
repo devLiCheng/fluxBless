@@ -125,7 +125,7 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
           </nav>
 
           {/* Action buttons */}
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-3 sm:space-x-6">
             {/* Language Switcher */}
             <button
               onClick={toggleLanguage}
