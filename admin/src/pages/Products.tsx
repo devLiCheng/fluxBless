@@ -550,6 +550,17 @@ function RichTextEditor({ value = '', onChange }: { value?: string; onChange?: (
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [mediaType, setMediaType] = useState<'image' | 'video'>('image');
 
+  const innerValue = value || '';
+
+  // Synchronize editor innerHTML with the value prop only when changed from outside
+  useEffect(() => {
+    if (editorRef.current) {
+      if (editorRef.current.innerHTML !== innerValue) {
+        editorRef.current.innerHTML = innerValue;
+      }
+    }
+  }, [innerValue]);
+
   const handleCommand = (command: string, arg: string = '') => {
     document.execCommand(command, false, arg);
   };
@@ -631,7 +642,6 @@ function RichTextEditor({ value = '', onChange }: { value?: string; onChange?: (
             onChange(editorRef.current.innerHTML);
           }
         }}
-        dangerouslySetInnerHTML={{ __html: value }}
         style={{
           minHeight: 120,
           padding: '8px 12px',
