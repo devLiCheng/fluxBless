@@ -77,7 +77,8 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
     setCouponsLoading(true);
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      const res = await fetch(`${apiUrl}/coupons/my`, {
+      const cleanApiUrl = apiUrl.startsWith('/') || apiUrl.startsWith('http') ? apiUrl : '/' + apiUrl;
+      const res = await fetch(`${cleanApiUrl}/coupons/my`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
@@ -93,9 +94,10 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
 
   const handleClaimCoupon = async (code: string) => {
     if (!code) return;
+    const cleanCode = code.trim().toUpperCase();
     if (!token) {
       // Save code to claim after login
-      sessionStorage.setItem('fluxbless_pending_coupon_claim', code.toUpperCase());
+      sessionStorage.setItem('fluxbless_pending_coupon_claim', cleanCode);
       setAuthMode('login');
       setAuthError(lang === 'zh' ? '请先登录以领取您的促销优惠券！' : 'Please sign in first to claim your coupon!');
       setIsAuthOpen(true);
@@ -104,13 +106,14 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
 
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
-      const res = await fetch(`${apiUrl}/coupons/claim`, {
+      const cleanApiUrl = apiUrl.startsWith('/') || apiUrl.startsWith('http') ? apiUrl : '/' + apiUrl;
+      const res = await fetch(`${cleanApiUrl}/coupons/claim`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ code: code.toUpperCase() }),
+        body: JSON.stringify({ code: cleanCode }),
       });
 
       const data = await res.json();
@@ -560,7 +563,7 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
             {/* Form Content */}
             <form onSubmit={handleAuthSubmit} className="p-6 space-y-4">
               {authError && (
-                <div className="bg-red-950/40 border border-red-500/40 text-red-300 text-xs px-4 py-3 rounded-lg">
+                <div className="bg-red-50 border border-red-200 text-red-800 text-xs px-4 py-3 rounded-lg font-sans">
                   {authError}
                 </div>
               )}

@@ -14,6 +14,7 @@ import {
   Grid,
   Collapse,
   Upload,
+  Drawer,
 } from '@arco-design/web-react';
 import { IconPlus, IconEdit, IconDelete, IconSearch, IconEye, IconPlayArrow } from '@arco-design/web-react/icon';
 import api from '../utils/api';
@@ -383,12 +384,12 @@ export default function Products() {
         onChange={handleTableChange}
       />
 
-      <Modal
+      <Drawer
         title={editingId ? '编辑商品' : '创建商品'}
         visible={visible}
         onOk={handleOk}
         onCancel={() => setVisible(false)}
-        style={{ width: 720 }}
+        width={900}
         okText='保存'
         cancelText='取消'
       >
@@ -637,7 +638,7 @@ export default function Products() {
             </Collapse.Item>
           </Collapse>
         </Form>
-      </Modal>
+      </Drawer>
 
       {/* Media Preview Modal */}
       <Modal

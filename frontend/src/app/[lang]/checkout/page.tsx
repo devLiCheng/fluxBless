@@ -235,7 +235,7 @@ export default function CheckoutPage() {
             </h2>
 
             {errorMsg && (
-              <div className="bg-red-950/40 border border-red-500/40 text-red-300 text-xs px-4 py-3 rounded-lg">
+              <div className="bg-red-50 border border-red-200 text-red-800 text-xs px-4 py-3 rounded-lg font-sans">
                 {errorMsg}
               </div>
             )}

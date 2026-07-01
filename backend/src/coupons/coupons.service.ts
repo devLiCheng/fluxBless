@@ -86,7 +86,7 @@ export class CouponsService {
 
   async findByCode(code: string) {
     const coupon = await this.prisma.coupon.findUnique({
-      where: { code: code.toUpperCase() },
+      where: { code: code.trim().toUpperCase() },
     });
     if (!coupon) {
       throw new NotFoundException('Coupon not found');
@@ -104,7 +104,7 @@ export class CouponsService {
 
   async claim(userId: number, code: string) {
     const coupon = await this.prisma.coupon.findUnique({
-      where: { code: code.toUpperCase() },
+      where: { code: code.trim().toUpperCase() },
     });
 
     if (!coupon) {

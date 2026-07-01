@@ -94,12 +94,12 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
       {/* Filters & Search */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12 border-b border-gold-primary/20 pb-8">
         {/* Category tags */}
-        <div className="flex items-center space-x-2 overflow-x-auto pb-4 md:pb-0 scrollbar-none scroll-smooth w-full max-w-full min-w-0">
+        <div className="flex flex-wrap md:flex-nowrap items-center gap-2 md:gap-0 md:space-x-2 md:overflow-x-auto pb-2 md:pb-0 scrollbar-none scroll-smooth w-full max-w-full min-w-0">
           {categories.map((cat) => (
             <button
               key={cat.slug}
               onClick={() => setSelectedCategory(cat.slug)}
-              className={`whitespace-nowrap px-4 py-2 text-xs tracking-[0.15em] uppercase border rounded-md transition-all duration-300 ${
+              className={`flex-shrink-0 whitespace-nowrap px-4 py-2 text-xs tracking-[0.15em] uppercase border rounded-md transition-all duration-300 ${
                 selectedCategory === cat.slug
                   ? 'bg-gold-primary border-gold-primary text-black font-semibold'
                   : 'border-gold-primary/20 text-zinc-500 hover:text-gold-primary hover:border-gold-primary/40'
@@ -139,7 +139,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
               return (
                 <div
                   key={p.id}
-                  className="group relative bg-white border border-gold-primary/20 hover:border-gold-primary/40 rounded-lg overflow-hidden transition-all duration-500 flex flex-col justify-between hover:shadow-[0_12px_40px_rgba(184,144,71,0.12)] min-w-0"
+                  className="w-full group relative bg-white border border-gold-primary/20 hover:border-gold-primary/40 rounded-lg overflow-hidden transition-all duration-500 flex flex-col justify-between hover:shadow-[0_12px_40px_rgba(184,144,71,0.12)] min-w-0"
                 >
                   {/* Image & Badges */}
                   <div className="aspect-square bg-[#FAF9F5] overflow-hidden relative">

@@ -167,9 +167,9 @@ export default async function LocalizedHomePage({
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto flex flex-col items-center">
             {/* Spiritual Badge */}
-            <div className="inline-flex items-center space-x-2 border border-gold-primary/20 rounded-md px-4 py-1.5 bg-[#FAF9F5] mb-8 shadow-sm">
-              <Icons.Sparkles className="w-4 h-4 text-gold-primary animate-pulse" />
-              <span className="text-[10px] sm:text-xs tracking-[0.25em] text-gold-secondary font-serif uppercase">
+            <div className="inline-flex items-center justify-center flex-wrap max-w-full border border-gold-primary/20 rounded-md px-3 py-1.5 bg-[#FAF9F5] mb-8 shadow-sm">
+              <Icons.Sparkles className="w-4 h-4 text-gold-primary animate-pulse flex-shrink-0 mr-1.5" />
+              <span className="text-[9px] sm:text-xs tracking-[0.15em] sm:tracking-[0.25em] text-gold-secondary font-serif uppercase text-center break-words max-w-[calc(100%-24px)]">
                 {getSettingL('hero_badge', lang, lang === 'zh' ? '探寻传统手工美学' : 'Explore Traditional Craft Aesthetics')}
               </span>
             </div>

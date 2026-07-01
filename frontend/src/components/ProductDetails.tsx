@@ -1018,7 +1018,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                   {lang === 'zh' ? '撰写您的评价' : 'Write a Review'}
                 </h3>
                 {reviewError && (
-                  <div className="bg-red-950/40 border border-red-500/40 text-red-300 text-[11px] px-3 py-2 rounded-lg">
+                  <div className="bg-red-50 border border-red-200 text-red-800 text-[11px] px-3 py-2 rounded-lg font-sans">
                     {reviewError}
                   </div>
                 )}
@@ -1180,10 +1180,10 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
 
               {inquiryStatus && (
                 <div 
-                  className={`p-3 rounded-lg text-[11px] leading-relaxed ${
+                  className={`p-3 rounded-lg text-[11px] leading-relaxed border ${
                     inquiryStatus.type === 'success' 
-                      ? 'bg-green-500/10 border border-green-500/20 text-green-400' 
-                      : 'bg-red-500/10 border border-red-500/20 text-red-400'
+                      ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
+                      : 'bg-red-50 border-red-200 text-red-700'
                   }`}
                 >
                   {inquiryStatus.text}

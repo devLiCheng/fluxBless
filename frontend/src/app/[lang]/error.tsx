@@ -38,8 +38,8 @@ export default function ErrorBoundary({
   }, [error]);
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center py-32 px-4 bg-[#121212] text-cream min-h-[70vh]">
-      <div className="w-16 h-16 rounded-full bg-red-950/40 border border-red-500/30 flex items-center justify-center text-red-400 mb-6">
+    <div className="flex-1 flex flex-col items-center justify-center py-32 px-4 bg-background text-foreground min-h-[70vh]">
+      <div className="w-16 h-16 rounded-full bg-red-50 border border-red-200 flex items-center justify-center text-red-700 mb-6">
         <AlertTriangle className="w-8 h-8" />
       </div>
 

@@ -13,6 +13,7 @@ import {
   Grid,
   Switch,
   Upload,
+  Drawer,
 } from '@arco-design/web-react';
 import { IconPlus, IconEdit, IconDelete, IconSearch, IconBook } from '@arco-design/web-react/icon';
 import api from '../utils/api';
@@ -289,12 +290,12 @@ export default function BlogPosts() {
         onChange={handleTableChange}
       />
 
-      <Modal
+      <Drawer
         title={editingId ? '编辑文章' : '撰写新文章'}
         visible={visible}
         onOk={handleOk}
         onCancel={() => setVisible(false)}
-        style={{ width: 850, top: 40 }}
+        width={1000}
         okText='保存'
         cancelText='取消'
       >
@@ -390,7 +391,7 @@ export default function BlogPosts() {
             </Grid.Col>
           </Grid.Row>
         </Form>
-      </Modal>
+      </Drawer>
     </div>
   );
 }
