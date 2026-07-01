@@ -76,6 +76,14 @@ export default function Settings() {
                       <Input placeholder='Traditional Eastern Aesthetics, Embellishing a Refined Life' />
                     </Form.Item>
                   </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                    <Form.Item label='公告点击跳转 URL (可选，留空则不可点击跳转)' field='top_slogan_link_url'>
+                      <Input placeholder='例如：/products 或留空' />
+                    </Form.Item>
+                    <Form.Item label='点击公告直接领取的优惠券代码 (可选，如 WELCOME10)' field='top_slogan_link_coupon_code'>
+                      <Input placeholder='例如：WELCOME10' style={{ textTransform: 'uppercase' }} />
+                    </Form.Item>
+                  </div>
 
                   <Typography.Title heading={6}>页脚 (Footer) 配置</Typography.Title>
                   <Form.Item label='页脚 Logo 标题' field='footer_logo_title' rules={[{ required: true }]}>

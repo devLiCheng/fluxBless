@@ -1,4 +1,4 @@
-import { IsString, IsArray, IsNumber, ValidateNested, Min, IsEmail } from 'class-validator';
+import { IsString, IsArray, IsNumber, ValidateNested, Min, IsEmail, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 class OrderItemDto {
@@ -29,6 +29,11 @@ export class CreateOrderDto {
 
   @IsString()
   paymentMethod: string; // "stripe"
+
+  @IsNumber()
+  @IsOptional()
+  @Type(() => Number)
+  couponId?: number;
 }
 
 export class UpdateOrderStatusDto {

@@ -501,7 +501,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
               handleLightboxReset();
               setIsLightboxOpen(true);
             }}
-            className="relative aspect-square bg-zinc-900 border border-gold-primary/10 rounded-2xl overflow-hidden group cursor-zoom-in"
+            className="relative aspect-square bg-[#FAF9F5] border border-gold-primary/20 rounded-2xl overflow-hidden group cursor-zoom-in"
           >
             {(() => {
               const currentMedia = images[selectedImageIndex];
@@ -514,7 +514,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                     autoPlay 
                     muted 
                     loop 
-                    className="w-full h-full object-contain bg-black" 
+                    className="w-full h-full object-contain bg-[#FAF9F5]" 
                     onClick={(e) => {
                       e.stopPropagation();
                     }}
@@ -542,7 +542,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                     e.stopPropagation();
                     setSelectedImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
                   }}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/60 hover:bg-gold-primary text-cream hover:text-black p-2 rounded-md border border-gold-primary/10 transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-gold-primary text-gold-secondary hover:text-black p-2 rounded-md border border-gold-primary/20 transition-all opacity-0 group-hover:opacity-100 cursor-pointer shadow-md"
                   aria-label="Previous image"
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -561,7 +561,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
             )}
             {/* Image Counter Badge */}
             {images.length > 0 && (
-              <div className="absolute bottom-4 right-4 bg-black/75 border border-gold-primary/20 text-cream px-3 py-1 rounded-md text-[10px] tracking-widest backdrop-blur-md select-none z-10 font-serif">
+              <div className="absolute bottom-4 right-4 bg-[#FAF9F5]/90 border border-gold-primary/20 text-gold-secondary px-3 py-1 rounded-md text-[10px] tracking-widest backdrop-blur-md select-none z-10 font-serif">
                 {selectedImageIndex + 1} / {images.length}
               </div>
             )}
@@ -577,14 +577,14 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                 if (tagsStr && tagsStr.trim()) {
                   const tagList = tagsStr.split(/,|，/).map((t) => t.trim()).filter(Boolean);
                   return tagList.map((tag, idx) => (
-                    <span key={idx} className="bg-black/85 border border-gold-primary/20 text-gold-primary text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-md backdrop-blur-md flex items-center gap-1.5 font-serif">
+                    <span key={idx} className="bg-[#FAF9F5]/95 border border-gold-primary/25 text-gold-secondary text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-md backdrop-blur-md flex items-center gap-1.5 font-serif shadow-sm">
                       <Sparkles className="w-3 h-3" />
                       {tag}
                     </span>
                   ));
                 }
                 return (
-                  <span className="bg-black/85 border border-gold-primary/20 text-gold-primary text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-md backdrop-blur-md flex items-center gap-1.5 font-serif">
+                  <span className="bg-[#FAF9F5]/95 border border-gold-primary/25 text-gold-secondary text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-md backdrop-blur-md flex items-center gap-1.5 font-serif shadow-sm">
                     <Sparkles className="w-3 h-3" />
                     {lang === 'zh' ? '手工甄选' : 'Premium Selected'}
                   </span>
@@ -600,14 +600,14 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                 <>
                   <button
                     onClick={() => scrollThumbnails('left')}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black/70 border border-gold-primary/20 text-cream p-1.5 rounded-md hover:bg-gold-primary hover:text-black transition-all cursor-pointer opacity-0 group-hover/thumbs:opacity-100 shadow-md"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 border border-gold-primary/20 text-gold-secondary p-1.5 rounded-md hover:bg-gold-primary hover:text-black transition-all cursor-pointer opacity-0 group-hover/thumbs:opacity-100 shadow-md"
                     title={lang === 'zh' ? '向左滚动' : 'Scroll Left'}
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => scrollThumbnails('right')}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black/70 border border-gold-primary/20 text-cream p-1.5 rounded-md hover:bg-gold-primary hover:text-black transition-all cursor-pointer opacity-0 group-hover/thumbs:opacity-100 shadow-md"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 border border-gold-primary/20 text-gold-secondary p-1.5 rounded-md hover:bg-gold-primary hover:text-black transition-all cursor-pointer opacity-0 group-hover/thumbs:opacity-100 shadow-md"
                     title={lang === 'zh' ? '向右滚动' : 'Scroll Right'}
                   >
                     <ChevronRight className="w-4 h-4" />
@@ -623,14 +623,14 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                     id={`thumb-${idx}`}
                     key={idx}
                     onClick={() => setSelectedImageIndex(idx)}
-                    className={`w-20 h-20 bg-zinc-900 border rounded-md overflow-hidden transition-all flex-shrink-0 ${
+                    className={`w-20 h-20 bg-[#FAF9F5] border rounded-md overflow-hidden transition-all flex-shrink-0 ${
                       selectedImageIndex === idx
                         ? 'border-gold-primary shadow-[0_0_12px_rgba(212,175,55,0.3)] scale-105'
-                        : 'border-gold-primary/10 hover:border-gold-primary/40'
+                        : 'border-gold-primary/20 hover:border-gold-primary/50'
                     }`}
                   >
                     {isVideoUrl(img) ? (
-                      <div className="w-full h-full relative bg-black flex items-center justify-center">
+                      <div className="w-full h-full relative bg-zinc-100 flex items-center justify-center">
                         <video src={img} className="w-full h-full object-cover opacity-60" />
                         <div className="absolute inset-0 flex items-center justify-center">
                           <Play className="w-6 h-6 text-gold-primary fill-gold-primary/20" />
@@ -819,7 +819,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                 </span>
               )}
               {product.specBeadCount && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-md text-zinc-300">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-[#FAF9F5] border border-gold-primary/25 rounded-md text-gold-secondary">
                   × {product.specBeadCount}
                 </span>
               )}
@@ -833,17 +833,17 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
             <div className="space-y-3 mt-auto">
               <div className="flex items-center space-x-4">
                 {/* Quantity */}
-                <div className="flex items-center border border-gold-primary/25 bg-black/40 rounded-md overflow-hidden h-12">
+                <div className="flex items-center border border-gold-primary/30 bg-gold-light/20 rounded-md overflow-hidden h-12">
                   <button
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="px-4 text-zinc-400 hover:text-gold-primary hover:bg-white/5 transition-all h-full text-lg animate-fadeIn"
+                    className="px-4 text-zinc-600 hover:text-gold-primary hover:bg-gold-primary/10 transition-all h-full text-lg animate-fadeIn font-bold"
                   >
                     −
                   </button>
-                  <span className="px-5 text-sm font-semibold text-cream">{quantity}</span>
+                  <span className="px-5 text-sm font-semibold text-zinc-800">{quantity}</span>
                   <button
                     onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
-                    className="px-4 text-zinc-400 hover:text-gold-primary hover:bg-white/5 transition-all h-full text-lg"
+                    className="px-4 text-zinc-600 hover:text-gold-primary hover:bg-gold-primary/10 transition-all h-full text-lg font-bold"
                   >
                     +
                   </button>

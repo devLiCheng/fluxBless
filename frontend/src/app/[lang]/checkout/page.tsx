@@ -24,6 +24,26 @@ export default function CheckoutPage() {
   const [errorMsg, setErrorMsg] = useState('');
 
   const { cart, cartTotal, clearCart } = useCart();
+  const [availableCoupons, setAvailableCoupons] = useState<any[]>([]);
+  const [selectedCoupon, setSelectedCoupon] = useState<any | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('fluxbless_token');
+    if (!token) return;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
+    fetch(`${apiUrl}/coupons/my`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) => {
+        setAvailableCoupons(data.filter((c: any) => c.status === 'available'));
+      })
+      .catch((err) => console.warn('Failed to load coupons in checkout', err));
+  }, []);
+
+  const appliedDiscount = selectedCoupon && cartTotal >= Number(selectedCoupon.minOrderAmount)
+    ? Math.min(cartTotal, Number(selectedCoupon.discountAmount))
+    : 0;
 
   useEffect(() => {
     getDictionary(lang).then(setDict);
@@ -145,6 +165,7 @@ export default function CheckoutPage() {
           shippingAddress: address,
           contactPhone: phone,
           contactEmail: email,
+          couponId: selectedCoupon ? selectedCoupon.id : undefined,
         }),
       });
 
@@ -255,7 +276,7 @@ export default function CheckoutPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-black/60 border border-gold-primary/20 focus:border-gold-primary text-sm text-cream px-4 py-3 rounded-lg focus:outline-none"
+                className="w-full bg-white border border-gold-primary/20 focus:border-gold-primary text-sm text-zinc-800 px-4 py-3 rounded-md focus:outline-none"
               />
             </div>
 
@@ -355,6 +376,41 @@ export default function CheckoutPage() {
               ))}
             </div>
 
+            {availableCoupons.length > 0 && (
+              <div className="border-t border-gold-primary/10 mt-4 pt-4">
+                <label className="block text-[10px] uppercase tracking-wider text-zinc-400 mb-2">
+                  {lang === 'zh' ? '使用可用优惠券' : 'Apply Promo Coupon'}
+                </label>
+                <select
+                  value={selectedCoupon ? selectedCoupon.id : ''}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (!val) {
+                      setSelectedCoupon(null);
+                    } else {
+                      const found = availableCoupons.find((c) => c.id === parseInt(val));
+                      if (found) {
+                        setSelectedCoupon(found);
+                      }
+                    }
+                  }}
+                  className="w-full bg-[#FAF9F5] border border-gold-primary/20 focus:border-gold-primary text-xs text-zinc-800 px-3 py-2.5 rounded-md focus:outline-none cursor-pointer"
+                >
+                  <option value="">{lang === 'zh' ? '选择优惠券...' : 'Select a coupon...'}</option>
+                  {availableCoupons.map((c) => {
+                    const disabled = cartTotal < Number(c.minOrderAmount);
+                    return (
+                      <option key={c.id} value={c.id} disabled={disabled}>
+                        {c.code} - ${Number(c.discountAmount).toFixed(0)} 
+                        {Number(c.minOrderAmount) > 0 ? ` (满 $${Number(c.minOrderAmount).toFixed(0)} 可用)` : ' (无门槛)'}
+                        {disabled ? (lang === 'zh' ? ' - 不足消费额度' : ' - Insufficient subtotal') : ''}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+            )}
+
             <div className="border-t border-gold-primary/10 mt-6 pt-6 space-y-3 text-sm">
               <div className="flex justify-between text-zinc-400">
                 <span>{dict.cart.subtotal}</span>
@@ -364,9 +420,15 @@ export default function CheckoutPage() {
                 <span>Shipping</span>
                 <span className="text-emerald-400 uppercase font-medium">Free</span>
               </div>
+              {appliedDiscount > 0 && (
+                <div className="flex justify-between text-emerald-600">
+                  <span>{lang === 'zh' ? '优惠券抵扣' : 'Coupon Discount'}</span>
+                  <span>-${appliedDiscount.toFixed(2)}</span>
+                </div>
+              )}
               <div className="flex justify-between text-base font-serif tracking-wider pt-3 border-t border-gold-primary/5 text-gold-primary font-bold">
                 <span>{dict.cart.total}</span>
-                <span>${cartTotal.toFixed(2)}</span>
+                <span>${(cartTotal - appliedDiscount).toFixed(2)}</span>
               </div>
             </div>
 

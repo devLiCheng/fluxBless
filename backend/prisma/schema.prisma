@@ -8,18 +8,19 @@ generator client {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  email     String     @unique
-  password  String
-  name      String?
-  role      String     @default("user") // "user" or "admin"
-  orders    Order[]
-  cartItems CartItem[]
-  loginLogs LoginLog[]
-  reviews   Review[]
-  inquiries Inquiry[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id          Int          @id @default(autoincrement())
+  email       String       @unique
+  password    String
+  name        String?
+  role        String       @default("user") // "user" or "admin"
+  orders      Order[]
+  cartItems   CartItem[]
+  loginLogs   LoginLog[]
+  reviews     Review[]
+  inquiries   Inquiry[]
+  userCoupons UserCoupon[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   @@map("users")
 }
@@ -91,6 +92,9 @@ model Order {
   contactPhone    String
   contactEmail    String
   items           OrderItem[]
+  couponId        Int?
+  coupon          Coupon?     @relation(fields: [couponId], references: [id])
+  couponDiscount  Decimal?    @db.Decimal(10, 2)
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
 
@@ -199,4 +203,33 @@ model BlogPost {
 
   @@map("blog_posts")
 }
+
+model Coupon {
+  id             Int          @id @default(autoincrement())
+  code           String       @unique
+  discountAmount Decimal      @db.Decimal(10, 2)
+  minOrderAmount Decimal      @default(0.00) @db.Decimal(10, 2)
+  expiresAt      DateTime
+  isActive       Boolean      @default(true)
+  userCoupons    UserCoupon[]
+  orders         Order[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@map("coupons")
+}
+
+model UserCoupon {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  couponId  Int
+  coupon    Coupon    @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  isUsed    Boolean   @default(false)
+  usedAt    DateTime?
+  claimedAt DateTime  @default(now())
+
+  @@map("user_coupons")
+}
+
 

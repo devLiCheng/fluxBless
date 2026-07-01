@@ -15,6 +15,7 @@ import { LoginLogsModule } from './login-logs/login-logs.module';
 import { InquiriesModule } from './inquiries/inquiries.module';
 import { SettingsModule } from './settings/settings.module';
 import { BlogPostsModule } from './blog-posts/blog-posts.module';
+import { CouponsModule } from './coupons/coupons.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { BlogPostsModule } from './blog-posts/blog-posts.module';
     InquiriesModule,
     SettingsModule,
     BlogPostsModule,
+    CouponsModule,
   ],
 })
 export class AppModule {}

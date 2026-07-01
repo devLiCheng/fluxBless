@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams, usePathname, useRouter } from 'next/navigation';
-import { ShoppingBag, X, Globe, Plus, Minus, Trash2, ArrowRight, User, LogOut, Lock, Menu } from 'lucide-react';
+import { ShoppingBag, X, Globe, Plus, Minus, Trash2, ArrowRight, User, LogOut, Lock, Menu, Tag, Sparkles } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
@@ -52,6 +52,13 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Slogan & Coupons state
+  const [showSlogan, setShowSlogan] = useState(true);
+  const [isCouponsOpen, setIsCouponsOpen] = useState(false);
+  const [myCoupons, setMyCoupons] = useState<any[]>([]);
+  const [couponsLoading, setCouponsLoading] = useState(false);
+  const [couponClaimMsg, setCouponClaimMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
   // Auth modal state
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
@@ -62,8 +69,97 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
   const [authSubmitting, setAuthSubmitting] = useState(false);
 
   const { cart, removeFromCart, updateQuantity, cartCount, cartTotal } = useCart();
-  const { user, login, register, logout } = useAuth();
+  const { user, token, login, register, logout } = useAuth();
   const { getSetting, getSettingL } = useSettings();
+
+  const fetchMyCoupons = async () => {
+    if (!token) return;
+    setCouponsLoading(true);
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
+      const res = await fetch(`${apiUrl}/coupons/my`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setMyCoupons(data);
+      }
+    } catch (err) {
+      console.warn('Failed to load claimed coupons', err);
+    } finally {
+      setCouponsLoading(false);
+    }
+  };
+
+  const handleClaimCoupon = async (code: string) => {
+    if (!code) return;
+    if (!token) {
+      // Save code to claim after login
+      sessionStorage.setItem('fluxbless_pending_coupon_claim', code.toUpperCase());
+      setAuthMode('login');
+      setAuthError(lang === 'zh' ? '请先登录以领取您的促销优惠券！' : 'Please sign in first to claim your coupon!');
+      setIsAuthOpen(true);
+      return;
+    }
+
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
+      const res = await fetch(`${apiUrl}/coupons/claim`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ code: code.toUpperCase() }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setCouponClaimMsg({
+          type: 'success',
+          text: lang === 'zh' 
+            ? `领取成功！已获得 $${Number(data.coupon?.discountAmount || 0).toFixed(2)} 优惠券！`
+            : `Claimed successfully! Received $${Number(data.coupon?.discountAmount || 0).toFixed(2)} coupon!`,
+        });
+        fetchMyCoupons();
+      } else {
+        setCouponClaimMsg({
+          type: 'error',
+          text: data.message || (lang === 'zh' ? '该优惠券不可重复领取或已过期' : 'This coupon code was already claimed or is expired'),
+        });
+      }
+    } catch (err) {
+      setCouponClaimMsg({
+        type: 'error',
+        text: lang === 'zh' ? '网络错误，请稍后重试' : 'Network error. Please try again later',
+      });
+    }
+
+    setTimeout(() => {
+      setCouponClaimMsg(null);
+    }, 5000);
+  };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (localStorage.getItem('fluxbless_slogan_dismissed') === 'true') {
+        setShowSlogan(false);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user && token) {
+      fetchMyCoupons();
+      const pendingCode = sessionStorage.getItem('fluxbless_pending_coupon_claim');
+      if (pendingCode) {
+        sessionStorage.removeItem('fluxbless_pending_coupon_claim');
+        handleClaimCoupon(pendingCode);
+      }
+    } else {
+      setMyCoupons([]);
+    }
+  }, [user, token]);
 
   const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,9 +193,52 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       {/* Slogan Banner */}
-      <div className="bg-[#FAF9F5] border-b border-gold-primary/10 text-center py-2 px-4 text-xs tracking-widest text-gold-secondary font-serif uppercase">
-        {getSettingL('top_slogan', lang, dict.hero.motto)}
-      </div>
+      {showSlogan && getSettingL('top_slogan', lang, dict.hero.motto) && (() => {
+        const sloganText = getSettingL('top_slogan', lang, dict.hero.motto);
+        const sloganLinkUrl = getSetting('top_slogan_link_url');
+        const sloganCouponCode = getSetting('top_slogan_link_coupon_code');
+
+        const handleSloganClick = (e: React.MouseEvent) => {
+          if (sloganCouponCode) {
+            e.preventDefault();
+            handleClaimCoupon(sloganCouponCode);
+          } else if (sloganLinkUrl) {
+            router.push(sloganLinkUrl);
+          }
+        };
+
+        const dismissSlogan = (e: React.MouseEvent) => {
+          e.stopPropagation();
+          setShowSlogan(false);
+          localStorage.setItem('fluxbless_slogan_dismissed', 'true');
+        };
+
+        return (
+          <div 
+            onClick={sloganCouponCode || sloganLinkUrl ? handleSloganClick : undefined}
+            className={`bg-[#FAF9F5] border-b border-gold-primary/10 text-center py-2.5 px-10 text-xs tracking-widest text-gold-secondary font-serif uppercase relative flex items-center justify-center select-none ${
+              sloganCouponCode || sloganLinkUrl ? 'cursor-pointer hover:bg-gold-light/10 transition-colors' : ''
+            }`}
+          >
+            <div className="flex items-center justify-center space-x-2">
+              {sloganCouponCode && <Tag className="w-3.5 h-3.5 text-gold-primary animate-pulse" />}
+              <span>{sloganText}</span>
+              {sloganCouponCode && (
+                <span className="text-[9px] bg-gold-primary text-black px-1.5 py-0.5 rounded ml-2 font-sans font-bold normal-case tracking-normal">
+                  {lang === 'zh' ? '点击直接领券' : 'Click to Claim'}
+                </span>
+              )}
+            </div>
+            <button 
+              onClick={dismissSlogan}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-gold-primary p-1.5 transition-colors rounded-full hover:bg-black/5"
+              title={lang === 'zh' ? '关闭提示' : 'Dismiss'}
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        );
+      })()}
 
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-md border-b border-gold-primary/10">
@@ -138,7 +277,17 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
 
             {/* User Account Button */}
             {user ? (
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 sm:space-x-4">
+                <button
+                  onClick={() => setIsCouponsOpen(true)}
+                  className="text-zinc-400 hover:text-gold-primary p-2 transition-colors relative"
+                  title={lang === 'zh' ? '我的优惠券' : 'My Coupons'}
+                >
+                  <Tag className="w-4 h-4 text-gold-secondary" />
+                  {myCoupons.filter((c) => c.status === 'available').length > 0 && (
+                    <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                  )}
+                </button>
                 <span className="text-xs text-zinc-400 font-medium hidden lg:inline">
                   {lang === 'zh' ? '您好, ' : 'Hello, '}{user.name}
                 </span>
@@ -280,7 +429,7 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
 
             {/* Slide-over Container */}
             <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
-              <div className="pointer-events-auto w-screen max-w-md gold-glass text-cream shadow-2xl flex flex-col h-full border-l border-gold-primary/20">
+              <div className="pointer-events-auto w-screen max-w-md bg-white text-cream shadow-2xl flex flex-col h-full border-l border-gold-primary/25">
                 {/* Header */}
                 <div className="px-6 py-6 border-b border-gold-primary/10 flex items-center justify-between">
                   <h2 className="text-lg font-serif tracking-widest text-gold-primary uppercase">
@@ -327,19 +476,19 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
                             </h3>
                             <p className="text-gold-secondary mt-1 font-semibold">${item.price}</p>
                           </div>
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-center justify-between mt-2">
                             {/* Quantity Controls */}
-                            <div className="flex items-center border border-gold-primary/20 rounded-md bg-black/40 overflow-hidden">
+                            <div className="flex items-center border border-gold-primary/30 rounded-md bg-gold-light/20 overflow-hidden">
                               <button
                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                className="p-1 px-2 text-zinc-400 hover:text-gold-primary hover:bg-white/5 transition-all"
+                                className="p-1 px-2 text-zinc-600 hover:text-gold-primary hover:bg-gold-primary/10 transition-all font-bold"
                               >
                                 <Minus className="w-3 h-3" />
                               </button>
-                              <span className="px-2 text-xs font-semibold">{item.quantity}</span>
+                              <span className="px-2 text-xs font-semibold text-zinc-800">{item.quantity}</span>
                               <button
                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                className="p-1 px-2 text-zinc-400 hover:text-gold-primary hover:bg-white/5 transition-all"
+                                className="p-1 px-2 text-zinc-600 hover:text-gold-primary hover:bg-gold-primary/10 transition-all font-bold"
                               >
                                 <Plus className="w-3 h-3" />
                               </button>
@@ -362,7 +511,7 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
 
                 {/* Footer Drawer */}
                 {cart.length > 0 && (
-                  <div className="px-6 py-6 border-t border-gold-primary/10 bg-black/40">
+                  <div className="px-6 py-6 border-t border-gold-primary/20 bg-[#FAF9F5]">
                     <div className="flex justify-between text-base font-serif tracking-wider mb-6">
                       <span className="text-zinc-400">{dict.cart.total}</span>
                       <span className="text-gold-primary font-bold">${cartTotal.toFixed(2)}</span>
@@ -486,6 +635,123 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
               </div>
             </form>
           </div>
+        </div>
+      )}
+
+      {/* My Coupons Modal */}
+      {isCouponsOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity duration-300">
+          <div className="absolute inset-0" onClick={() => setIsCouponsOpen(false)} />
+          <div className="bg-white border border-gold-primary/20 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden relative pointer-events-auto z-10 animate-fadeIn">
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-gold-primary/10 flex items-center justify-between bg-[#FAF9F5]">
+              <h3 className="text-sm font-serif tracking-widest text-gold-primary uppercase font-semibold flex items-center gap-2">
+                <Tag className="w-4 h-4 text-gold-secondary" />
+                {lang === 'zh' ? '我的优惠券' : 'My Coupons'}
+              </h3>
+              <button 
+                onClick={() => setIsCouponsOpen(false)}
+                className="text-zinc-400 hover:text-gold-primary p-1 rounded-full hover:bg-black/5 transition-all"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Content List */}
+            <div className="p-6">
+              {couponsLoading ? (
+                <div className="flex justify-center py-8">
+                  <div className="w-6 h-6 border-2 border-gold-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : myCoupons.length === 0 ? (
+                <div className="text-center py-10">
+                  <Tag className="w-10 h-10 text-zinc-300 mx-auto mb-3 stroke-1" />
+                  <p className="text-zinc-500 text-xs tracking-wider">
+                    {lang === 'zh' ? '暂无优惠券' : 'No coupons available'}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4 max-h-[350px] overflow-y-auto pr-1 scrollbar-none">
+                  {myCoupons.map((c) => {
+                    const isAvailable = c.status === 'available';
+                    const isUsed = c.status === 'used';
+
+                    return (
+                      <div 
+                        key={c.id} 
+                        className={`border rounded-xl p-4 relative overflow-hidden transition-all ${
+                          isAvailable 
+                            ? 'bg-gradient-to-br from-white to-[#FAF9F5] border-gold-primary/25 hover:border-gold-primary/50 shadow-sm'
+                            : 'bg-zinc-50/55 border-zinc-250 text-zinc-400 opacity-60 select-none'
+                        }`}
+                      >
+                        <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${isAvailable ? 'bg-gold-primary' : 'bg-zinc-300'}`}></div>
+
+                        <div className="flex items-start justify-between pl-2">
+                          <div>
+                            <div className="flex items-baseline space-x-1">
+                              <span className={`text-xl font-bold ${isAvailable ? 'text-gold-primary' : 'text-zinc-500'}`}>
+                                ${Number(c.discountAmount).toFixed(0)}
+                              </span>
+                              <span className="text-[10px] text-zinc-400">USD</span>
+                            </div>
+                            <div className={`text-[10px] font-medium tracking-wide mt-1 ${isAvailable ? 'text-gold-secondary' : 'text-zinc-500'}`}>
+                              {Number(c.minOrderAmount) > 0 
+                                ? (lang === 'zh' ? `满 $${Number(c.minOrderAmount).toFixed(0)} 可用` : `Min Purchase $${Number(c.minOrderAmount).toFixed(0)}`)
+                                : (lang === 'zh' ? '无门槛使用' : 'No Minimum Purchase')}
+                            </div>
+                          </div>
+
+                          <div className="text-right">
+                            <span className={`text-xs font-mono font-bold px-2 py-1 rounded border uppercase tracking-wider ${
+                              isAvailable 
+                                ? 'bg-gold-light/20 border-gold-primary/20 text-gold-secondary'
+                                : 'bg-zinc-100 border-zinc-200 text-zinc-400'
+                            }`}>
+                              {c.code}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="border-t border-gold-primary/5 mt-3 pt-2 pl-2 flex items-center justify-between text-[9px] text-zinc-400 font-serif">
+                          <span>
+                            {lang === 'zh' ? '有效期至：' : 'Expires: '}
+                            {new Date(c.expiresAt).toLocaleDateString()}
+                          </span>
+                          <span className={`font-sans uppercase font-bold tracking-wider ${
+                            isAvailable ? 'text-emerald-600' : isUsed ? 'text-zinc-400' : 'text-red-400'
+                          }`}>
+                            {isAvailable ? (lang === 'zh' ? '可用' : 'Available') : isUsed ? (lang === 'zh' ? '已使用' : 'Used') : (lang === 'zh' ? '已失效' : 'Expired')}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Coupon Claim Floating Toast Notification */}
+      {couponClaimMsg && (
+        <div className="fixed bottom-6 right-6 z-50 max-w-sm w-full bg-white border border-gold-primary/30 rounded-xl shadow-2xl p-4 backdrop-blur-md animate-fadeIn flex items-start space-x-3 pointer-events-auto">
+          <div className="flex-1">
+            <h4 className={`text-xs font-bold uppercase tracking-wider ${
+              couponClaimMsg.type === 'success' ? 'text-emerald-600' : 'text-red-500'
+            }`}>
+              {couponClaimMsg.type === 'success' 
+                ? (lang === 'zh' ? '优惠领用成功' : 'Coupon Claimed') 
+                : (lang === 'zh' ? '领取遇到问题' : 'Claim Failed')}
+            </h4>
+            <p className="text-[11px] text-zinc-600 mt-1 font-serif leading-relaxed">
+              {couponClaimMsg.text}
+            </p>
+          </div>
+          <button onClick={() => setCouponClaimMsg(null)} className="text-zinc-400 hover:text-gold-primary">
+            <X className="w-3.5 h-3.5" />
+          </button>
         </div>
       )}
     </div>

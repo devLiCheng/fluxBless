@@ -49,10 +49,25 @@ export class PaymentService {
       quantity: item.quantity,
     }));
 
+    let discounts: any = undefined;
+    if (this.stripe && order.couponDiscount && Number(order.couponDiscount) > 0) {
+      try {
+        const stripeCoupon = await this.stripe.coupons.create({
+          amount_off: Math.round(Number(order.couponDiscount) * 100),
+          currency: 'usd',
+          duration: 'once',
+        });
+        discounts = [{ coupon: stripeCoupon.id }];
+      } catch (err) {
+        this.logger.error(`Failed to create Stripe coupon: ${err.message}`);
+      }
+    }
+
     const session = await this.stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
+      discounts,
       success_url: `${successUrl}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl,
       metadata: {

@@ -12,6 +12,7 @@ import {
   IconHistory,
   IconMessage,
   IconSettings,
+  IconTag,
 } from '@arco-design/web-react/icon';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
@@ -112,6 +113,10 @@ export default function AdminLayout() {
           <Menu.Item key='blog-posts'>
             <IconBook />
             {!collapsed && '博客管理'}
+          </Menu.Item>
+          <Menu.Item key='coupons'>
+            <IconTag />
+            {!collapsed && '优惠券管理'}
           </Menu.Item>
           <Menu.Item key='settings'>
             <IconSettings />

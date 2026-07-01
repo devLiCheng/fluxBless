@@ -34,6 +34,41 @@ export class OrdersService {
       };
     });
 
+    // Validate Coupon if provided
+    let couponDiscount = 0;
+    let userCouponRecord: any = null;
+    if (dto.couponId) {
+      userCouponRecord = await this.prisma.userCoupon.findFirst({
+        where: {
+          id: dto.couponId,
+          userId,
+        },
+        include: { coupon: true },
+      });
+
+      if (!userCouponRecord) {
+        throw new BadRequestException('Coupon not found or does not belong to you');
+      }
+      if (userCouponRecord.isUsed) {
+        throw new BadRequestException('This coupon has already been used');
+      }
+      if (!userCouponRecord.coupon.isActive) {
+        throw new BadRequestException('This coupon campaign is no longer active');
+      }
+      if (new Date() > new Date(userCouponRecord.coupon.expiresAt)) {
+        throw new BadRequestException('This coupon has expired');
+      }
+      if (totalAmount < Number(userCouponRecord.coupon.minOrderAmount)) {
+        throw new BadRequestException(
+          `Order total does not meet the minimum purchase requirement of $${userCouponRecord.coupon.minOrderAmount} for this coupon`
+        );
+      }
+
+      // Calculate final discount amount (cannot exceed subtotal)
+      couponDiscount = Math.min(totalAmount, Number(userCouponRecord.coupon.discountAmount));
+      totalAmount -= couponDiscount;
+    }
+
     // Create order and update stock in a transaction
     const order = await this.prisma.$transaction(async (tx) => {
       // Decrement stock
@@ -41,6 +76,17 @@ export class OrdersService {
         await tx.product.update({
           where: { id: item.productId },
           data: { stock: { decrement: item.quantity } },
+        });
+      }
+
+      // Mark UserCoupon as used
+      if (dto.couponId) {
+        await tx.userCoupon.update({
+          where: { id: dto.couponId },
+          data: {
+            isUsed: true,
+            usedAt: new Date(),
+          },
         });
       }
 
@@ -54,6 +100,8 @@ export class OrdersService {
           shippingAddress: dto.shippingAddress,
           contactPhone: dto.contactPhone,
           contactEmail: dto.contactEmail,
+          couponId: dto.couponId ? userCouponRecord.couponId : undefined,
+          couponDiscount: dto.couponId ? couponDiscount : undefined,
           items: {
             create: orderItems,
           },
