@@ -20,14 +20,14 @@ export default function SuccessPage() {
 
   if (!dict) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-black min-h-screen">
+      <div className="flex-1 flex items-center justify-center bg-background min-h-screen">
         <div className="w-10 h-10 border-4 border-gold-primary border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center py-24 px-4 bg-[#121212] min-h-[80vh] relative overflow-hidden">
+    <div className="flex-1 flex flex-col items-center justify-center py-24 px-4 bg-background min-h-[80vh] relative overflow-hidden">
       {/* Ripple Animation Container */}
       <div className="relative w-64 h-64 mb-12 flex items-center justify-center">
         {/* Rippling Circles */}
@@ -53,7 +53,7 @@ export default function SuccessPage() {
 
         {/* Spiritual Blessing Card */}
         <div className="gold-glass max-w-md mx-auto p-6 rounded-xl border border-gold-primary/30 mt-8 relative">
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#121212] px-3 text-[10px] tracking-[0.2em] text-gold-primary uppercase font-serif">
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-background px-3 text-[10px] tracking-[0.2em] text-gold-primary uppercase font-serif">
             Best Wishes
           </div>
           <p className="text-sm font-serif italic text-gold-secondary leading-relaxed tracking-wider">

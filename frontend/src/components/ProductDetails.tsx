@@ -946,7 +946,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
       </div>
 
       {/* Sizing guide banner */}
-      <div className="bg-[#1A1A1A] border border-gold-primary/5 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      <div className="bg-[#FFFFFF] border border-gold-primary/10 rounded-lg p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <div className="w-10 h-10 rounded-full bg-gold-primary/10 flex items-center justify-center flex-shrink-0">
           <RefreshCw className="w-5 h-5 text-gold-primary" />
         </div>
@@ -965,7 +965,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
       </div>
 
       {/* ── User Reviews Section (At the bottom, below specs/sizing guide) ── */}
-      <div className="mt-12 bg-[#1A1A1A] border border-gold-primary/10 rounded-2xl p-8">
+      <div className="mt-12 bg-[#FFFFFF] border border-gold-primary/10 rounded-lg p-8">
         <div className="flex items-center gap-3 mb-6 border-b border-gold-primary/10 pb-4">
           <div className="w-8 h-8 rounded-full bg-gold-primary/10 flex items-center justify-center">
             <Star className="w-4 h-4 text-gold-primary fill-gold-primary" />
@@ -1111,7 +1111,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
       {isContactModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm transition-opacity duration-300">
           <div 
-            className="relative w-full max-w-md bg-[#161616] border border-gold-primary/20 rounded-2xl p-6 shadow-2xl overflow-hidden"
+            className="relative w-full max-w-md bg-background border border-gold-primary/10 rounded-lg p-6 shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Background design elements */}
@@ -1146,7 +1146,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                   value={contactName}
                   onChange={(e) => setContactName(e.target.value)}
                   placeholder={lang === 'zh' ? '例如：张先生 / 李女士' : 'e.g. John Doe'}
-                  className="w-full text-xs text-cream bg-[#222] border border-gold-primary/10 rounded-lg px-3.5 py-2.5 focus:outline-none focus:border-gold-primary focus:ring-1 focus:ring-gold-primary transition-all placeholder-zinc-600"
+                  className="w-full text-xs text-cream bg-[#FAF9F5] border border-gold-primary/10 rounded-lg px-3.5 py-2.5 focus:outline-none focus:border-gold-primary focus:ring-1 focus:ring-gold-primary transition-all placeholder-zinc-650"
                 />
               </div>
 
@@ -1160,7 +1160,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                   value={contactInfo}
                   onChange={(e) => setContactInfo(e.target.value)}
                   placeholder={lang === 'zh' ? 'Email, WhatsApp, 微信等' : 'Email, WhatsApp, WeChat, etc.'}
-                  className="w-full text-xs text-cream bg-[#222] border border-gold-primary/10 rounded-lg px-3.5 py-2.5 focus:outline-none focus:border-gold-primary focus:ring-1 focus:ring-gold-primary transition-all placeholder-zinc-600"
+                  className="w-full text-xs text-cream bg-[#FAF9F5] border border-gold-primary/10 rounded-lg px-3.5 py-2.5 focus:outline-none focus:border-gold-primary focus:ring-1 focus:ring-gold-primary transition-all placeholder-zinc-655"
                 />
               </div>
 
@@ -1174,7 +1174,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                   value={contactMessage}
                   onChange={(e) => setContactMessage(e.target.value)}
                   placeholder={lang === 'zh' ? '请详细描述您想咨询的问题或特别定制的需求...' : 'Describe your questions or customization requests in detail...'}
-                  className="w-full text-xs text-cream bg-[#222] border border-gold-primary/10 rounded-lg px-3.5 py-2.5 focus:outline-none focus:border-gold-primary focus:ring-1 focus:ring-gold-primary transition-all placeholder-zinc-600 resize-none custom-scrollbar"
+                  className="w-full text-xs text-cream bg-[#FAF9F5] border border-gold-primary/10 rounded-lg px-3.5 py-2.5 focus:outline-none focus:border-gold-primary focus:ring-1 focus:ring-gold-primary transition-all placeholder-zinc-660 resize-none custom-scrollbar"
                 />
               </div>
 

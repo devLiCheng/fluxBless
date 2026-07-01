@@ -95,14 +95,14 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#121212] text-[#FAF9F6]">
+    <div className="min-h-screen flex flex-col bg-background text-foreground">
       {/* Slogan Banner */}
-      <div className="bg-[#0D0D0D] border-b border-gold-primary/10 text-center py-2 px-4 text-xs tracking-widest text-gold-secondary font-serif uppercase">
+      <div className="bg-[#FAF9F5] border-b border-gold-primary/10 text-center py-2 px-4 text-xs tracking-widest text-gold-secondary font-serif uppercase">
         {getSettingL('top_slogan', lang, dict.hero.motto)}
       </div>
 
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-[#121212]/90 backdrop-blur-md border-b border-gold-primary/10">
+      <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-md border-b border-gold-primary/10">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           {/* Logo */}
           <Link href={`/${lang}`} className="flex flex-col">
@@ -224,7 +224,7 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
       <main className="flex-1 flex flex-col">{children}</main>
 
       {/* Footer */}
-      <footer className="bg-[#0D0D0D] border-t border-gold-primary/10 py-12 px-4 mt-auto">
+      <footer className="bg-[#FAF9F5] border-t border-gold-primary/10 py-12 px-4 mt-auto">
         <div className="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
           <div>
             <h3 className="font-serif text-lg text-gold-primary tracking-widest mb-4">

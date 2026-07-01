@@ -117,7 +117,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
             placeholder={lang === 'zh' ? '搜索精选手串...' : 'Search accessories...'}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-[#121212] border border-gold-primary/10 hover:border-gold-primary/30 focus:border-gold-primary/50 text-sm text-cream px-4 py-2.5 rounded-md focus:outline-none transition-all duration-300"
+            className="w-full bg-[#FFFFFF] border border-gold-primary/10 hover:border-gold-primary/30 focus:border-gold-primary/50 text-sm text-cream px-4 py-2.5 rounded-md focus:outline-none transition-all duration-300"
           />
         </div>
       </div>
