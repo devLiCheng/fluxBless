@@ -126,7 +126,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-8">
             {filteredProducts.map((p) => {
               const imageSrc = getProductImage(p.images);
               const name = lang === 'zh' ? p.nameZh : p.nameEn;
@@ -199,7 +199,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
                   </div>
 
                   {/* Details */}
-                  <div className="p-5 flex flex-col justify-between flex-1">
+                  <div className="p-3 sm:p-5 flex flex-col justify-between flex-1">
                     <div className="mb-4">
                       <h3 className="text-sm text-cream font-medium line-clamp-1 mb-1 group-hover:text-gold-primary transition-colors">
                         {name}

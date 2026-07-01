@@ -519,7 +519,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
 
           {/* Thumbnails */}
           {images.length > 1 && (
-            <div className="flex space-x-3">
+            <div className="flex space-x-3 overflow-x-auto pb-2 scrollbar-none scroll-smooth">
               {images.map((img, idx) => (
                 <button
                   key={idx}
@@ -642,7 +642,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
 
           {/* Tabs */}
           <div className="border-b border-gold-primary/10 mb-6">
-            <div className="flex space-x-0">
+            <div className="flex space-x-0 overflow-x-auto scrollbar-none pb-0.5 scroll-smooth">
               {tabs.map((tab) => (
                 <button
                   key={tab.key}
@@ -1114,50 +1114,50 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
             handleLightboxReset();
           }}
         >
-          {/* Header Controls (Close and Zoom Control Panel) */}
-          <div className="absolute top-6 left-0 right-0 flex items-center justify-between px-8 z-50" onClick={(e) => e.stopPropagation()}>
-            {/* Zoom Control Panel */}
-            <div className="flex items-center gap-4 bg-zinc-900/85 border border-gold-primary/20 px-4 py-2 rounded-full backdrop-blur-sm shadow-lg">
-              <button
-                onClick={handleLightboxZoomOut}
-                disabled={lightboxScale <= 1}
-                className="text-zinc-400 hover:text-gold-primary disabled:text-zinc-700 disabled:hover:text-zinc-700 transition-colors p-1 cursor-pointer"
-                title={lang === 'zh' ? '缩小' : 'Zoom Out'}
-              >
-                <ZoomOut className="w-4 h-4" />
-              </button>
-              <span className="text-[10px] text-zinc-300 font-mono tracking-widest min-w-[32px] text-center select-none">
-                {Math.round(lightboxScale * 100)}%
-              </span>
-              <button
-                onClick={handleLightboxZoomIn}
-                disabled={lightboxScale >= 3.5}
-                className="text-zinc-400 hover:text-gold-primary disabled:text-zinc-700 disabled:hover:text-zinc-700 transition-colors p-1 cursor-pointer"
-                title={lang === 'zh' ? '放大' : 'Zoom In'}
-              >
-                <ZoomIn className="w-4 h-4" />
-              </button>
-              <div className="w-px h-3 bg-zinc-700" />
-              <button
-                onClick={handleLightboxReset}
-                disabled={lightboxScale === 1 && lightboxPos.x === 0 && lightboxPos.y === 0}
-                className="text-zinc-400 hover:text-gold-primary disabled:text-zinc-700 disabled:hover:text-zinc-700 transition-colors p-1 cursor-pointer"
-                title={lang === 'zh' ? '重置' : 'Reset'}
-              >
-                <RotateCcw className="w-4 h-4" />
-              </button>
-            </div>
+          {/* Close Button (Top Right) */}
+          <button
+            onClick={() => {
+              setIsLightboxOpen(false);
+              handleLightboxReset();
+            }}
+            className="absolute top-6 right-6 text-zinc-400 hover:text-gold-primary p-2 transition-colors z-50 bg-zinc-900/40 border border-zinc-800 rounded-full hover:bg-zinc-900/80 cursor-pointer"
+            aria-label="Close original view"
+          >
+            <X className="w-6 h-6" />
+          </button>
 
-            {/* Close Button */}
+          {/* Zoom Control Panel (Bottom Center) */}
+          <div 
+            className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-zinc-900/85 border border-gold-primary/20 px-4 py-2 rounded-full backdrop-blur-sm shadow-lg z-50"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
-              onClick={() => {
-                setIsLightboxOpen(false);
-                handleLightboxReset();
-              }}
-              className="text-zinc-400 hover:text-gold-primary p-2 transition-colors cursor-pointer bg-zinc-900/40 border border-zinc-800 rounded-full hover:bg-zinc-900/80"
-              aria-label="Close original view"
+              onClick={handleLightboxZoomOut}
+              disabled={lightboxScale <= 1}
+              className="text-zinc-400 hover:text-gold-primary disabled:text-zinc-700 disabled:hover:text-zinc-700 transition-colors p-1 cursor-pointer"
+              title={lang === 'zh' ? '缩小' : 'Zoom Out'}
             >
-              <X className="w-6 h-6" />
+              <ZoomOut className="w-4 h-4" />
+            </button>
+            <span className="text-[10px] text-zinc-300 font-mono tracking-widest min-w-[32px] text-center select-none">
+              {Math.round(lightboxScale * 100)}%
+            </span>
+            <button
+              onClick={handleLightboxZoomIn}
+              disabled={lightboxScale >= 3.5}
+              className="text-zinc-400 hover:text-gold-primary disabled:text-zinc-700 disabled:hover:text-zinc-700 transition-colors p-1 cursor-pointer"
+              title={lang === 'zh' ? '放大' : 'Zoom In'}
+            >
+              <ZoomIn className="w-4 h-4" />
+            </button>
+            <div className="w-px h-3 bg-zinc-700" />
+            <button
+              onClick={handleLightboxReset}
+              disabled={lightboxScale === 1 && lightboxPos.x === 0 && lightboxPos.y === 0}
+              className="text-zinc-400 hover:text-gold-primary disabled:text-zinc-700 disabled:hover:text-zinc-700 transition-colors p-1 cursor-pointer"
+              title={lang === 'zh' ? '重置' : 'Reset'}
+            >
+              <RotateCcw className="w-4 h-4" />
             </button>
           </div>
  

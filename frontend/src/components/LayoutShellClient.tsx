@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams, usePathname, useRouter } from 'next/navigation';
-import { ShoppingBag, X, Globe, Plus, Minus, Trash2, ArrowRight, User, LogOut, Lock } from 'lucide-react';
+import { ShoppingBag, X, Globe, Plus, Minus, Trash2, ArrowRight, User, LogOut, Lock, Menu } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useSettings } from '../context/SettingsContext';
@@ -50,6 +50,7 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
   const pathname = usePathname();
 
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Auth modal state
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -166,7 +167,7 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
             {/* Shopping Cart Button */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className="text-zinc-400 hover:text-gold-primary p-2 transition-colors relative flex items-center"
+              className="text-zinc-400 hover:text-gold-primary p-2 relative flex items-center"
               aria-label="Open Cart"
             >
               <ShoppingBag className="w-5 h-5 text-gold-primary" />
@@ -176,9 +177,48 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
                 </span>
               )}
             </button>
+
+            {/* Hamburger Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-zinc-400 hover:text-gold-primary p-2 md:hidden transition-colors flex items-center cursor-pointer"
+              aria-label="Toggle Mobile Menu"
+            >
+              {isMobileMenuOpen ? <X className="w-5 h-5 text-gold-secondary" /> : <Menu className="w-5 h-5 text-gold-secondary" />}
+            </button>
           </div>
         </div>
       </header>
+
+      {/* Mobile Navigation Dropdown */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-[#161616] border-b border-gold-primary/10 px-6 py-4 flex flex-col space-y-4 text-sm tracking-widest uppercase animate-fadeIn z-30 relative">
+          <Link
+            href={`/${lang}`}
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="text-cream hover:text-gold-primary py-2 transition-colors border-b border-gold-primary/5 flex items-center justify-between"
+          >
+            <span>{dict.nav.home}</span>
+            <ArrowRight className="w-3 h-3 text-gold-secondary" />
+          </Link>
+          <Link
+            href={`/${lang}#catalog`}
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="text-cream hover:text-gold-primary py-2 transition-colors border-b border-gold-primary/5 flex items-center justify-between"
+          >
+            <span>{dict.nav.shop}</span>
+            <ArrowRight className="w-3 h-3 text-gold-secondary" />
+          </Link>
+          <Link
+            href={`/${lang}/blog`}
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="text-cream hover:text-gold-primary py-2 transition-colors flex items-center justify-between"
+          >
+            <span>{lang === 'zh' ? '博客文章' : 'Blog'}</span>
+            <ArrowRight className="w-3 h-3 text-gold-secondary" />
+          </Link>
+        </div>
+      )}
 
       {/* Main page wrapper */}
       <main className="flex-1 flex flex-col">{children}</main>
