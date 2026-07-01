@@ -53,7 +53,7 @@ export default async function BlogIndexPage({ params }: Props) {
   const hasMoreInitial = initialPosts.length < total;
 
   return (
-    <div className="relative overflow-hidden bg-[#121212] py-16 sm:py-24 border-b border-gold-primary/5 min-h-screen">
+    <div className="relative overflow-hidden bg-background py-16 sm:py-24 border-b border-gold-primary/5 min-h-screen">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Header section */}

@@ -129,7 +129,7 @@ export default async function LocalizedHomePage({
   return (
     <div className="flex flex-col">
       {/* Hero section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#1A1A1A] to-[#121212] py-24 sm:py-32 border-b border-gold-primary/10">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#FAF9F5] to-[#FDFDFB] py-24 sm:py-32 border-b border-gold-primary/10">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto flex flex-col items-center">
             {/* Spiritual Badge */}
@@ -162,7 +162,7 @@ export default async function LocalizedHomePage({
       </section>
 
       {/* Selling Points Bar */}
-      <section className="bg-[#0D0D0D] border-b border-gold-primary/5 py-8 text-cream">
+      <section className="bg-[#FAF9F5] border-b border-gold-primary/10 py-8 text-cream">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           {[1, 2, 3, 4].map((num) => {
             const iconName = getSetting(`feature${num}_icon`, num === 1 ? 'Gem' : num === 2 ? 'HeartHandshake' : num === 3 ? 'Sparkles' : 'ShieldCheck');

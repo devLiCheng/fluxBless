@@ -103,7 +103,7 @@ export default async function ProductDetailPage({
 
   if (!product) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center py-32 bg-[#121212] text-cream">
+      <div className="flex-1 flex flex-col items-center justify-center py-32 bg-background text-foreground">
         <h2 className="text-xl font-serif tracking-widest text-gold-primary mb-4 uppercase">
           {lang === 'zh' ? '商品未找到' : 'Product Not Found'}
         </h2>

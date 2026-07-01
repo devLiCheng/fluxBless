@@ -76,7 +76,7 @@ export default async function BlogDetailPage({ params }: Props) {
 
   if (!post) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center py-32 bg-[#121212] text-cream">
+      <div className="flex-1 flex flex-col items-center justify-center py-32 bg-background text-foreground">
         <h2 className="text-xl font-serif tracking-widest text-gold-primary mb-4 uppercase">
           {lang === 'zh' ? '文章未找到' : 'Article Not Found'}
         </h2>
@@ -132,7 +132,7 @@ export default async function BlogDetailPage({ params }: Props) {
   };
 
   return (
-    <div className="relative overflow-hidden bg-[#121212] py-16 sm:py-24 min-h-screen text-cream">
+    <div className="relative overflow-hidden bg-background py-16 sm:py-24 min-h-screen text-foreground">
       {/* Schema Injection */}
       <script
         type="application/ld+json"

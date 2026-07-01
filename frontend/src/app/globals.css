@@ -2,15 +2,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --background: #121212;
-  --foreground: #FAF9F6;
-  --gold-primary: #D4AF37;
-  --gold-secondary: #C5A059;
-  --gold-dark: #AA7C11;
+  --background: #FDFDFB;
+  --foreground: #1C1B19;
+  --gold-primary: #B89047;
+  --gold-secondary: #AA7C11;
+  --gold-dark: #8B6508;
   --gold-light: #F3E5AB;
-  --obsidian: #1A1A1A;
-  --obsidian-dark: #0D0D0D;
-  --cream: #FAF9F6;
+  --obsidian: #FFFFFF;
+  --obsidian-dark: #FAF9F5;
+  --cream: #1C1B19;
 }
 
 @theme {
@@ -30,19 +30,19 @@ html {
   scrollbar-gutter: stable;
 }
 
-/* Global premium scrollbar to match Tudou Gold theme and prevent page jitter */
+/* Global premium scrollbar to match light luxury theme */
 html::-webkit-scrollbar {
   width: 8px;
 }
 html::-webkit-scrollbar-track {
-  background: #121212;
+  background: #FDFDFB;
 }
 html::-webkit-scrollbar-thumb {
-  background: rgba(212, 175, 55, 0.2);
+  background: rgba(184, 144, 71, 0.2);
   border-radius: 4px;
 }
 html::-webkit-scrollbar-thumb:hover {
-  background: rgba(212, 175, 55, 0.4);
+  background: rgba(184, 144, 71, 0.4);
 }
 
 body {
@@ -53,32 +53,32 @@ body {
   min-height: 100vh;
 }
 
-/* Glassmorphism custom classes */
+/* Glassmorphism custom classes - adjusted for light theme */
 .gold-glass {
-  background: rgba(26, 26, 26, 0.7);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(184, 144, 71, 0.15);
 }
 
 .gold-gradient {
-  background: linear-gradient(135deg, #AA7C11 0%, #D4AF37 50%, #F3E5AB 100%);
+  background: linear-gradient(135deg, #8B6508 0%, #B89047 50%, #FAF9F5 100%);
 }
 
 .gold-text-gradient {
-  background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 50%, #AA7C11 100%);
+  background: linear-gradient(135deg, #AA7C11 0%, #B89047 50%, #8B6508 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .gold-border-glow {
-  box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+  box-shadow: 0 4px 20px rgba(184, 144, 71, 0.05);
   transition: all 0.3s ease-in-out;
 }
 
 .gold-border-glow:hover {
-  box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
-  border-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 8px 30px rgba(184, 144, 71, 0.15);
+  border-color: rgba(184, 144, 71, 0.4);
 }
 
 /* Ripple animation */
@@ -110,23 +110,23 @@ body {
   width: 5px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(26, 26, 26, 0.6);
+  background: rgba(245, 244, 240, 0.6);
   border-radius: 9999px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(212, 175, 55, 0.25);
+  background: rgba(184, 144, 71, 0.25);
   border-radius: 9999px;
-  border: 1px solid rgba(212, 175, 55, 0.05);
+  border: 1px solid rgba(184, 144, 71, 0.05);
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(212, 175, 55, 0.45);
+  background: rgba(184, 144, 71, 0.45);
 }
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(212, 175, 55, 0.25) rgba(26, 26, 26, 0.6);
+  scrollbar-color: rgba(184, 144, 71, 0.25) rgba(245, 244, 240, 0.6);
 }
 
-/* Premium Blog Article Formatting */
+/* Premium Blog Article Formatting - adjusted for light theme */
 .blog-content {
   font-family: var(--font-sans);
 }
@@ -142,14 +142,14 @@ body {
 .blog-content h3 {
   font-family: var(--font-serif);
   font-size: 1.25rem;
-  color: #faf9f6;
+  color: var(--foreground);
   margin-top: 2rem;
   margin-bottom: 1rem;
 }
 .blog-content p {
   font-size: 0.95rem;
   line-height: 1.8;
-  color: #d1d5db;
+  color: #374151;
   margin-bottom: 1.5rem;
   font-weight: 300;
   letter-spacing: 0.02em;
@@ -158,13 +158,13 @@ body {
   list-style-type: disc;
   margin-left: 1.75rem;
   margin-bottom: 1.75rem;
-  color: #d1d5db;
+  color: #374151;
 }
 .blog-content ol {
   list-style-type: decimal;
   margin-left: 1.75rem;
   margin-bottom: 1.75rem;
-  color: #d1d5db;
+  color: #374151;
 }
 .blog-content li {
   margin-bottom: 0.6rem;
@@ -177,14 +177,14 @@ body {
   border-radius: 8px;
   margin: 2.5rem auto;
   display: block;
-  border: 1px solid rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(184, 144, 71, 0.15);
 }
 .blog-content video {
   max-width: 100%;
   border-radius: 8px;
   margin: 2.5rem auto;
   display: block;
-  border: 1px solid rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(184, 144, 71, 0.15);
 }
 .blog-content blockquote {
   border-left: 3px solid var(--gold-primary);
@@ -193,7 +193,7 @@ body {
   font-style: italic;
   color: var(--gold-primary);
   font-size: 1rem;
-  background: rgba(212, 175, 55, 0.02);
+  background: rgba(184, 144, 71, 0.05);
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
 }
