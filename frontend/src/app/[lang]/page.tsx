@@ -1,4 +1,5 @@
 import React from 'react';
+import { Metadata } from 'next';
 import { getDictionary } from '../../lib/dictionary';
 import { ProductCatalog } from '../../components/ProductCatalog';
 import * as Icons from 'lucide-react';
@@ -78,6 +79,39 @@ const FALLBACK_PRODUCTS = [
   }
 ];
 
+export async function generateMetadata({ params }: { params: Promise<{ lang: 'zh' | 'en' }> }): Promise<Metadata> {
+  const { lang } = await params;
+  const isZh = lang === 'zh';
+  const siteUrl = process.env.FRONTEND_URL || 'https://fluxbless.com';
+  const baseDomain = siteUrl.endsWith('/') ? siteUrl.slice(0, -1) : siteUrl;
+
+  return {
+    metadataBase: new URL(baseDomain),
+    title: isZh
+      ? 'FluxBless - 东方美学手作配饰精选商城'
+      : 'FluxBless - Classic Eastern Aesthetics Jewelry Store',
+    description: isZh
+      ? 'FluxBless 为您甄选富含东方古典美学的精致配饰。我们专注古法琉璃、天然玛瑙、精选朱砂与和田白玉，为您的日常生活注入和谐、优雅与内心的平和。'
+      : 'Curated premium accessories reflecting classic Eastern aesthetics. Shop handcrafted bracelets, agate, cinnabar, and white jade accessories.',
+    alternates: {
+      canonical: `/${lang}`,
+      languages: {
+        'zh': '/zh',
+        'en': '/en',
+      },
+    },
+    openGraph: {
+      title: isZh
+        ? 'FluxBless - 东方美学手作配饰精选商城'
+        : 'FluxBless - Classic Eastern Aesthetics Jewelry Store',
+      description: isZh
+        ? 'FluxBless 为您甄选富含东方古典美学的精致配饰。'
+        : 'Curated premium accessories reflecting classic Eastern aesthetics.',
+      type: 'website',
+    }
+  };
+}
+
 export default async function LocalizedHomePage({
   params,
 }: {
@@ -90,7 +124,7 @@ export default async function LocalizedHomePage({
   let products = FALLBACK_PRODUCTS;
   try {
     const apiUrl = process.env.BACKEND_URL || 'http://backend:4000/api';
-    const res = await fetch(`${apiUrl}/products`, { cache: 'no-store' });
+    const res = await fetch(`${apiUrl}/products`, { next: { revalidate: 300 } });
     if (res.ok) {
       const data = await res.json();
       if (data && Array.isArray(data.items) && data.items.length > 0) {
@@ -107,7 +141,7 @@ export default async function LocalizedHomePage({
   let settings: Record<string, string> = {};
   try {
     const apiUrl = process.env.BACKEND_URL || 'http://backend:4000/api';
-    const res = await fetch(`${apiUrl}/settings`, { cache: 'no-store' });
+    const res = await fetch(`${apiUrl}/settings`, { next: { revalidate: 300 } });
     if (res.ok) {
       settings = await res.json();
     }

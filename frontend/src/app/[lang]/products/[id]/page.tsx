@@ -1,4 +1,5 @@
 import React from 'react';
+import { Metadata } from 'next';
 import { getDictionary } from '../../../../lib/dictionary';
 import { ProductDetails } from '../../../../components/ProductDetails';
 
@@ -77,6 +78,59 @@ const FALLBACK_PRODUCTS = [
   }
 ];
 
+export async function generateMetadata({ params }: { params: Promise<{ lang: 'zh' | 'en'; id: string }> }): Promise<Metadata> {
+  const { lang, id } = await params;
+  const productId = parseInt(id);
+  
+  let product = null;
+  try {
+    const apiUrl = process.env.BACKEND_URL || 'http://backend:4000/api';
+    const res = await fetch(`${apiUrl}/products/${productId}`, { next: { revalidate: 600 } });
+    if (res.ok) {
+      product = await res.json();
+    }
+  } catch (err) {
+    console.error('Failed to load product metadata', err);
+  }
+
+  if (!product) {
+    return {
+      title: lang === 'zh' ? '商品未找到 - FluxBless' : 'Product Not Found - FluxBless',
+    };
+  }
+
+  const name = lang === 'zh' ? product.nameZh : product.nameEn;
+  const description = lang === 'zh' ? product.descriptionZh : product.descriptionEn;
+  const siteUrl = process.env.FRONTEND_URL || 'https://fluxbless.com';
+  const baseDomain = siteUrl.endsWith('/') ? siteUrl.slice(0, -1) : siteUrl;
+
+  const images = Array.isArray(product.images) && product.images.length > 0 
+    ? product.images.map((img: string) => {
+        if (img.startsWith('http')) return img;
+        return `${baseDomain}${img.startsWith('/') ? '' : '/'}${img}`;
+      })
+    : [];
+
+  return {
+    metadataBase: new URL(baseDomain),
+    title: `${name} - FluxBless`,
+    description: description,
+    alternates: {
+      canonical: `/${lang}/products/${id}`,
+      languages: {
+        'zh': `/zh/products/${id}`,
+        'en': `/en/products/${id}`,
+      },
+    },
+    openGraph: {
+      title: name,
+      description: description,
+      type: 'website',
+      images: images.length > 0 ? [{ url: images[0] }] : undefined,
+    }
+  };
+}
+
 export default async function ProductDetailPage({
   params,
 }: {
@@ -90,7 +144,7 @@ export default async function ProductDetailPage({
   let product = FALLBACK_PRODUCTS.find((p) => p.id === productId);
   try {
     const apiUrl = process.env.BACKEND_URL || 'http://backend:4000/api';
-    const res = await fetch(`${apiUrl}/products/${productId}`, { cache: 'no-store' });
+    const res = await fetch(`${apiUrl}/products/${productId}`, { next: { revalidate: 600 } });
     if (res.ok) {
       const data = await res.json();
       if (data && data.id) {

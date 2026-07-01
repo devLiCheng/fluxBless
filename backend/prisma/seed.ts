@@ -312,6 +312,7 @@ async function main() {
     { key: 'detail_sizing_desc_en', value: 'The bracelets have slight elasticity and fit most wrist sizes (14cm-18cm). For custom requests, please contact customer support.' },
     { key: 'detail_review_subtext_zh', value: '真实买家购买后的真实评价，百分百真实可信。' },
     { key: 'detail_review_subtext_en', value: 'Authentic reviews from verified buyers.' },
+    { key: 'top_slogan_link_coupon_code', value: 'WELCOME' },
   ];
 
   console.log('🌱 Seeding default system settings...');
@@ -324,8 +325,29 @@ async function main() {
   }
   console.log(`✅ Seeded ${defaultSettings.length} system settings`);
 
+  // Create default coupons
+  console.log('🌱 Seeding default coupons...');
+  const defaultCoupons = [
+    {
+      code: 'WELCOME',
+      discountAmount: 10.00,
+      minOrderAmount: 50.00,
+      expiresAt: new Date('2036-07-01T00:00:00.000Z'),
+      isActive: true,
+    }
+  ];
+
+  for (const coupon of defaultCoupons) {
+    await prisma.coupon.upsert({
+      where: { code: coupon.code },
+      update: {},
+      create: coupon,
+    });
+  }
+  console.log(`✅ Seeded ${defaultCoupons.length} coupons`);
+
   console.log('\n🎉 Seeding complete!');
-  console.log(`📊 Created: 1 admin, ${categories.length} categories, ${products.length} products`);
+  console.log(`📊 Created: 1 admin, ${categories.length} categories, ${products.length} products, ${defaultCoupons.length} coupons`);
 }
 
 main()

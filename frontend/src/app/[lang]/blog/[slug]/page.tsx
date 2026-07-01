@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   let post = null;
   try {
     const apiUrl = process.env.BACKEND_URL || 'http://backend:4000/api';
-    const res = await fetch(`${apiUrl}/blog-posts/by-slug/${slug}`, { cache: 'no-store' });
+    const res = await fetch(`${apiUrl}/blog-posts/by-slug/${slug}`, { next: { revalidate: 3600 } });
     if (res.ok) {
       post = await res.json();
     }
@@ -43,9 +43,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const summary = lang === 'zh' ? post.summaryZh : post.summaryEn;
   const cover = post.coverImage ? getFullImageUrl(post.coverImage) : undefined;
 
+  const siteUrl = process.env.FRONTEND_URL || 'https://fluxbless.com';
+  const baseDomain = siteUrl.endsWith('/') ? siteUrl.slice(0, -1) : siteUrl;
+
   return {
+    metadataBase: new URL(baseDomain),
     title: `${title} - FluxBless`,
     description: summary,
+    alternates: {
+      canonical: `/${lang}/blog/${slug}`,
+      languages: {
+        'zh': `/zh/blog/${slug}`,
+        'en': `/en/blog/${slug}`,
+      },
+    },
     openGraph: {
       title: title,
       description: summary,
@@ -66,7 +77,7 @@ export default async function BlogDetailPage({ params }: Props) {
   let post = null;
   try {
     const apiUrl = process.env.BACKEND_URL || 'http://backend:4000/api';
-    const res = await fetch(`${apiUrl}/blog-posts/by-slug/${slug}`, { cache: 'no-store' });
+    const res = await fetch(`${apiUrl}/blog-posts/by-slug/${slug}`, { next: { revalidate: 3600 } });
     if (res.ok) {
       post = await res.json();
     }
@@ -104,13 +115,22 @@ export default async function BlogDetailPage({ params }: Props) {
     });
   };
 
+  const siteUrl = process.env.FRONTEND_URL || 'https://fluxbless.com';
+  const baseDomain = siteUrl.endsWith('/') ? siteUrl.slice(0, -1) : siteUrl;
+
+  const getAbsoluteUrl = (path: string) => {
+    if (!path) return '';
+    if (path.startsWith('http://') || path.startsWith('https://')) return path;
+    return `${baseDomain}${path.startsWith('/') ? '' : '/'}${path}`;
+  };
+
   // Construct JSON-LD Schema Markup
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     'headline': title,
     'description': summary,
-    'image': coverImage || undefined,
+    'image': coverImage ? getAbsoluteUrl(coverImage) : undefined,
     'datePublished': post.createdAt,
     'dateModified': post.updatedAt,
     'author': {
@@ -122,12 +142,12 @@ export default async function BlogDetailPage({ params }: Props) {
       'name': 'FluxBless',
       'logo': {
         '@type': 'ImageObject',
-        'url': getFullImageUrl('/logo.png'), // Fallback logo
+        'url': getAbsoluteUrl('/logo.png'), // Fallback logo
       }
     },
     'mainEntityOfPage': {
       '@type': 'WebPage',
-      '@id': `https://fluxbless.com/${lang}/blog/${post.slug}`,
+      '@id': getAbsoluteUrl(`/${lang}/blog/${post.slug}`),
     }
   };
 

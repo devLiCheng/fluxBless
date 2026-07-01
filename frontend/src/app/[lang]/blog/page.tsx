@@ -11,8 +11,11 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   const isZh = lang === 'zh';
+  const siteUrl = process.env.FRONTEND_URL || 'https://fluxbless.com';
+  const baseDomain = siteUrl.endsWith('/') ? siteUrl.slice(0, -1) : siteUrl;
   
   return {
+    metadataBase: new URL(baseDomain),
     title: isZh 
       ? '东方美学专栏 & 手工手串配饰指南 | FluxBless 博客' 
       : 'Eastern Aesthetics Journal & Handcrafted Accessories | FluxBless Blog',
@@ -22,6 +25,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     keywords: isZh
       ? '手串保养, 玛瑙文化, 琉璃工艺, 朱砂佩戴, 和田白玉, 东方美学, 传统手作'
       : 'bracelet care, agate history, ancient glaze beads, cinnabar meaning, Hetian white jade, Eastern aesthetics, handcrafted jewelry',
+    alternates: {
+      canonical: `/${lang}/blog`,
+      languages: {
+        'zh': `/zh/blog`,
+        'en': `/en/blog`,
+      },
+    },
     openGraph: {
       title: isZh ? 'FluxBless 东方美学志' : 'FluxBless Aesthetics Journal',
       description: isZh ? '传统手工配饰背后的工艺故事与文化寓意' : 'The craft stories and cultural history behind traditional handcrafted jewelry',
@@ -40,7 +50,7 @@ export default async function BlogIndexPage({ params }: Props) {
   
   try {
     const apiUrl = process.env.BACKEND_URL || 'http://backend:4000/api';
-    const res = await fetch(`${apiUrl}/blog-posts?page=1&limit=6`, { cache: 'no-store' });
+    const res = await fetch(`${apiUrl}/blog-posts?page=1&limit=6`, { next: { revalidate: 600 } });
     if (res.ok) {
       const data = await res.json();
       initialPosts = data.items || [];

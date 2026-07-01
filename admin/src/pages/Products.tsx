@@ -678,6 +678,22 @@ function RichTextEditor({ value = '', onChange }: { value?: string; onChange?: (
     document.execCommand(command, false, arg);
   };
 
+  const handleInsertLink = () => {
+    const url = prompt('请输入链接地址 (例如 https://example.com):');
+    if (url) {
+      document.execCommand('createLink', false, url);
+    }
+  };
+
+  const handleInsertTable = () => {
+    const tableHtml = `<table style="width: 100%; border-collapse: collapse; margin: 12px 0;"><thead><tr><th style="border: 1px solid var(--color-border); padding: 8px; background: var(--color-fill-2); font-weight: bold; text-align: left; min-width: 80px;">特征/参数</th><th style="border: 1px solid var(--color-border); padding: 8px; background: var(--color-fill-2); font-weight: bold; text-align: left;">详细说明</th></tr></thead><tbody><tr><td style="border: 1px solid var(--color-border); padding: 8px;">材质说明</td><td style="border: 1px solid var(--color-border); padding: 8px;">说明内容</td></tr><tr><td style="border: 1px solid var(--color-border); padding: 8px;">保养方式</td><td style="border: 1px solid var(--color-border); padding: 8px;">消磁碎石消磁，流水清洁</td></tr></tbody></table><p><br></p>`;
+    editorRef.current?.focus();
+    document.execCommand('insertHTML', false, tableHtml);
+    if (editorRef.current && onChange) {
+      onChange(editorRef.current.innerHTML);
+    }
+  };
+
   const handleUploadClick = (type: 'image' | 'video') => {
     setMediaType(type);
     setTimeout(() => {
@@ -701,7 +717,9 @@ function RichTextEditor({ value = '', onChange }: { value?: string; onChange?: (
       editorRef.current?.focus();
       
       if (mediaType === 'image') {
-        document.execCommand('insertImage', false, fileUrl);
+        const altText = prompt('请输入图片的替代文本 (Alt Text) 用于 SEO / GEO 检索优化:');
+        const imgHtml = `<img src="${fileUrl}" alt="${altText || ''}" style="max-width: 100%; border-radius: 8px; margin: 8px 0;" /><p><br></p>`;
+        document.execCommand('insertHTML', false, imgHtml);
       } else {
         const videoHtml = `<video src="${fileUrl}" controls style="max-width: 100%; border-radius: 8px; margin: 8px 0;" controlsList="nodownload"></video><p><br></p>`;
         document.execCommand('insertHTML', false, videoHtml);
@@ -731,9 +749,14 @@ function RichTextEditor({ value = '', onChange }: { value?: string; onChange?: (
         <Button size='mini' type='secondary' onClick={() => handleCommand('bold')} style={{ fontWeight: 'bold' }}>B</Button>
         <Button size='mini' type='secondary' onClick={() => handleCommand('italic')} style={{ fontStyle: 'italic' }}>I</Button>
         <Button size='mini' type='secondary' onClick={() => handleCommand('underline')} style={{ textDecoration: 'underline' }}>U</Button>
+        <Button size='mini' type='secondary' onClick={() => handleCommand('formatBlock', '<h2>')} style={{ fontWeight: 'bold' }}>H2</Button>
+        <Button size='mini' type='secondary' onClick={() => handleCommand('formatBlock', '<h3>')} style={{ fontWeight: 'bold' }}>H3</Button>
+        <Button size='mini' type='secondary' onClick={() => handleCommand('formatBlock', '<p>')}>正文</Button>
+        <Button size='mini' type='secondary' onClick={handleInsertLink}>链接</Button>
         <Button size='mini' type='secondary' onClick={() => handleCommand('justifyLeft')}>左</Button>
         <Button size='mini' type='secondary' onClick={() => handleCommand('justifyCenter')}>中</Button>
         <Button size='mini' type='secondary' onClick={() => handleCommand('justifyRight')}>右</Button>
+        <Button size='mini' type='secondary' onClick={handleInsertTable}>表格</Button>
         <Button size='mini' type='secondary' onClick={() => handleCommand('insertHorizontalRule')}>分割线</Button>
         <Button size='mini' type='secondary' onClick={() => handleUploadClick('image')}>图片</Button>
         <Button size='mini' type='secondary' onClick={() => handleUploadClick('video')}>视频</Button>
