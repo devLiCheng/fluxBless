@@ -15,7 +15,7 @@ import {
   Collapse,
   Upload,
 } from '@arco-design/web-react';
-import { IconPlus, IconEdit, IconDelete, IconSearch } from '@arco-design/web-react/icon';
+import { IconPlus, IconEdit, IconDelete, IconSearch, IconEye, IconPlayArrow } from '@arco-design/web-react/icon';
 import api from '../utils/api';
 
 const getFullImageUrl = (url: string) => {
@@ -44,6 +44,19 @@ export default function Products() {
 
   const [fileList, setFileList] = useState<any[]>([]);
   const [externalUrl, setExternalUrl] = useState('');
+
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState('');
+  const [previewType, setPreviewType] = useState<'image' | 'video'>('image');
+
+  const handlePreview = (file: any) => {
+    const url = file.url || (file.response && file.response.url);
+    if (!url) return;
+    setPreviewUrl(url);
+    const isVideo = url.match(/\.(mp4|webm|ogg|mov)$/i) || (url.includes('/uploads/') && !url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i));
+    setPreviewType(isVideo ? 'video' : 'image');
+    setPreviewVisible(true);
+  };
 
   const customRequest = async (option: any) => {
     const { file, onProgress, onSuccess, onError } = option;
@@ -249,18 +262,35 @@ export default function Products() {
       dataIndex: 'images',
       width: 80,
       render: (images: any) => {
-        let url = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=100&auto=format&fit=crop';
-        if (Array.isArray(images) && images.length > 0) {
-          url = getFullImageUrl(images[0]);
+        let list: string[] = [];
+        if (Array.isArray(images)) {
+          list = images;
         } else if (typeof images === 'string') {
           try {
             const parsed = JSON.parse(images);
-            if (Array.isArray(parsed) && parsed.length > 0) url = getFullImageUrl(parsed[0]);
-          } catch { url = getFullImageUrl(images); }
+            if (Array.isArray(parsed)) list = parsed;
+          } catch {
+            if (images) list = [images];
+          }
         }
+        
+        const isVideoUrl = (url: string) => url && (url.match(/\.(mp4|webm|ogg|mov)$/i) || (url.includes('/uploads/') && !url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)));
+        const firstImage = list.find((url) => !isVideoUrl(url)) || list[0];
+        
+        let url = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=100&auto=format&fit=crop';
+        if (firstImage) {
+          url = getFullImageUrl(firstImage);
+        }
+        
+        const isVideo = isVideoUrl(url);
+        
         return (
-          <Avatar shape='square' size={48}>
-            <img src={url} alt='商品缩略图' style={{ objectFit: 'cover' }} />
+          <Avatar shape='square' size={48} style={{ background: '#000' }}>
+            {isVideo ? (
+              <video src={url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <img src={url} alt='商品缩略图' style={{ objectFit: 'cover' }} />
+            )}
           </Avatar>
         );
       },
@@ -416,18 +446,70 @@ export default function Products() {
             </Grid.Col>
           </Grid.Row>
 
-          <Form.Item label='商品图片' required>
+          <Form.Item label='商品图片与视频 (支持 mp4 等视频格式)' required>
             <Upload
               listType='picture-card'
               multiple
               fileList={fileList}
               onChange={setFileList}
               customRequest={customRequest}
-              imagePreview
+              onPreview={handlePreview}
+              renderUploadItem={(originNode, file) => {
+                const url = file.url || (file.response && (file.response as any).url);
+                const isVideo = url && (url.match(/\.(mp4|webm|ogg|mov)$/i) || (url.includes('/uploads/') && !url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)));
+                if (isVideo) {
+                  return (
+                    <div 
+                      className="arco-upload-list-item arco-upload-list-item-done" 
+                      style={{ 
+                        position: 'relative', 
+                        width: 112, 
+                        height: 112, 
+                        borderRadius: 4, 
+                        overflow: 'hidden', 
+                        border: '1px solid var(--color-border)',
+                        background: '#000',
+                        marginRight: 8,
+                        marginBottom: 8,
+                        display: 'inline-block'
+                      }}
+                    >
+                      <video src={url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
+                        <IconPlayArrow style={{ fontSize: 24, color: 'rgba(255,255,255,0.8)', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }} />
+                      </div>
+                      <div 
+                        className="media-overlay" 
+                        style={{
+                          position: 'absolute',
+                          inset: 0,
+                          background: 'rgba(0,0,0,0.6)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: 16,
+                          opacity: 0,
+                          transition: 'opacity 0.2s',
+                          color: '#fff',
+                          pointerEvents: 'auto'
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.opacity = '1'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.opacity = '0'; }}
+                      >
+                        <IconEye style={{ cursor: 'pointer', fontSize: 18 }} onClick={() => handlePreview(file)} />
+                        <IconDelete style={{ cursor: 'pointer', fontSize: 18 }} onClick={() => {
+                          setFileList((prev) => prev.filter((f) => f.uid !== file.uid));
+                        }} />
+                      </div>
+                    </div>
+                  );
+                }
+                return originNode;
+              }}
             />
             <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
               <Input
-                placeholder='输入外部图片链接 (例如: https://example.com/image.jpg)'
+                placeholder='输入外部图片或视频链接 (支持 mp4 等格式)'
                 value={externalUrl}
                 onChange={setExternalUrl}
               />
@@ -555,6 +637,22 @@ export default function Products() {
             </Collapse.Item>
           </Collapse>
         </Form>
+      </Modal>
+
+      {/* Media Preview Modal */}
+      <Modal
+        visible={previewVisible}
+        footer={null}
+        onCancel={() => setPreviewVisible(false)}
+        style={{ width: 'auto', maxWidth: '80vw' }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', background: '#000', padding: 12 }}>
+          {previewType === 'video' ? (
+            <video src={previewUrl} controls style={{ maxWidth: '100%', maxHeight: '70vh' }} autoPlay />
+          ) : (
+            <img src={previewUrl} alt="Preview" style={{ maxWidth: '100%', maxHeight: '70vh' }} />
+          )}
+        </div>
       </Modal>
     </div>
   );

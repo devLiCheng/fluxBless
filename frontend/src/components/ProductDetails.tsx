@@ -19,6 +19,7 @@ import {
   ZoomIn,
   ZoomOut,
   RotateCcw,
+  Play,
 } from 'lucide-react';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
@@ -70,6 +71,11 @@ interface ProductDetailsProps {
 }
 
 type Tab = 'description' | 'benefits' | 'specs';
+
+const isVideoUrl = (url: string) => {
+  if (!url) return false;
+  return url.match(/\.(mp4|webm|ogg|mov)$/i) || (url.includes('/uploads/') && !url.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i));
+};
 
 export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, lang }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -429,7 +435,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
         nameZh: product.nameZh,
         nameEn: product.nameEn,
         price: product.price,
-        image: images[0],
+        image: images.find((url: string) => !isVideoUrl(url)) || images[0],
         stock: product.stock,
       });
     }
@@ -474,15 +480,36 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
             }}
             className="relative aspect-square bg-zinc-900 border border-gold-primary/10 rounded-2xl overflow-hidden group cursor-zoom-in"
           >
-            <img
-              src={images[selectedImageIndex]}
-              alt={name}
-              style={isZoomed ? zoomStyle : { transition: 'transform 0.5s ease-out' }}
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                e.currentTarget.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop';
-              }}
-            />
+            {(() => {
+              const currentMedia = images[selectedImageIndex];
+              const isVideo = isVideoUrl(currentMedia);
+              if (isVideo) {
+                return (
+                  <video 
+                    src={currentMedia} 
+                    controls 
+                    autoPlay 
+                    muted 
+                    loop 
+                    className="w-full h-full object-contain bg-black" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  />
+                );
+              }
+              return (
+                <img
+                  src={currentMedia}
+                  alt={name}
+                  style={isZoomed ? zoomStyle : { transition: 'transform 0.5s ease-out' }}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop';
+                  }}
+                />
+              );
+            })()}
             {/* Image Counter Badge */}
             {images.length > 0 && (
               <div className="absolute bottom-4 right-4 bg-black/60 border border-gold-primary/30 text-cream px-3 py-1 rounded-full text-[10px] tracking-widest backdrop-blur-sm select-none z-10">
@@ -530,14 +557,23 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                       : 'border-gold-primary/10 hover:border-gold-primary/40'
                   }`}
                 >
-                  <img
-                    src={img}
-                    alt={`${name} ${idx + 1}`}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=200&auto=format&fit=crop';
-                    }}
-                  />
+                  {isVideoUrl(img) ? (
+                    <div className="w-full h-full relative bg-black flex items-center justify-center">
+                      <video src={img} className="w-full h-full object-cover opacity-60" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Play className="w-6 h-6 text-gold-primary fill-gold-primary/20" />
+                      </div>
+                    </div>
+                  ) : (
+                    <img
+                      src={img}
+                      alt={`${name} ${idx + 1}`}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=200&auto=format&fit=crop';
+                      }}
+                    />
+                  )}
                 </button>
               ))}
             </div>
@@ -1127,39 +1163,41 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
           </button>
 
           {/* Zoom Control Panel (Bottom Center) */}
-          <div 
-            className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-zinc-900/85 border border-gold-primary/20 px-4 py-2 rounded-full backdrop-blur-sm shadow-lg z-50"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={handleLightboxZoomOut}
-              disabled={lightboxScale <= 1}
-              className="text-zinc-400 hover:text-gold-primary disabled:text-zinc-700 disabled:hover:text-zinc-700 transition-colors p-1 cursor-pointer"
-              title={lang === 'zh' ? '缩小' : 'Zoom Out'}
+          {!isVideoUrl(images[lightboxIndex]) && (
+            <div 
+              className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-zinc-900/85 border border-gold-primary/20 px-4 py-2 rounded-full backdrop-blur-sm shadow-lg z-50"
+              onClick={(e) => e.stopPropagation()}
             >
-              <ZoomOut className="w-4 h-4" />
-            </button>
-            <span className="text-[10px] text-zinc-300 font-mono tracking-widest min-w-[32px] text-center select-none">
-              {Math.round(lightboxScale * 100)}%
-            </span>
-            <button
-              onClick={handleLightboxZoomIn}
-              disabled={lightboxScale >= 3.5}
-              className="text-zinc-400 hover:text-gold-primary disabled:text-zinc-700 disabled:hover:text-zinc-700 transition-colors p-1 cursor-pointer"
-              title={lang === 'zh' ? '放大' : 'Zoom In'}
-            >
-              <ZoomIn className="w-4 h-4" />
-            </button>
-            <div className="w-px h-3 bg-zinc-700" />
-            <button
-              onClick={handleLightboxReset}
-              disabled={lightboxScale === 1 && lightboxPos.x === 0 && lightboxPos.y === 0}
-              className="text-zinc-400 hover:text-gold-primary disabled:text-zinc-700 disabled:hover:text-zinc-700 transition-colors p-1 cursor-pointer"
-              title={lang === 'zh' ? '重置' : 'Reset'}
-            >
-              <RotateCcw className="w-4 h-4" />
-            </button>
-          </div>
+              <button
+                onClick={handleLightboxZoomOut}
+                disabled={lightboxScale <= 1}
+                className="text-zinc-400 hover:text-gold-primary disabled:text-zinc-700 disabled:hover:text-zinc-700 transition-colors p-1 cursor-pointer"
+                title={lang === 'zh' ? '缩小' : 'Zoom Out'}
+              >
+                <ZoomOut className="w-4 h-4" />
+              </button>
+              <span className="text-[10px] text-zinc-300 font-mono tracking-widest min-w-[32px] text-center select-none">
+                {Math.round(lightboxScale * 100)}%
+              </span>
+              <button
+                onClick={handleLightboxZoomIn}
+                disabled={lightboxScale >= 3.5}
+                className="text-zinc-400 hover:text-gold-primary disabled:text-zinc-700 disabled:hover:text-zinc-700 transition-colors p-1 cursor-pointer"
+                title={lang === 'zh' ? '放大' : 'Zoom In'}
+              >
+                <ZoomIn className="w-4 h-4" />
+              </button>
+              <div className="w-px h-3 bg-zinc-700" />
+              <button
+                onClick={handleLightboxReset}
+                disabled={lightboxScale === 1 && lightboxPos.x === 0 && lightboxPos.y === 0}
+                className="text-zinc-400 hover:text-gold-primary disabled:text-zinc-700 disabled:hover:text-zinc-700 transition-colors p-1 cursor-pointer"
+                title={lang === 'zh' ? '重置' : 'Reset'}
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
+            </div>
+          )}
  
           {/* Navigation Arrows */}
           {images.length > 1 && (
@@ -1194,37 +1232,53 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
             className="relative max-w-[90vw] max-h-[82vh] overflow-hidden flex flex-col items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <img
-              src={images[lightboxIndex]}
-              alt={name}
-              style={{
-                transform: `translate(${lightboxPos.x}px, ${lightboxPos.y}px) scale(${lightboxScale})`,
-                cursor: lightboxScale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in',
-                transition: isDragging ? 'none' : 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-                touchAction: lightboxScale > 1 ? 'none' : 'auto',
-              }}
-              onMouseDown={handleLightboxMouseDown}
-              onMouseMove={handleLightboxMouseMove}
-              onMouseUp={handleLightboxMouseUp}
-              onMouseLeave={handleLightboxMouseUp}
-              onTouchStart={handleLightboxTouchStart}
-              onTouchMove={handleLightboxTouchMove}
-              onTouchEnd={handleLightboxMouseUp}
-              onClick={() => {
-                if (hasDraggedRef.current) {
-                  return;
-                }
-                if (lightboxScale === 1) {
-                  setLightboxScale(2);
-                } else {
-                  handleLightboxReset();
-                }
-              }}
-              className="max-w-[90vw] max-h-[75vh] object-contain rounded-lg shadow-2xl border border-gold-primary/10 select-none pointer-events-auto"
-              onError={(e) => {
-                e.currentTarget.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop';
-              }}
-            />
+            {(() => {
+              const currentMedia = images[lightboxIndex];
+              const isVideo = isVideoUrl(currentMedia);
+              if (isVideo) {
+                return (
+                  <video 
+                    src={currentMedia} 
+                    controls 
+                    autoPlay 
+                    className="max-w-[90vw] max-h-[75vh] object-contain rounded-lg shadow-2xl border border-gold-primary/10 select-none pointer-events-auto bg-black" 
+                  />
+                );
+              }
+              return (
+                <img
+                  src={currentMedia}
+                  alt={name}
+                  style={{
+                    transform: `translate(${lightboxPos.x}px, ${lightboxPos.y}px) scale(${lightboxScale})`,
+                    cursor: lightboxScale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in',
+                    transition: isDragging ? 'none' : 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                    touchAction: lightboxScale > 1 ? 'none' : 'auto',
+                  }}
+                  onMouseDown={handleLightboxMouseDown}
+                  onMouseMove={handleLightboxMouseMove}
+                  onMouseUp={handleLightboxMouseUp}
+                  onMouseLeave={handleLightboxMouseUp}
+                  onTouchStart={handleLightboxTouchStart}
+                  onTouchMove={handleLightboxTouchMove}
+                  onTouchEnd={handleLightboxMouseUp}
+                  onClick={() => {
+                    if (hasDraggedRef.current) {
+                      return;
+                    }
+                    if (lightboxScale === 1) {
+                      setLightboxScale(2);
+                    } else {
+                      handleLightboxReset();
+                    }
+                  }}
+                  className="max-w-[90vw] max-h-[75vh] object-contain rounded-lg shadow-2xl border border-gold-primary/10 select-none pointer-events-auto"
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop';
+                  }}
+                />
+              );
+            })()}
             {/* Image Index Caption */}
             {images.length > 0 && (
               <span className="text-zinc-500 text-xs tracking-widest mt-4 block select-none">
