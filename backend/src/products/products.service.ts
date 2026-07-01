@@ -120,6 +120,8 @@ export class ProductsService {
         sizingDescZh: dto.sizingDescZh,
         sizingDescEn: dto.sizingDescEn,
         purchaseUrl: dto.purchaseUrl,
+        tagsZh: dto.tagsZh,
+        tagsEn: dto.tagsEn,
         ratingOverride: dto.ratingOverride,
         salesOverride: dto.salesOverride,
       },

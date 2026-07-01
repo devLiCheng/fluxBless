@@ -150,6 +150,8 @@ export default function Products() {
         sizingDescZh: record.sizingDescZh || '',
         sizingDescEn: record.sizingDescEn || '',
         purchaseUrl: record.purchaseUrl || '',
+        tagsZh: record.tagsZh || '',
+        tagsEn: record.tagsEn || '',
       });
       let imgs: string[] = [];
       if (Array.isArray(record.images)) {
@@ -209,7 +211,7 @@ export default function Products() {
         'purificationZh', 'purificationEn', 'benefitsZh', 'benefitsEn',
         'specWeight', 'specBeadSize', 'specBeadCount',
         'specWristSizeZh', 'specWristSizeEn', 'sizingDescZh', 'sizingDescEn',
-        'purchaseUrl', 'ratingOverride', 'salesOverride',
+        'purchaseUrl', 'tagsZh', 'tagsEn', 'ratingOverride', 'salesOverride',
       ];
       optionalFields.forEach((f) => {
         payload[f] = values[f] !== undefined && values[f] !== '' && values[f] !== null ? values[f] : null;
@@ -400,6 +402,19 @@ export default function Products() {
           <Form.Item label='采购来源网址 (URL)' field='purchaseUrl'>
             <Input placeholder='例如：https://detail.1688.com/offer/12345678.html' />
           </Form.Item>
+
+          <Grid.Row gutter={16}>
+            <Grid.Col span={12}>
+              <Form.Item label='商品标签 (中文，英文逗号隔开)' field='tagsZh'>
+                <Input placeholder='例如：手工甄选,最新上货' />
+              </Form.Item>
+            </Grid.Col>
+            <Grid.Col span={12}>
+              <Form.Item label='商品标签 (英文，英文逗号隔开)' field='tagsEn'>
+                <Input placeholder='e.g. Premium Selected,New Arrival' />
+              </Form.Item>
+            </Grid.Col>
+          </Grid.Row>
 
           <Form.Item label='商品图片' required>
             <Upload

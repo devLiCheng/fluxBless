@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `products` ADD COLUMN `tagsEn` VARCHAR(191) NULL,
+    ADD COLUMN `tagsZh` VARCHAR(191) NULL;

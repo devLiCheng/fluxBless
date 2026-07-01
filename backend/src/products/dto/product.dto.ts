@@ -104,6 +104,14 @@ export class CreateProductDto {
   @IsOptional()
   @IsString()
   purchaseUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  tagsZh?: string;
+
+  @IsOptional()
+  @IsString()
+  tagsEn?: string;
 }
 
 export class UpdateProductDto {
@@ -217,6 +225,14 @@ export class UpdateProductDto {
   @IsOptional()
   @IsString()
   purchaseUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  tagsZh?: string;
+
+  @IsOptional()
+  @IsString()
+  tagsEn?: string;
 }
 
 export class ProductQueryDto {

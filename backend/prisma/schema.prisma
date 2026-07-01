@@ -65,6 +65,8 @@ model Product {
   sizingDescZh     String?     @db.Text // 尺寸指南说明（中文）
   sizingDescEn     String?     @db.Text // Sizing Guide Description (English)
   purchaseUrl      String?     @db.Text // 采购/采集来源网址 URL
+  tagsZh           String?     // 商品标签（中文，逗号分隔）
+  tagsEn           String?     // Product tags (English, comma-separated)
   ratingOverride   Float?
   salesOverride    Int?
   orderItems       OrderItem[]

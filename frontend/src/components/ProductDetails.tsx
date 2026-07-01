@@ -57,6 +57,8 @@ interface Product {
   sizingDescZh?: string;
   sizingDescEn?: string;
   purchaseUrl?: string;
+  tagsZh?: string;
+  tagsEn?: string;
   rating?: number;
   reviewCount?: number;
 }
@@ -494,10 +496,24 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                   {lang === 'zh' ? `仅剩 ${product.stock} 件` : `Only ${product.stock} left`}
                 </span>
               )}
-              <span className="bg-black/60 border border-gold-primary/30 text-gold-primary text-[10px] uppercase tracking-widest px-3 py-1 rounded-full backdrop-blur-sm flex items-center gap-1">
-                <Sparkles className="w-3 h-3" />
-                {lang === 'zh' ? '手工甄选' : 'Premium Selected'}
-              </span>
+              {(() => {
+                const tagsStr = lang === 'zh' ? product.tagsZh : product.tagsEn;
+                if (tagsStr && tagsStr.trim()) {
+                  const tagList = tagsStr.split(',').map((t) => t.trim()).filter(Boolean);
+                  return tagList.map((tag, idx) => (
+                    <span key={idx} className="bg-black/60 border border-gold-primary/30 text-gold-primary text-[10px] uppercase tracking-widest px-3 py-1 rounded-full backdrop-blur-sm flex items-center gap-1">
+                      <Sparkles className="w-3 h-3" />
+                      {tag}
+                    </span>
+                  ));
+                }
+                return (
+                  <span className="bg-black/60 border border-gold-primary/30 text-gold-primary text-[10px] uppercase tracking-widest px-3 py-1 rounded-full backdrop-blur-sm flex items-center gap-1">
+                    <Sparkles className="w-3 h-3" />
+                    {lang === 'zh' ? '手工甄选' : 'Premium Selected'}
+                  </span>
+                );
+              })()}
             </div>
           </div>
 
