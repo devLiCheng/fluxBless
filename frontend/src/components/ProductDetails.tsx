@@ -596,88 +596,9 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
               </div>
             ))}
           </div>
-        </div>
-
-        {/* ── Right: Product Info ── */}
-        <div className="flex flex-col">
-          {/* Category tag */}
-          <span className="text-gold-secondary text-xs uppercase tracking-[0.2em] font-serif mb-2 flex items-center gap-2">
-            <Gem className="w-3 h-3" />
-            {lang === 'zh' ? product.category.nameZh : product.category.nameEn}
-          </span>
-
-          {/* Name */}
-          <h1 className="text-3xl sm:text-4xl font-serif tracking-widest text-gold-primary gold-text-gradient mb-2 leading-tight">
-            {name}
-          </h1>
-
-          {/* Star rating */}
-          <div className="flex items-center gap-1 mb-4">
-            {[1, 2, 3, 4, 5].map((s) => {
-              const fillStar = s <= Math.round(displayRating);
-              return (
-                <Star 
-                  key={s} 
-                  className={`w-4 h-4 text-gold-primary transition-all ${
-                    fillStar ? 'fill-gold-primary opacity-100' : 'opacity-25'
-                  }`} 
-                />
-              );
-            })}
-            <span className="text-xs text-zinc-400 ml-2">
-              {lang === 'zh' 
-                ? `${displayRating.toFixed(1)} · ${displayReviewCount}+ 买家好评` 
-                : `${displayRating.toFixed(1)} · ${displayReviewCount}+ happy buyers`}
-            </span>
-          </div>
-
-          {/* Price & Stock */}
-          <div className="flex items-center space-x-6 border-y border-gold-primary/10 py-4 mb-6">
-            <span className="text-3xl font-bold text-gold-primary">
-              ¥{parseFloat(String(product.price)).toFixed(2)}
-            </span>
-            <span className="text-xs">
-              {product.stock > 0 ? (
-                <span className="text-emerald-400 font-medium flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block" />
-                  {dict.product.inStock} ({product.stock})
-                </span>
-              ) : (
-                <span className="text-red-400 font-medium">● {dict.product.outOfStock}</span>
-              )}
-            </span>
-          </div>
-
-          {/* Quick info pills */}
-          {(material || origin) && (
-            <div className="flex flex-wrap gap-2 mb-6">
-              {material && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-full text-zinc-300">
-                  <Gem className="w-3 h-3 text-gold-secondary" />
-                  {material}
-                </span>
-              )}
-              {origin && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-full text-zinc-300">
-                  <MapPin className="w-3 h-3 text-gold-secondary" />
-                  {origin}
-                </span>
-              )}
-              {product.specBeadSize && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-full text-zinc-300">
-                  ⬤ {product.specBeadSize}
-                </span>
-              )}
-              {product.specBeadCount && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-full text-zinc-300">
-                  × {product.specBeadCount}
-                </span>
-              )}
-            </div>
-          )}
 
           {/* Tabs */}
-          <div className="border-b border-gold-primary/10 mb-6">
+          <div className="border-b border-gold-primary/10 mb-6 mt-8">
             <div className="flex space-x-0 overflow-x-auto scrollbar-none pb-0.5 scroll-smooth w-full max-w-full min-w-0">
               {tabs.map((tab) => (
                 <button
@@ -759,9 +680,88 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                 )}
               </div>
             )}
-
-
           </div>
+        </div>
+
+        {/* ── Right: Product Info ── */}
+        <div className="flex flex-col lg:sticky lg:top-24 self-start">
+          {/* Category tag */}
+          <span className="text-gold-secondary text-xs uppercase tracking-[0.2em] font-serif mb-2 flex items-center gap-2">
+            <Gem className="w-3 h-3" />
+            {lang === 'zh' ? product.category.nameZh : product.category.nameEn}
+          </span>
+
+          {/* Name */}
+          <h1 className="text-3xl sm:text-4xl font-serif tracking-widest text-gold-primary gold-text-gradient mb-2 leading-tight">
+            {name}
+          </h1>
+
+          {/* Star rating */}
+          <div className="flex items-center gap-1 mb-4">
+            {[1, 2, 3, 4, 5].map((s) => {
+              const fillStar = s <= Math.round(displayRating);
+              return (
+                <Star 
+                  key={s} 
+                  className={`w-4 h-4 text-gold-primary transition-all ${
+                    fillStar ? 'fill-gold-primary opacity-100' : 'opacity-25'
+                  }`} 
+                />
+              );
+            })}
+            <span className="text-xs text-zinc-400 ml-2">
+              {lang === 'zh' 
+                ? `${displayRating.toFixed(1)} · ${displayReviewCount}+ 买家好评` 
+                : `${displayRating.toFixed(1)} · ${displayReviewCount}+ happy buyers`}
+            </span>
+          </div>
+
+          {/* Price & Stock */}
+          <div className="flex items-center space-x-6 border-y border-gold-primary/10 py-4 mb-6">
+            <span className="text-3xl font-bold text-gold-primary">
+              ¥{parseFloat(String(product.price)).toFixed(2)}
+            </span>
+            <span className="text-xs">
+              {product.stock > 0 ? (
+                <span className="text-emerald-400 font-medium flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block" />
+                  {dict.product.inStock} ({product.stock})
+                </span>
+              ) : (
+                <span className="text-red-400 font-medium">● {dict.product.outOfStock}</span>
+              )}
+            </span>
+          </div>
+
+          {/* Quick info pills */}
+          {(material || origin) && (
+            <div className="flex flex-wrap gap-2 mb-6">
+              {material && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-full text-zinc-300">
+                  <Gem className="w-3 h-3 text-gold-secondary" />
+                  {material}
+                </span>
+              )}
+              {origin && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-full text-zinc-300">
+                  <MapPin className="w-3 h-3 text-gold-secondary" />
+                  {origin}
+                </span>
+              )}
+              {product.specBeadSize && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-full text-zinc-300">
+                  ⬤ {product.specBeadSize}
+                </span>
+              )}
+              {product.specBeadCount && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-full text-zinc-300">
+                  × {product.specBeadCount}
+                </span>
+              )}
+            </div>
+          )}
+
+
 
           {/* Quantity & CTA */}
           {product.stock > 0 ? (
