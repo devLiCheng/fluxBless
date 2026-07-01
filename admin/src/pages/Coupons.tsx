@@ -55,7 +55,7 @@ export default function Coupons() {
       const values = await form.validate();
       const payload = {
         ...values,
-        expiresAt: values.expiresAt ? values.expiresAt.toISOString() : null,
+        expiresAt: values.expiresAt ? dayjs(values.expiresAt).toISOString() : null,
       };
 
       if (editingId) {
