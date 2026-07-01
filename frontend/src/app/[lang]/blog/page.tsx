@@ -2,7 +2,6 @@ import React from 'react';
 import { Metadata } from 'next';
 import { getDictionary } from '../../../lib/dictionary';
 import { BlogListClient } from '../../../components/BlogListClient';
-import { Sparkles } from 'lucide-react';
 
 interface Props {
   params: Promise<{ lang: 'zh' | 'en' }>;
@@ -66,27 +65,10 @@ export default async function BlogIndexPage({ params }: Props) {
     <div className="relative overflow-hidden bg-background py-16 sm:py-24 border-b border-gold-primary/5 min-h-screen">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Header section */}
-        <header className="text-center max-w-3xl mx-auto flex flex-col items-center mb-16">
-          <div className="inline-flex items-center space-x-2 border border-gold-primary/20 rounded-md px-4 py-1 bg-[#FAF9F5] mb-6 shadow-sm">
-            <Sparkles className="w-3.5 h-3.5 text-gold-primary animate-pulse" />
-            <span className="text-[10px] sm:text-xs tracking-[0.2em] text-gold-secondary font-serif uppercase">
-              {lang === 'zh' ? '东方美学志' : 'Aesthetics Journal'}
-            </span>
-          </div>
-
-          <h1 className="text-3xl sm:text-5xl font-serif tracking-widest text-gold-primary mb-4 uppercase">
-            <span className="gold-text-gradient block">
-              {lang === 'zh' ? '探寻传统手作美学' : 'Discover Traditional Handcraft'}
-            </span>
-          </h1>
-
-          <p className="text-zinc-500 text-xs sm:text-sm leading-relaxed tracking-wider max-w-xl font-light">
-            {lang === 'zh'
-              ? '汇集手串配饰的材料故事、古法琉璃与玉石玛瑙的制作工艺、佩戴讲究以及净化保养的实用常识。'
-              : 'Discover stories of accessories, colored glaze artisanship, agate crystals, white jade aesthetics, and purification guides.'}
-          </p>
-        </header>
+        {/* Visually hidden h1 for SEO compliance */}
+        <h1 className="sr-only">
+          {lang === 'zh' ? '探寻传统手作美学' : 'Discover Traditional Handcraft'}
+        </h1>
 
         {/* Blog Post List Client Container */}
         <main>
