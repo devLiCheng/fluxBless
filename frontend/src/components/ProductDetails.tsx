@@ -484,7 +484,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
           {lang === 'zh' ? product.category.nameZh : product.category.nameEn}
         </Link>
         <ChevronRight className="w-3 h-3" />
-        <span className="text-zinc-300 truncate max-w-[200px]">{name}</span>
+        <span className="text-zinc-500 truncate max-w-[200px]">{name}</span>
       </nav>
 
       {/* Main Grid */}
@@ -680,7 +680,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                   className={`px-5 py-2.5 text-xs font-medium tracking-widest uppercase transition-all border-b-2 -mb-px ${
                     activeTab === tab.key
                       ? 'border-gold-primary text-gold-primary'
-                      : 'border-transparent text-zinc-500 hover:text-zinc-300'
+                      : 'border-transparent text-zinc-500 hover:text-gold-primary'
                   }`}
                 >
                   {tab.label}
@@ -693,7 +693,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
           <div className="mb-6 min-h-[120px]">
             {activeTab === 'description' && (
               <div 
-                className="text-zinc-300 text-sm leading-relaxed tracking-wide rich-description space-y-4"
+                className="text-zinc-700 text-sm leading-relaxed tracking-wide rich-description space-y-4"
                 dangerouslySetInnerHTML={{ __html: description }}
               />
             )}
@@ -704,7 +704,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                   <Sparkles className="w-4 h-4 animate-pulse" />
                   <span>{dict.product.benefits}</span>
                 </h3>
-                <p className="text-sm text-zinc-300 leading-relaxed">
+                <p className="text-sm text-zinc-700 leading-relaxed">
                   {benefits || getFallbackBenefits()}
                 </p>
               </div>
@@ -729,11 +729,11 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                     <div
                       key={i}
                       className={`flex items-start justify-between py-2.5 px-3 rounded-md text-sm ${
-                        i % 2 === 0 ? 'bg-zinc-900/80' : 'bg-transparent'
-                      }`}
+                        i % 2 === 0 ? 'bg-[#FAF9F5]' : 'bg-transparent'
+                      } border-b border-gold-primary/5`}
                     >
-                      <span className="text-zinc-400 text-xs">{row.label}</span>
-                      <span className="text-zinc-200 text-xs font-medium text-right max-w-[60%]">
+                      <span className="text-zinc-500 text-xs">{row.label}</span>
+                      <span className="text-zinc-800 text-xs font-medium text-right max-w-[60%]">
                         {row.value}
                       </span>
                     </div>
@@ -802,19 +802,19 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
           {(material || origin) && (
             <div className="flex flex-wrap gap-2 mb-6">
               {material && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-md text-zinc-300">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-[#FAF9F5] border border-gold-primary/25 rounded-md text-gold-secondary">
                   <Gem className="w-3 h-3 text-gold-secondary" />
                   {material}
                 </span>
               )}
               {origin && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-md text-zinc-300">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-[#FAF9F5] border border-gold-primary/25 rounded-md text-gold-secondary">
                   <MapPin className="w-3 h-3 text-gold-secondary" />
                   {origin}
                 </span>
               )}
               {product.specBeadSize && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-md text-zinc-300">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-[#FAF9F5] border border-gold-primary/25 rounded-md text-gold-secondary">
                   ⬤ {product.specBeadSize}
                 </span>
               )}
@@ -907,7 +907,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
               {lang === 'zh' ? '设计与寓意' : 'Design & Meaning'}
             </h2>
           </div>
-          <p className="text-zinc-300 text-sm leading-loose">
+          <p className="text-zinc-700 text-sm leading-loose">
             {benefits || getFallbackBenefits()}
           </p>
         </div>
@@ -922,7 +922,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                 {dict.product.purification}
               </h3>
             </div>
-            <p className="text-xs text-zinc-400 leading-relaxed">
+            <p className="text-xs text-zinc-650 leading-relaxed">
               {purification ||
                 (lang === 'zh'
                   ? '每件商品出货前均经过细致的手工清洁与声波清洗，确保展现矿石天然纯净品质。'
@@ -1099,7 +1099,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                       {new Date(r.createdAt).toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US')}
                     </span>
                   </div>
-                  <p className="text-zinc-300 text-xs leading-relaxed">{r.comment}</p>
+                  <p className="text-zinc-650 text-xs leading-relaxed">{r.comment}</p>
                 </div>
               ))
             )}
