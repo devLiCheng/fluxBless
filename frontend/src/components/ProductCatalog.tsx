@@ -139,7 +139,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
               return (
                 <div
                   key={p.id}
-                  className="group relative bg-[#151515]/80 border border-gold-primary/5 hover:border-gold-primary/25 rounded-lg overflow-hidden transition-all duration-500 flex flex-col justify-between hover:shadow-[0_12px_40px_rgba(0,0,0,0.6)]"
+                  className="group relative bg-[#151515]/80 border border-gold-primary/5 hover:border-gold-primary/25 rounded-lg overflow-hidden transition-all duration-500 flex flex-col justify-between hover:shadow-[0_12px_40px_rgba(0,0,0,0.6)] min-w-0"
                 >
                   {/* Image & Badges */}
                   <div className="aspect-square bg-zinc-900 overflow-hidden relative">
@@ -205,16 +205,16 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
                   {/* Details */}
                   <div className="p-3 sm:p-5 flex flex-col justify-between flex-1">
                     <div className="mb-4">
-                      <h3 className="text-sm text-cream font-medium line-clamp-1 mb-1 group-hover:text-gold-primary transition-colors">
+                      <h3 className="text-sm text-cream font-medium line-clamp-1 mb-1 group-hover:text-gold-primary transition-colors break-words">
                         {name}
                       </h3>
-                      <p className="text-[11px] text-zinc-500 tracking-wider line-clamp-2 min-h-[2rem]">
+                      <p className="text-[11px] text-zinc-500 tracking-wider line-clamp-2 min-h-[2rem] break-words">
                         {stripHtml(lang === 'zh' ? p.descriptionZh : p.descriptionEn)}
                       </p>
                     </div>
 
                     <div className="flex items-center justify-between mt-auto">
-                      <span className="text-gold-primary font-bold text-base">${p.price}</span>
+                      <span className="text-gold-primary font-bold text-base">{lang === 'zh' ? '¥' : '$'}{p.price}</span>
                       <span className="text-[10px] text-zinc-500 tracking-wider">
                         {p.stock > 0 ? dict.product.inStock : dict.product.outOfStock}
                       </span>

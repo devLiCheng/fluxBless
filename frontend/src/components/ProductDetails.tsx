@@ -723,14 +723,6 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                     label: lang === 'zh' ? '适合手围' : 'Wrist Size',
                     value: (lang === 'zh' ? product.specWristSizeZh : product.specWristSizeEn) || '14cm – 18cm',
                   },
-                  {
-                    label: lang === 'zh' ? '商品来源' : 'Sourcing Link',
-                    value: product.purchaseUrl ? (
-                      <a href={product.purchaseUrl} target="_blank" rel="noopener noreferrer" className="text-gold-primary hover:underline">
-                        {lang === 'zh' ? '点击查看' : 'Click to view'}
-                      </a>
-                    ) : null,
-                  },
                 ]
                   .filter((row) => row.value)
                   .map((row, i) => (
