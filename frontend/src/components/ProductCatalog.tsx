@@ -73,6 +73,11 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
     }
   };
 
+  const stripHtml = (html: string) => {
+    if (!html) return '';
+    return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+  };
+
   // Filter products
   const filteredProducts = products.filter((p) => {
     const matchesCategory = selectedCategory === 'all' || p.category.slug === selectedCategory;
@@ -85,7 +90,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
   });
 
   return (
-    <section id="catalog" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <section id="catalog" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
       {/* Filters & Search */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12 border-b border-gold-primary/10 pb-8">
         {/* Category tags */}
@@ -173,11 +178,10 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
                       </button>
                     </div>
 
-                    {/* Dynamic tags overlay */}
                     {(() => {
                       const tagsStr = lang === 'zh' ? p.tagsZh : p.tagsEn;
                       if (tagsStr && tagsStr.trim()) {
-                        const tagList = tagsStr.split(',').map((t) => t.trim()).filter(Boolean);
+                        const tagList = tagsStr.split(/,|，/).map((t) => t.trim()).filter(Boolean);
                         return (
                           <div className="absolute top-4 left-4 flex flex-col gap-1 z-10">
                             {tagList.map((tag, idx) => (
@@ -205,7 +209,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
                         {name}
                       </h3>
                       <p className="text-[11px] text-zinc-500 tracking-wider line-clamp-2 min-h-[2rem]">
-                        {lang === 'zh' ? p.descriptionZh : p.descriptionEn}
+                        {stripHtml(lang === 'zh' ? p.descriptionZh : p.descriptionEn)}
                       </p>
                     </div>
 

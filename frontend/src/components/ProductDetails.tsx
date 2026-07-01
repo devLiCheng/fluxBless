@@ -444,7 +444,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
   const hasSpecs = product.specWeight || product.specBeadSize || product.specBeadCount || material || origin || purification;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Breadcrumb */}
       <nav className="flex items-center space-x-2 text-xs text-zinc-500 mb-8">
         <Link href={`/${lang}`} className="hover:text-gold-primary transition-colors">
@@ -499,7 +499,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
               {(() => {
                 const tagsStr = lang === 'zh' ? product.tagsZh : product.tagsEn;
                 if (tagsStr && tagsStr.trim()) {
-                  const tagList = tagsStr.split(',').map((t) => t.trim()).filter(Boolean);
+                  const tagList = tagsStr.split(/,|，/).map((t) => t.trim()).filter(Boolean);
                   return tagList.map((tag, idx) => (
                     <span key={idx} className="bg-black/60 border border-gold-primary/30 text-gold-primary text-[10px] uppercase tracking-widest px-3 py-1 rounded-full backdrop-blur-sm flex items-center gap-1">
                       <Sparkles className="w-3 h-3" />

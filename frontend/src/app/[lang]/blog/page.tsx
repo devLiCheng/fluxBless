@@ -54,7 +54,7 @@ export default async function BlogIndexPage({ params }: Props) {
 
   return (
     <div className="relative overflow-hidden bg-[#121212] py-16 sm:py-24 border-b border-gold-primary/5 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Header section */}
         <header className="text-center max-w-3xl mx-auto flex flex-col items-center mb-16">

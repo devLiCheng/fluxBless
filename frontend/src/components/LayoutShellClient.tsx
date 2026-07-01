@@ -103,7 +103,7 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
 
       {/* Header */}
       <header className="sticky top-0 z-40 bg-[#121212]/90 backdrop-blur-md border-b border-gold-primary/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           {/* Logo */}
           <Link href={`/${lang}`} className="flex flex-col">
             <span className="text-2xl sm:text-3xl font-bold font-serif tracking-widest text-gold-primary gold-text-gradient">
@@ -225,7 +225,7 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
 
       {/* Footer */}
       <footer className="bg-[#0D0D0D] border-t border-gold-primary/10 py-12 px-4 mt-auto">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
+        <div className="max-w-[1600px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
           <div>
             <h3 className="font-serif text-lg text-gold-primary tracking-widest mb-4">
               {getSetting('footer_logo_title', 'FluxBless')}
