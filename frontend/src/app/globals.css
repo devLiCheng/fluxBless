@@ -26,7 +26,8 @@
 }
 
 html {
-  overflow-y: scroll;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
 }
 
 /* Global premium scrollbar to match Tudou Gold theme and prevent page jitter */
