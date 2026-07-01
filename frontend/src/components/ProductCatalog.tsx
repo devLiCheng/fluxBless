@@ -155,7 +155,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
                     <div className="absolute inset-0 bg-white/30 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-4">
                       <Link
                         href={`/${lang}/products/${p.id}`}
-                        className="p-3 bg-black/80 hover:bg-gold-primary text-white hover:text-black rounded-md border border-gold-primary/25 transition-all scale-90 group-hover:scale-100 duration-300"
+                        className="p-3 bg-white/90 hover:bg-gold-primary text-gold-secondary hover:text-black rounded-md border border-gold-primary/30 transition-all scale-90 group-hover:scale-100 duration-300 shadow-md"
                         title={dict.product.details}
                       >
                         <Eye className="w-5 h-5" />
@@ -185,7 +185,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
                         return (
                           <div className="absolute top-4 left-4 flex flex-col gap-1 z-10">
                             {tagList.map((tag, idx) => (
-                              <span key={idx} className="bg-black/90 backdrop-blur-md text-gold-secondary text-[10px] tracking-[0.15em] px-2.5 py-1.5 rounded-md border border-gold-primary/20 flex items-center space-x-1.5 uppercase font-serif">
+                              <span key={idx} className="bg-[#FAF9F5]/95 backdrop-blur-md text-gold-secondary text-[10px] tracking-[0.15em] px-2.5 py-1.5 rounded-md border border-gold-primary/35 flex items-center space-x-1.5 uppercase font-serif shadow-sm">
                                 <Sparkles className="w-2.5 h-2.5 text-gold-primary" />
                                 <span>{tag}</span>
                               </span>
@@ -194,7 +194,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
                         );
                       }
                       return (
-                        <span className="absolute top-4 left-4 bg-black/90 backdrop-blur-md text-gold-secondary text-[10px] tracking-[0.15em] px-2.5 py-1.5 rounded-md border border-gold-primary/20 flex items-center space-x-1.5 uppercase z-10 font-serif">
+                        <span className="absolute top-4 left-4 bg-[#FAF9F5]/95 backdrop-blur-md text-gold-secondary text-[10px] tracking-[0.15em] px-2.5 py-1.5 rounded-md border border-gold-primary/35 flex items-center space-x-1.5 uppercase z-10 font-serif shadow-sm">
                           <Sparkles className="w-2.5 h-2.5 text-gold-primary animate-pulse" />
                           <span>{lang === 'zh' ? '精选' : 'Selected'}</span>
                         </span>

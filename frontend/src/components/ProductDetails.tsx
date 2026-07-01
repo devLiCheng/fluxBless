@@ -661,11 +661,11 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
             ].map((badge, i) => (
               <div
                 key={i}
-                className="flex flex-col items-center text-center p-3 bg-zinc-900/60 border border-gold-primary/10 rounded-md gap-1"
+                className="flex flex-col items-center text-center p-3 bg-[#FAF9F5] border border-gold-primary/25 rounded-md gap-1 shadow-sm"
               >
                 {badge.icon}
-                <span className="text-[11px] font-semibold text-cream">{badge.title}</span>
-                <span className="text-[10px] text-zinc-500">{badge.desc}</span>
+                <span className="text-[11px] font-semibold text-zinc-800">{badge.title}</span>
+                <span className="text-[10px] text-zinc-650">{badge.desc}</span>
               </div>
             ))}
           </div>
