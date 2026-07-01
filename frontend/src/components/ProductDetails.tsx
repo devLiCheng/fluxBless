@@ -915,7 +915,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
         {/* Side info */}
         <div className="space-y-4">
           {/* Purification info */}
-          <div className="bg-zinc-900 border border-gold-primary/10 rounded-2xl p-6">
+          <div className="bg-white border border-gold-primary/10 rounded-lg p-6">
             <div className="flex items-center gap-2 mb-3">
               <Flame className="w-4 h-4 text-gold-secondary" />
               <h3 className="text-xs font-semibold text-cream uppercase tracking-widest">
@@ -931,7 +931,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
           </div>
 
           {/* Authenticity */}
-          <div className="bg-zinc-900 border border-gold-primary/10 rounded-2xl p-6">
+          <div className="bg-white border border-gold-primary/10 rounded-lg p-6">
             <div className="flex items-center gap-2 mb-3">
               <Award className="w-4 h-4 text-gold-secondary" />
               <h3 className="text-xs font-semibold text-cream uppercase tracking-widest">
@@ -980,7 +980,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
           {/* Left Col: Overall Rating & Write Review Form */}
           <div className="space-y-6 lg:border-r lg:border-gold-primary/10 lg:pr-8">
             {/* Average Rating Block */}
-            <div className="flex items-center gap-4 bg-zinc-900/60 border border-gold-primary/10 p-5 rounded-xl">
+            <div className="flex items-center gap-4 bg-[#FAF9F5] border border-gold-primary/10 p-5 rounded-lg">
               <div className="text-center px-4 border-r border-gold-primary/10">
                 <div className="text-3xl font-bold text-gold-primary font-serif">
                   {reviews.length > 0
@@ -1013,7 +1013,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
 
             {/* Write a Review form */}
             {user ? (
-              <form onSubmit={handleReviewSubmit} className="bg-zinc-900/40 border border-gold-primary/5 p-5 rounded-xl space-y-4">
+              <form onSubmit={handleReviewSubmit} className="bg-[#FAF9F5] border border-gold-primary/10 p-5 rounded-md space-y-4">
                 <h3 className="text-xs font-serif tracking-widest text-gold-secondary uppercase">
                   {lang === 'zh' ? '撰写您的评价' : 'Write a Review'}
                 </h3>
@@ -1048,19 +1048,19 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder={lang === 'zh' ? '说说您的佩戴体验和感受吧...' : 'Share your wearing experience...'}
-                    className="w-full bg-black/60 border border-gold-primary/20 focus:border-gold-primary text-xs text-cream px-3 py-2 rounded-lg focus:outline-none resize-none"
+                    className="w-full bg-white border border-gold-primary/25 focus:border-gold-primary text-xs text-cream px-3 py-2 rounded-md focus:outline-none resize-none"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={submittingReview}
-                  className="gold-gradient hover:gold-border-glow text-black font-semibold text-[10px] tracking-widest uppercase px-4 py-2.5 rounded-lg transition-all disabled:opacity-50 w-full"
+                  className="gold-gradient hover:gold-border-glow text-black font-semibold text-[10px] tracking-widest uppercase px-4 py-2.5 rounded-md transition-all disabled:opacity-50 w-full"
                 >
                   {submittingReview ? (lang === 'zh' ? '提交中...' : 'Submitting...') : (lang === 'zh' ? '提交评价' : 'Submit Review')}
                 </button>
               </form>
             ) : (
-              <div className="bg-zinc-900/20 border border-gold-primary/5 p-4 rounded-xl text-center">
+              <div className="bg-[#FAF9F5] border border-gold-primary/10 p-4 rounded-md text-center">
                 <p className="text-xs text-zinc-500">
                   {lang === 'zh' ? '请登录后发表评价。' : 'Please log in to submit a review.'}
                 </p>

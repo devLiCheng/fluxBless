@@ -115,7 +115,7 @@ export const BlogListClient: React.FC<BlogListClientProps> = ({
           return (
             <article
               key={post.id}
-              className="masonry-item bg-[#161616] border border-gold-primary/10 rounded-lg overflow-hidden group hover:border-gold-primary/30 transition-all duration-300 flex flex-col hover:shadow-[0_4px_20px_rgba(212,175,55,0.05)]"
+              className="masonry-item bg-white border border-gold-primary/10 rounded-lg overflow-hidden group hover:border-gold-primary/30 transition-all duration-300 flex flex-col hover:shadow-[0_12px_40px_rgba(184,144,71,0.06)]"
             >
               {/* Cover image wrap */}
               <Link href={`/${lang}/blog/${post.slug}`} className="relative block overflow-hidden aspect-[16/10]">

@@ -139,10 +139,10 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
               return (
                 <div
                   key={p.id}
-                  className="group relative bg-[#151515]/80 border border-gold-primary/5 hover:border-gold-primary/25 rounded-lg overflow-hidden transition-all duration-500 flex flex-col justify-between hover:shadow-[0_12px_40px_rgba(0,0,0,0.6)] min-w-0"
+                  className="group relative bg-white border border-gold-primary/10 hover:border-gold-primary/25 rounded-lg overflow-hidden transition-all duration-500 flex flex-col justify-between hover:shadow-[0_12px_40px_rgba(184,144,71,0.06)] min-w-0"
                 >
                   {/* Image & Badges */}
-                  <div className="aspect-square bg-zinc-900 overflow-hidden relative">
+                  <div className="aspect-square bg-[#FAF9F5] overflow-hidden relative">
                     <img
                       src={imageSrc}
                       alt={name}
@@ -152,10 +152,10 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
                         e.currentTarget.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=800&auto=format&fit=crop';
                       }}
                     />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-4">
+                    <div className="absolute inset-0 bg-white/30 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-4">
                       <Link
                         href={`/${lang}/products/${p.id}`}
-                        className="p-3 bg-black/80 hover:bg-gold-primary text-cream hover:text-black rounded-md border border-gold-primary/25 transition-all scale-90 group-hover:scale-100 duration-300"
+                        className="p-3 bg-black/80 hover:bg-gold-primary text-white hover:text-black rounded-md border border-gold-primary/25 transition-all scale-90 group-hover:scale-100 duration-300"
                         title={dict.product.details}
                       >
                         <Eye className="w-5 h-5" />

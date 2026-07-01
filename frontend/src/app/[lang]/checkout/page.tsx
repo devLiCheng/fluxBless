@@ -229,7 +229,7 @@ export default function CheckoutPage() {
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="w-full bg-black/60 border border-gold-primary/20 focus:border-gold-primary text-sm text-cream px-4 py-3 rounded-lg focus:outline-none"
+                  className="w-full bg-white border border-gold-primary/20 focus:border-gold-primary text-sm text-zinc-800 px-4 py-3 rounded-md focus:outline-none"
                 />
               </div>
               <div>
@@ -241,7 +241,7 @@ export default function CheckoutPage() {
                   required
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full bg-black/60 border border-gold-primary/20 focus:border-gold-primary text-sm text-cream px-4 py-3 rounded-lg focus:outline-none"
+                  className="w-full bg-white border border-gold-primary/20 focus:border-gold-primary text-sm text-zinc-800 px-4 py-3 rounded-md focus:outline-none"
                 />
               </div>
             </div>
@@ -269,7 +269,7 @@ export default function CheckoutPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-black/60 border border-gold-primary/20 focus:border-gold-primary text-sm text-cream px-4 py-3 rounded-lg focus:outline-none"
+                  className="w-full bg-white border border-gold-primary/20 focus:border-gold-primary text-sm text-zinc-800 px-4 py-3 rounded-md focus:outline-none"
                 />
               </div>
             )}
@@ -283,7 +283,7 @@ export default function CheckoutPage() {
                 rows={3}
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                className="w-full bg-black/60 border border-gold-primary/20 focus:border-gold-primary text-sm text-cream px-4 py-3 rounded-lg focus:outline-none resize-none"
+                className="w-full bg-white border border-gold-primary/20 focus:border-gold-primary text-sm text-zinc-800 px-4 py-3 rounded-md focus:outline-none resize-none"
               />
             </div>
           </div>
@@ -295,7 +295,7 @@ export default function CheckoutPage() {
             </h2>
 
             <div className="space-y-4">
-              <label className="flex items-center justify-between p-4 bg-black/40 border border-gold-primary/20 rounded-xl cursor-pointer hover:border-gold-primary/50 transition-colors">
+              <label className="flex items-center justify-between p-4 bg-white border border-gold-primary/20 rounded-md cursor-pointer hover:border-gold-primary/50 transition-colors">
                 <div className="flex items-center space-x-3">
                   <input
                     type="radio"
@@ -334,7 +334,7 @@ export default function CheckoutPage() {
             <div className="divide-y divide-gold-primary/5 max-h-96 overflow-y-auto pr-2 space-y-4">
               {cart.map((item) => (
                 <div key={item.id} className="flex space-x-4 pt-4 first:pt-0">
-                  <div className="w-14 h-14 bg-zinc-900 border border-gold-primary/10 rounded-lg overflow-hidden flex-shrink-0">
+                  <div className="w-14 h-14 bg-zinc-100 border border-gold-primary/10 rounded-lg overflow-hidden flex-shrink-0">
                     <img
                       src={item.image}
                       alt={lang === 'zh' ? item.nameZh : item.nameEn}

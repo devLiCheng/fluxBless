@@ -310,7 +310,7 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
                   ) : (
                     cart.map((item) => (
                       <div key={item.id} className="flex space-x-4 border-b border-gold-primary/5 pb-6">
-                        <div className="w-20 h-20 bg-zinc-900 rounded-lg overflow-hidden border border-gold-primary/10 flex-shrink-0 relative">
+                        <div className="w-20 h-20 bg-zinc-100 rounded-lg overflow-hidden border border-gold-primary/10 flex-shrink-0 relative">
                           <img
                             src={item.image}
                             alt={lang === 'zh' ? item.nameZh : item.nameEn}
@@ -426,7 +426,7 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
                     required
                     value={authName}
                     onChange={(e) => setAuthName(e.target.value)}
-                    className="w-full bg-black/60 border border-gold-primary/20 focus:border-gold-primary text-sm text-cream px-4 py-2.5 rounded-lg focus:outline-none"
+                    className="w-full bg-white border border-gold-primary/20 focus:border-gold-primary text-sm text-zinc-800 px-4 py-2.5 rounded-md focus:outline-none"
                     placeholder={lang === 'zh' ? '请输入您的昵称' : 'Enter your name'}
                   />
                 </div>
@@ -441,7 +441,7 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
                   required
                   value={authEmail}
                   onChange={(e) => setAuthEmail(e.target.value)}
-                  className="w-full bg-black/60 border border-gold-primary/20 focus:border-gold-primary text-sm text-cream px-4 py-2.5 rounded-lg focus:outline-none"
+                  className="w-full bg-white border border-gold-primary/20 focus:border-gold-primary text-sm text-zinc-800 px-4 py-2.5 rounded-md focus:outline-none"
                   placeholder="name@example.com"
                 />
               </div>
@@ -456,7 +456,7 @@ export const LayoutShellClient: React.FC<LayoutShellClientProps> = ({
                   minLength={6}
                   value={authPassword}
                   onChange={(e) => setAuthPassword(e.target.value)}
-                  className="w-full bg-black/60 border border-gold-primary/20 focus:border-gold-primary text-sm text-cream px-4 py-2.5 rounded-lg focus:outline-none"
+                  className="w-full bg-white border border-gold-primary/20 focus:border-gold-primary text-sm text-zinc-800 px-4 py-2.5 rounded-md focus:outline-none"
                   placeholder="••••••••"
                 />
               </div>

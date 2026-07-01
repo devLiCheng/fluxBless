@@ -58,7 +58,7 @@ export default async function BlogIndexPage({ params }: Props) {
         
         {/* Header section */}
         <header className="text-center max-w-3xl mx-auto flex flex-col items-center mb-16">
-          <div className="inline-flex items-center space-x-2 border border-gold-primary/20 rounded-full px-4 py-1 bg-black/40 backdrop-blur-md mb-6">
+          <div className="inline-flex items-center space-x-2 border border-gold-primary/20 rounded-md px-4 py-1 bg-[#FAF9F5] mb-6 shadow-sm">
             <Sparkles className="w-3.5 h-3.5 text-gold-primary animate-pulse" />
             <span className="text-[10px] sm:text-xs tracking-[0.2em] text-gold-secondary font-serif uppercase">
               {lang === 'zh' ? '东方美学志' : 'Aesthetics Journal'}
