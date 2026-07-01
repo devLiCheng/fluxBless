@@ -99,10 +99,10 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
             <button
               key={cat.slug}
               onClick={() => setSelectedCategory(cat.slug)}
-              className={`whitespace-nowrap px-4 py-2 text-xs tracking-widest uppercase border rounded-full transition-all duration-300 ${
+              className={`whitespace-nowrap px-4 py-2 text-xs tracking-[0.15em] uppercase border rounded-md transition-all duration-300 ${
                 selectedCategory === cat.slug
                   ? 'bg-gold-primary border-gold-primary text-black font-semibold'
-                  : 'border-gold-primary/20 text-zinc-400 hover:text-gold-primary hover:border-gold-primary/40'
+                  : 'border-gold-primary/10 text-zinc-400 hover:text-gold-primary hover:border-gold-primary/30'
               }`}
             >
               {cat.name}
@@ -117,7 +117,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
             placeholder={lang === 'zh' ? '搜索精选手串...' : 'Search accessories...'}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-[#1A1A1A] border border-gold-primary/20 hover:border-gold-primary/40 focus:border-gold-primary text-sm text-cream px-4 py-2.5 rounded-full focus:outline-none transition-colors"
+            className="w-full bg-[#121212] border border-gold-primary/10 hover:border-gold-primary/30 focus:border-gold-primary/50 text-sm text-cream px-4 py-2.5 rounded-md focus:outline-none transition-all duration-300"
           />
         </div>
       </div>
@@ -139,7 +139,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
               return (
                 <div
                   key={p.id}
-                  className="group relative bg-[#1A1A1A] border border-gold-primary/10 hover:border-gold-primary/30 rounded-2xl overflow-hidden transition-all duration-300 flex flex-col justify-between"
+                  className="group relative bg-[#151515]/80 border border-gold-primary/5 hover:border-gold-primary/25 rounded-lg overflow-hidden transition-all duration-500 flex flex-col justify-between hover:shadow-[0_12px_40px_rgba(0,0,0,0.6)]"
                 >
                   {/* Image & Badges */}
                   <div className="aspect-square bg-zinc-900 overflow-hidden relative">
@@ -155,7 +155,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-4">
                       <Link
                         href={`/${lang}/products/${p.id}`}
-                        className="p-3 bg-black/80 hover:bg-gold-primary text-cream hover:text-black rounded-full border border-gold-primary/30 transition-all scale-90 group-hover:scale-100 duration-300"
+                        className="p-3 bg-black/80 hover:bg-gold-primary text-cream hover:text-black rounded-md border border-gold-primary/25 transition-all scale-90 group-hover:scale-100 duration-300"
                         title={dict.product.details}
                       >
                         <Eye className="w-5 h-5" />
@@ -171,7 +171,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
                             stock: p.stock,
                           })
                         }
-                        className="p-3 bg-gold-primary hover:bg-gold-light text-black rounded-full border border-gold-primary/30 transition-all scale-90 group-hover:scale-100 duration-300"
+                        className="p-3 bg-gold-primary hover:bg-gold-light text-black rounded-md border border-gold-primary/30 transition-all scale-90 group-hover:scale-100 duration-300"
                         title={dict.product.addToCart}
                       >
                         <ShoppingCart className="w-5 h-5" />
@@ -185,7 +185,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
                         return (
                           <div className="absolute top-4 left-4 flex flex-col gap-1 z-10">
                             {tagList.map((tag, idx) => (
-                              <span key={idx} className="bg-black/85 backdrop-blur-sm text-gold-secondary text-[10px] tracking-widest px-2.5 py-1 rounded-full border border-gold-primary/20 flex items-center space-x-1 uppercase">
+                              <span key={idx} className="bg-black/90 backdrop-blur-md text-gold-secondary text-[10px] tracking-[0.15em] px-2.5 py-1.5 rounded-md border border-gold-primary/20 flex items-center space-x-1.5 uppercase font-serif">
                                 <Sparkles className="w-2.5 h-2.5 text-gold-primary" />
                                 <span>{tag}</span>
                               </span>
@@ -194,7 +194,7 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({ products, dict, 
                         );
                       }
                       return (
-                        <span className="absolute top-4 left-4 bg-black/85 backdrop-blur-sm text-gold-secondary text-[10px] tracking-widest px-2.5 py-1 rounded-full border border-gold-primary/20 flex items-center space-x-1 uppercase z-10">
+                        <span className="absolute top-4 left-4 bg-black/90 backdrop-blur-md text-gold-secondary text-[10px] tracking-[0.15em] px-2.5 py-1.5 rounded-md border border-gold-primary/20 flex items-center space-x-1.5 uppercase z-10 font-serif">
                           <Sparkles className="w-2.5 h-2.5 text-gold-primary animate-pulse" />
                           <span>{lang === 'zh' ? '精选' : 'Selected'}</span>
                         </span>

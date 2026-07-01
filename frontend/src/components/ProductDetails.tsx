@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Sparkles,
   ShoppingCart,
@@ -79,6 +79,29 @@ const isVideoUrl = (url: string) => {
 
 export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, lang }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const thumbnailsRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll active thumbnail into view
+  useEffect(() => {
+    const activeThumbnail = document.getElementById(`thumb-${selectedImageIndex}`);
+    if (activeThumbnail) {
+      activeThumbnail.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center',
+      });
+    }
+  }, [selectedImageIndex]);
+
+  const scrollThumbnails = (direction: 'left' | 'right') => {
+    if (thumbnailsRef.current) {
+      const scrollAmount = 240; // Scroll by roughly 3 items
+      thumbnailsRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      });
+    }
+  };
   const { getSetting, getSettingL } = useSettings();
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<Tab>('description');
@@ -510,16 +533,42 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                 />
               );
             })()}
+
+            {/* Main Image Navigation Arrows */}
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+                  }}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/60 hover:bg-gold-primary text-cream hover:text-black p-2 rounded-md border border-gold-primary/10 transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+                  }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/60 hover:bg-gold-primary text-cream hover:text-black p-2 rounded-md border border-gold-primary/10 transition-all opacity-0 group-hover:opacity-100 cursor-pointer"
+                  aria-label="Next image"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </>
+            )}
             {/* Image Counter Badge */}
             {images.length > 0 && (
-              <div className="absolute bottom-4 right-4 bg-black/60 border border-gold-primary/30 text-cream px-3 py-1 rounded-full text-[10px] tracking-widest backdrop-blur-sm select-none z-10">
+              <div className="absolute bottom-4 right-4 bg-black/75 border border-gold-primary/20 text-cream px-3 py-1 rounded-md text-[10px] tracking-widest backdrop-blur-md select-none z-10 font-serif">
                 {selectedImageIndex + 1} / {images.length}
               </div>
             )}
             {/* Badge overlay */}
             <div className="absolute top-4 left-4 flex flex-col gap-2">
               {product.stock > 0 && product.stock < 20 && (
-                <span className="bg-amber-900/80 border border-amber-500/40 text-amber-300 text-[10px] uppercase tracking-widest px-3 py-1 rounded-full backdrop-blur-sm">
+                <span className="bg-amber-900/90 border border-amber-500/30 text-amber-300 text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-md backdrop-blur-md font-serif">
                   {lang === 'zh' ? `仅剩 ${product.stock} 件` : `Only ${product.stock} left`}
                 </span>
               )}
@@ -528,14 +577,14 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                 if (tagsStr && tagsStr.trim()) {
                   const tagList = tagsStr.split(/,|，/).map((t) => t.trim()).filter(Boolean);
                   return tagList.map((tag, idx) => (
-                    <span key={idx} className="bg-black/60 border border-gold-primary/30 text-gold-primary text-[10px] uppercase tracking-widest px-3 py-1 rounded-full backdrop-blur-sm flex items-center gap-1">
+                    <span key={idx} className="bg-black/85 border border-gold-primary/20 text-gold-primary text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-md backdrop-blur-md flex items-center gap-1.5 font-serif">
                       <Sparkles className="w-3 h-3" />
                       {tag}
                     </span>
                   ));
                 }
                 return (
-                  <span className="bg-black/60 border border-gold-primary/30 text-gold-primary text-[10px] uppercase tracking-widest px-3 py-1 rounded-full backdrop-blur-sm flex items-center gap-1">
+                  <span className="bg-black/85 border border-gold-primary/20 text-gold-primary text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-md backdrop-blur-md flex items-center gap-1.5 font-serif">
                     <Sparkles className="w-3 h-3" />
                     {lang === 'zh' ? '手工甄选' : 'Premium Selected'}
                   </span>
@@ -546,36 +595,60 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
 
           {/* Thumbnails */}
           {images.length > 1 && (
-            <div className="flex space-x-3 overflow-x-auto pb-2 scrollbar-none scroll-smooth w-full max-w-full min-w-0">
-              {images.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setSelectedImageIndex(idx)}
-                  className={`w-20 h-20 bg-zinc-900 border rounded-xl overflow-hidden transition-all flex-shrink-0 ${
-                    selectedImageIndex === idx
-                      ? 'border-gold-primary shadow-[0_0_12px_rgba(212,175,55,0.3)] scale-105'
-                      : 'border-gold-primary/10 hover:border-gold-primary/40'
-                  }`}
-                >
-                  {isVideoUrl(img) ? (
-                    <div className="w-full h-full relative bg-black flex items-center justify-center">
-                      <video src={img} className="w-full h-full object-cover opacity-60" />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <Play className="w-6 h-6 text-gold-primary fill-gold-primary/20" />
+            <div className="relative group/thumbs w-full">
+              {images.length > 5 && (
+                <>
+                  <button
+                    onClick={() => scrollThumbnails('left')}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-black/70 border border-gold-primary/20 text-cream p-1.5 rounded-md hover:bg-gold-primary hover:text-black transition-all cursor-pointer opacity-0 group-hover/thumbs:opacity-100 shadow-md"
+                    title={lang === 'zh' ? '向左滚动' : 'Scroll Left'}
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => scrollThumbnails('right')}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black/70 border border-gold-primary/20 text-cream p-1.5 rounded-md hover:bg-gold-primary hover:text-black transition-all cursor-pointer opacity-0 group-hover/thumbs:opacity-100 shadow-md"
+                    title={lang === 'zh' ? '向右滚动' : 'Scroll Right'}
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </>
+              )}
+              <div 
+                ref={thumbnailsRef}
+                className="flex space-x-3 overflow-x-auto pb-2 scrollbar-none scroll-smooth w-full max-w-full min-w-0 px-7"
+              >
+                {images.map((img, idx) => (
+                  <button
+                    id={`thumb-${idx}`}
+                    key={idx}
+                    onClick={() => setSelectedImageIndex(idx)}
+                    className={`w-20 h-20 bg-zinc-900 border rounded-md overflow-hidden transition-all flex-shrink-0 ${
+                      selectedImageIndex === idx
+                        ? 'border-gold-primary shadow-[0_0_12px_rgba(212,175,55,0.3)] scale-105'
+                        : 'border-gold-primary/10 hover:border-gold-primary/40'
+                    }`}
+                  >
+                    {isVideoUrl(img) ? (
+                      <div className="w-full h-full relative bg-black flex items-center justify-center">
+                        <video src={img} className="w-full h-full object-cover opacity-60" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <Play className="w-6 h-6 text-gold-primary fill-gold-primary/20" />
+                        </div>
                       </div>
-                    </div>
-                  ) : (
-                    <img
-                      src={img}
-                      alt={`${name} ${idx + 1}`}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=200&auto=format&fit=crop';
-                      }}
-                    />
-                  )}
-                </button>
-              ))}
+                    ) : (
+                      <img
+                        src={img}
+                        alt={`${name} ${idx + 1}`}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?q=80&w=200&auto=format&fit=crop';
+                        }}
+                      />
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
@@ -588,7 +661,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
             ].map((badge, i) => (
               <div
                 key={i}
-                className="flex flex-col items-center text-center p-3 bg-zinc-900/60 border border-gold-primary/10 rounded-xl gap-1"
+                className="flex flex-col items-center text-center p-3 bg-zinc-900/60 border border-gold-primary/10 rounded-md gap-1"
               >
                 {badge.icon}
                 <span className="text-[11px] font-semibold text-cream">{badge.title}</span>
@@ -626,7 +699,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
             )}
 
             {activeTab === 'benefits' && (
-              <div className="gold-glass gold-border-glow p-5 rounded-xl border border-gold-primary/20">
+              <div className="gold-glass gold-border-glow p-5 rounded-md border border-gold-primary/20">
                 <h3 className="text-xs font-serif tracking-widest text-gold-primary flex items-center space-x-2 uppercase mb-3">
                   <Sparkles className="w-4 h-4 animate-pulse" />
                   <span>{dict.product.benefits}</span>
@@ -663,7 +736,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
                   .map((row, i) => (
                     <div
                       key={i}
-                      className={`flex items-start justify-between py-2.5 px-3 rounded-lg text-sm ${
+                      className={`flex items-start justify-between py-2.5 px-3 rounded-md text-sm ${
                         i % 2 === 0 ? 'bg-zinc-900/80' : 'bg-transparent'
                       }`}
                     >
@@ -737,24 +810,24 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
           {(material || origin) && (
             <div className="flex flex-wrap gap-2 mb-6">
               {material && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-full text-zinc-300">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-md text-zinc-300">
                   <Gem className="w-3 h-3 text-gold-secondary" />
                   {material}
                 </span>
               )}
               {origin && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-full text-zinc-300">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-md text-zinc-300">
                   <MapPin className="w-3 h-3 text-gold-secondary" />
                   {origin}
                 </span>
               )}
               {product.specBeadSize && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-full text-zinc-300">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-md text-zinc-300">
                   ⬤ {product.specBeadSize}
                 </span>
               )}
               {product.specBeadCount && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-full text-zinc-300">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs bg-zinc-800 border border-gold-primary/15 rounded-md text-zinc-300">
                   × {product.specBeadCount}
                 </span>
               )}
@@ -768,10 +841,10 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
             <div className="space-y-3 mt-auto">
               <div className="flex items-center space-x-4">
                 {/* Quantity */}
-                <div className="flex items-center border border-gold-primary/20 bg-black/40 rounded-lg overflow-hidden h-12">
+                <div className="flex items-center border border-gold-primary/25 bg-black/40 rounded-md overflow-hidden h-12">
                   <button
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="px-4 text-zinc-400 hover:text-gold-primary hover:bg-white/5 transition-all h-full text-lg"
+                    className="px-4 text-zinc-400 hover:text-gold-primary hover:bg-white/5 transition-all h-full text-lg animate-fadeIn"
                   >
                     −
                   </button>
@@ -807,7 +880,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
           ) : (
             <button
               disabled
-              className="w-full bg-zinc-800 text-zinc-500 font-semibold uppercase tracking-widest rounded-lg h-12 cursor-not-allowed mt-auto"
+              className="w-full bg-zinc-900 text-zinc-600 font-semibold uppercase tracking-[0.2em] font-serif rounded-md h-12 cursor-not-allowed mt-auto border border-zinc-800"
             >
               {dict.product.outOfStock}
             </button>
@@ -1165,7 +1238,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({ product, dict, l
           {/* Zoom Control Panel (Bottom Center) */}
           {!isVideoUrl(images[lightboxIndex]) && (
             <div 
-              className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-zinc-900/85 border border-gold-primary/20 px-4 py-2 rounded-full backdrop-blur-sm shadow-lg z-50"
+              className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-zinc-900/90 border border-gold-primary/20 px-4 py-2 rounded-md backdrop-blur-md shadow-lg z-50"
               onClick={(e) => e.stopPropagation()}
             >
               <button
